@@ -13,7 +13,7 @@
 
       modules = [
         ./hardware.nix
-        ./hosts/vm.nix
+        ./hosts/mainarray-vm/disks.nix
         disko.nixosModules.disko
         ./modules/os/nix.nix
         ./modules/os/boot.nix
