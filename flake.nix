@@ -13,8 +13,8 @@
 
       modules = [
         ./hosts/mainarray-vm/disks.nix
+        ./hosts/mainarray-vm/hardware.nix
         disko.nixosModules.disko
-        ./hardware.nix
         ./modules/os/k3s-head.nix
         ./modules/os/nix.nix
         ./modules/os/boot.nix
