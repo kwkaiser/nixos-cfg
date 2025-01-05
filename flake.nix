@@ -11,17 +11,7 @@
     nixosConfigurations.mainarray-vm = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 
-      modules = [
-        ./hosts/mainarray-vm
-        disko.nixosModules.disko
-        ./modules/os/k3s-head.nix
-        ./modules/os/nix.nix
-        ./modules/os/boot.nix
-        ./modules/os/net.nix
-        ./modules/os/tz.nix
-        ./modules/os/audio.nix
-        ./modules/os/users.nix
-      ];
+      modules = [ ./hosts/mainarray-vm disko.nixosModules.disko ];
     };
   };
 }
