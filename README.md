@@ -30,3 +30,9 @@ nix --experimental-features 'nix-command flakes' \
 ```
 
 This approach should be possible on most linux distros, provided they have nix installed.
+
+## Rebuild
+
+To rebuild:
+
+- `sudo nixos-rebuild --flake github:kwkaiser/nix-cfg.#vm switch`
