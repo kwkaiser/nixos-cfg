@@ -35,4 +35,4 @@ This approach should be possible on most linux distros, provided they have nix i
 
 To rebuild:
 
-- `sudo nixos-rebuild --flake github:kwkaiser/nix-cfg.#vm switch`
+- `sudo nixos-rebuild --flake github:kwkaiser/nixos-cfg.#vm switch`
