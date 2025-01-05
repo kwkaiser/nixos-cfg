@@ -8,12 +8,11 @@
   };
 
   outputs = { self, nixpkgs, disko, ... }@inputs: {
-    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.mainarray-vm = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 
       modules = [
-        ./hosts/mainarray-vm/disks.nix
-        ./hosts/mainarray-vm/hardware.nix
+        ./hosts/mainarray-vm
         disko.nixosModules.disko
         ./modules/os/k3s-head.nix
         ./modules/os/nix.nix
