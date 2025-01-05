@@ -12,9 +12,9 @@
       specialArgs = { inherit inputs; };
 
       modules = [
-        ./hardware.nix
         ./hosts/mainarray-vm/disks.nix
         disko.nixosModules.disko
+        ./hardware.nix
         ./modules/os/nix.nix
         ./modules/os/boot.nix
         ./modules/os/net.nix
