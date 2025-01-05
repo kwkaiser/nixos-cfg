@@ -20,7 +20,6 @@
         ./modules/os/boot.nix
         ./modules/os/net.nix
         ./modules/os/tz.nix
-        ./modules/os/desktop.nix
         ./modules/os/audio.nix
         ./modules/os/users.nix
       ];
