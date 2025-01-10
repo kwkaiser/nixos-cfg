@@ -1,21 +1,20 @@
 { ... }: {
-
-  fileSystems."/zstorage".options = [ "noauto" ];
   disko.devices = {
     disk = {
-      nixos = {
-        device = "/dev/vda";
+      x = {
         type = "disk";
+        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
+              size = "64M";
               type = "EF00";
-              size = "500M";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
             };
             root = {
@@ -29,7 +28,6 @@
           };
         };
       };
-
       y = {
         type = "disk";
         device = "/dev/vdb";
@@ -40,7 +38,7 @@
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "zstorage";
+                pool = "storage";
               };
             };
           };
@@ -56,30 +54,54 @@
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "zstorage";
+                pool = "storage";
+              };
+            };
+          };
+        };
+      };
+      a = {
+        type = "disk";
+        device = "/dev/vdd";
+        content = {
+          type = "gpt";
+          partitions = {
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "storage2";
               };
             };
           };
         };
       };
     };
-
     zpool = {
-      zstorage = {
+      storage = {
         type = "zpool";
         mode = "mirror";
-        rootFsOptions = { compression = "zstd"; };
-
-        mountpoint = "/zstorage";
+        mountpoint = "/storage";
 
         datasets = {
-          data = {
+          dataset = {
             type = "zfs_fs";
-            options.mountpoint = "/storage/data";
+            mountpoint = "/storage/dataset";
+          };
+        };
+      };
+      storage2 = {
+        type = "zpool";
+        mountpoint = "/storage2";
+        rootFsOptions = { canmount = "off"; };
+
+        datasets = {
+          dataset = {
+            type = "zfs_fs";
+            mountpoint = "/storage2/dataset";
           };
         };
       };
     };
-
   };
 }
