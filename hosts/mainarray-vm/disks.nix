@@ -1,4 +1,6 @@
 { ... }: {
+
+  fileSystems."/zstorage".options = [ "noauto" ];
   disko.devices = {
     disk = {
       nixos = {
@@ -28,7 +30,7 @@
         };
       };
 
-      a = {
+      y = {
         type = "disk";
         device = "/dev/vdb";
         content = {
@@ -38,14 +40,13 @@
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "zroot";
+                pool = "zstorage";
               };
             };
           };
         };
       };
-
-      b = {
+      z = {
         type = "disk";
         device = "/dev/vdc";
         content = {
@@ -55,33 +56,30 @@
               size = "100%";
               content = {
                 type = "zfs";
-                pool = "zroot";
+                pool = "zstorage";
               };
             };
           };
         };
       };
+    };
 
-      zpool = {
-        zroot = {
-          type = "zpool";
-          mode = "mirror";
-          # Workaround: cannot import 'zroot': I/O error in disko tests
-          options.cachefile = "none";
-          rootFsOptions = {
-            compression = "zstd";
-            "com.sun:auto-snapshot" = "false";
-          };
+    zpool = {
+      zstorage = {
+        type = "zpool";
+        mode = "mirror";
+        rootFsOptions = { compression = "zstd"; };
 
-          datasets = {
-            zfs_fs = {
-              type = "zfs_fs";
-              mountpoint = "/bulk";
-              options."com.sun:auto-snapshot" = "true";
-            };
+        mountpoint = "/zstorage";
+
+        datasets = {
+          data = {
+            type = "zfs_fs";
+            options.mountpoint = "/storage/data";
           };
         };
       };
     };
+
   };
 }

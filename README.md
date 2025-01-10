@@ -12,6 +12,8 @@ A suggest workfow for this is:
 
 - `sudo <script>` to create the virtual machine quickly
 - open `virt-manager` to browse & interact with virtual machines
+- `sudo virsh destroy <vm>` to destroy
+- `sudo virsh undefine <vm>` to undefine
 
 ## Installation
 
