@@ -1,7 +1,7 @@
 {
   imports = [
     # Host-specific
-    ./disks2.nix
+    ./disks.nix
     ./hardware.nix
     ./net.nix
     # Modules
