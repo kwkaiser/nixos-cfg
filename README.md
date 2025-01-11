@@ -28,7 +28,7 @@ nix --experimental-features 'nix-command flakes' \
   run github:nix-community/nixos-anywhere -- \
   --generate-hardware-config nixos-generate-config ./hardware.nix \
   --flake .<name of flake> \
-  --target-host root@<network addr>
+  --target-host nixos@<network addr>
 ```
 
 This approach should be possible on most linux distros, provided they have nix installed.

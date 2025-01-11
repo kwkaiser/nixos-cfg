@@ -1,24 +1,24 @@
+# systemd will mount an ext4 filesystem at / and zfs will mount the dataset underneath it
 { ... }: {
-
-  fileSystems."/zstorage".options = [ "noauto" ];
   disko.devices = {
     disk = {
-      nixos = {
-        device = "/dev/vda";
+      disk1 = {
         type = "disk";
+        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              type = "EF00";
               size = "500M";
+              type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
             };
-            root = {
+            primary = {
               size = "100%";
               content = {
                 type = "filesystem";
@@ -29,57 +29,41 @@
           };
         };
       };
-
-      y = {
+      disk2 = {
         type = "disk";
         device = "/dev/vdb";
         content = {
-          type = "gpt";
-          partitions = {
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "zstorage";
-              };
-            };
-          };
+          type = "zfs";
+          pool = "storage";
         };
       };
-      z = {
+      disk3 = {
         type = "disk";
         device = "/dev/vdc";
         content = {
-          type = "gpt";
-          partitions = {
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "zstorage";
-              };
-            };
-          };
+          type = "zfs";
+          pool = "storage";
         };
       };
     };
-
     zpool = {
-      zstorage = {
+      storage = {
         type = "zpool";
         mode = "mirror";
-        rootFsOptions = { compression = "zstd"; };
-
-        mountpoint = "/zstorage";
-
+        mountpoint = "/mnt/ironwolf";
         datasets = {
-          data = {
+          media = {
             type = "zfs_fs";
-            options.mountpoint = "/storage/data";
+            #options.mountpoint = "legacy";
+            options.mountpoint = "/mnt/ironwolf/media";
+          };
+          appdata = {
+            type = "zfs_fs";
+            #options.mountpoint = "legacy";
+            options.mountpoint = "/mnt/ironwolf/appdata";
           };
         };
       };
     };
-
   };
 }
