@@ -2,7 +2,7 @@
 { ... }: {
   disko.devices = {
     disk = {
-      disk1 = {
+      main = {
         type = "disk";
         device = "/dev/vda";
         content = {
@@ -26,41 +26,6 @@
                 mountpoint = "/";
               };
             };
-          };
-        };
-      };
-      disk2 = {
-        type = "disk";
-        device = "/dev/vdb";
-        content = {
-          type = "zfs";
-          pool = "storage";
-        };
-      };
-      disk3 = {
-        type = "disk";
-        device = "/dev/vdc";
-        content = {
-          type = "zfs";
-          pool = "storage";
-        };
-      };
-    };
-    zpool = {
-      storage = {
-        type = "zpool";
-        mode = "mirror";
-        mountpoint = "/mnt/ironwolf";
-        datasets = {
-          media = {
-            type = "zfs_fs";
-            #options.mountpoint = "legacy";
-            options.mountpoint = "/mnt/ironwolf/media";
-          };
-          appdata = {
-            type = "zfs_fs";
-            #options.mountpoint = "legacy";
-            options.mountpoint = "/mnt/ironwolf/appdata";
           };
         };
       };

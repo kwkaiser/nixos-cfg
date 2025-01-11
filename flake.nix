@@ -8,10 +8,10 @@
   };
 
   outputs = { self, nixpkgs, disko, ... }@inputs: {
-    nixosConfigurations.mainarray-vm = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 
-      modules = [ ./hosts/mainarray-vm disko.nixosModules.disko ];
+      modules = [ ./hosts/vm disko.nixosModules.disko ];
     };
   };
 }
