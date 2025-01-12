@@ -7,6 +7,7 @@
     ./net.nix
     # Modules
     ../../modules/os/common.nix
+    ../../modules/os/desktop.nix
     ../../modules/os/nix.nix
     ../../modules/os/tz.nix
     ../../modules/os/audio.nix

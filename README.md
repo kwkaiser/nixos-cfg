@@ -33,8 +33,16 @@ nix --experimental-features 'nix-command flakes' \
 
 This approach should be possible on most linux distros, provided they have nix installed.
 
+## Development
+
+To develop in the VM, we have a shared copy of this directory (`nixos-cfg`) directly mounted into the vm under `/mnt/nixos-cfg`. This dir is however read only, so I've been (lazily) rsync'ing it to the home directory to avoid errors caused by writing the lockfile via:
+
+- `watch -n3 'rsync -aP --exclude="data" /mnt/nixos-cfg/ ./nixos-cfg'`
+
+With this approach, it's relatively easy to make updates in the host, have them propagate to the VM, then rebuild.
+
 ## Rebuild
 
 To rebuild:
 
-- `sudo nixos-rebuild switch --flake github:kwkaiser/nixos-cfg#mainarray-vm --no-write-lock-file`
+- `sudo nixos-rebuild switch --flake github:kwkaiser/nixos-cfg#vm --no-write-lock-file`
