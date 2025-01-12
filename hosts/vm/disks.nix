@@ -1,5 +1,12 @@
 # systemd will mount an ext4 filesystem at / and zfs will mount the dataset underneath it
 { ... }: {
+
+  fileSystems."/mnt/nixos-cfg" = {
+    device = "shared-dir"; # The tag specified in the virt-install command
+    fsType = "9p";
+    options = [ "trans=virtio" "rw" ];
+  };
+
   disko.devices = {
     disk = {
       main = {
