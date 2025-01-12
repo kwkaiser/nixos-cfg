@@ -1,13 +1,14 @@
 #! /bin/bash
 
-mkdir -pv data/mainarray-vm
+mkdir -pv data/vm
 
 virt-install \
-  --name mainarray-vm \
+  --name vm \
   --memory 8192 \
   --vcpus 8 \
+  --filesystem source=/home/kwkaiser/desktop/nix,target=/nixos-cfg \
   --network network=default \
-  --disk path=data/mainarray-vm/dev1.qcow2,size=20,format=qcow2 \
+  --disk path=data/vm/dev1.qcow2,size=20,format=qcow2 \
   --cdrom data/isos/nixos-minimal.iso \
   --os-variant nixos-unstable \
   --graphics spice \
