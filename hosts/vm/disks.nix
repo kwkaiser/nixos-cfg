@@ -4,7 +4,7 @@
   fileSystems."/mnt/nixos-cfg" = {
     device = "shared-dir"; # The tag specified in the virt-install command
     fsType = "9p";
-    options = [ "trans=virtio" "rw" ];
+    options = [ "trans=virtio" "rw" "access=client" "msize=262144" ];
   };
 
   disko.devices = {
