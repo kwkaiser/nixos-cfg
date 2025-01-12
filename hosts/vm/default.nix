@@ -6,6 +6,7 @@
     ./hardware.nix
     ./net.nix
     # Modules
+    ../../modules/os/common.nix
     ../../modules/os/nix.nix
     ../../modules/os/tz.nix
     ../../modules/os/audio.nix
