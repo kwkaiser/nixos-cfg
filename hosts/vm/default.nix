@@ -13,4 +13,8 @@
     ../../modules/os/audio.nix
     ../../modules/os/users.nix
   ];
+
+  home-manager."kwkaiser" = {
+    users = { modules = [ ../../modules/home/shell.nix ]; };
+  };
 }

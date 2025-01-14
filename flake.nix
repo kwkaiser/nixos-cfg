@@ -3,15 +3,29 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    disko.url = "github:nix-community/disko/latest";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
-  outputs = { self, nixpkgs, disko, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, ... }@inputs: {
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 
-      modules = [ ./hosts/vm disko.nixosModules.disko ];
+      modules = [
+        disko.nixosModules.disko
+        home-manager.nixosModules.default
+        ./hosts/vm
+      ];
     };
+
+    homeManagerModules.default = ./modules/home;
   };
 }
