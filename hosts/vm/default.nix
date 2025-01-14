@@ -3,7 +3,7 @@
   imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ];
 
   # Config
-  tiling.enable = true;
+  desktop.tiling.enable = true;
   audio.pulse.enable = true;
 
   home-manager.users.kwkaiser = {
