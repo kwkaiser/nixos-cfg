@@ -15,7 +15,8 @@
     ../../modules/os/users.nix
   ];
 
-  tiling.enable = false;
+  tiling.enable = true;
+  audio.pulse.enable = true;
 
   home-manager.users.kwkaiser = {
     imports = [ ../../modules/home/shell.nix ];
