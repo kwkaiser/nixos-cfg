@@ -11,5 +11,5 @@
     home.stateVersion = "24.11"; # Match nixpkgs version
   };
 
-  home.shell.zsh = true;
+  bingus.shell.zsh = true;
 }
