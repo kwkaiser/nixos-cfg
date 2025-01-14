@@ -6,10 +6,11 @@
   desktop.tiling.enable = true;
   audio.pulse.enable = true;
 
-  home-manager.users.kwkaiser = {
-    imports = [ ../../modules/home ];
-    home.stateVersion = "24.11"; # Match nixpkgs version
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      modules = [ ./home.nix inputs.self.outputs.homeManagerModules.default ];
+    };
+    home.stateVersion = "24.11";
   };
-
-  bingus.shell.zsh = true;
 }
