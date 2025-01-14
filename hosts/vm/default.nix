@@ -1,19 +1,8 @@
 {
-  imports = [
-    # Host-specific
-    ./disks.nix
-    ./boot.nix
-    ./hardware.nix
-    ./net.nix
-    # Modules
-    ../../modules/os/common.nix
-    ../../modules/os/desktop/tiling.nix
-    ../../modules/os/audio/pulse.nix
-    ../../modules/os/nix.nix
-    ../../modules/os/tz.nix
-    ../../modules/os/users.nix
-  ];
+  # Host specific
+  imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ];
 
+  # Config
   tiling.enable = true;
   audio.pulse.enable = true;
 

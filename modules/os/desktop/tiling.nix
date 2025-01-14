@@ -1,7 +1,9 @@
 { pkgs, lib, config, ... }: {
-  options = { tiling.enable = lib.mkEnableOption "enables tiling desktop"; };
+  options = {
+    desktop.tiling.enable = lib.mkEnableOption "enables tiling desktop";
+  };
 
-  config = lib.mkIf config.tiling.enable {
+  config = lib.mkIf config.desktop.tiling.enable {
     environment.systemPackages = with pkgs; [
       waybar
       dunst
