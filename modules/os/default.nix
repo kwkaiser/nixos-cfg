@@ -6,6 +6,7 @@
     ./nix.nix
     ./tz.nix
     ./users.nix
+    ./home.nix
   ];
 }
 
