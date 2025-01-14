@@ -1,4 +1,11 @@
 { config, pkgs, lib, ... }: {
-  home.packages = [ pkgs.zsh ];
-  programs.zsh.enable = true;
+  options = {
+    home.shell.zsh = lib.mkEnableOption "should use zsh as home shell";
+  };
+
+  config = lib.mkIf config.home.shell.zsh.enable {
+    home.packages = [ pkgs.zsh ];
+    programs.zsh.enable = true;
+  };
+
 }

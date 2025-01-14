@@ -1,4 +1,4 @@
-{
+{ ... }: {
   imports = [
     ./audio/pulse.nix
     ./desktop/tiling.nix
