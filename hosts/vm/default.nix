@@ -14,7 +14,8 @@
     ../../modules/os/users.nix
   ];
 
-  home-manager."kwkaiser" = {
-    users = { modules = [ ../../modules/home/shell.nix ]; };
+  home-manager.users.kwkaiser = {
+    imports = [ ../../modules/home/shell.nix ];
+    home.stateVersion = "24.11"; # Match nixpkgs version
   };
 }
