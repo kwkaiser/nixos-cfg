@@ -1,4 +1,4 @@
-{ config, pkgs, lib, config, ... }: {
+{ config, pkgs, lib, ... }: {
   options = { audio.pulse.enable = lib.mkEnableOption "enables pulse audio"; };
 
   config = lib.mkIf config.audio.pulse.enable {

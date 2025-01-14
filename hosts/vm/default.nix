@@ -11,7 +11,6 @@
     ../../modules/os/audio/pulse.nix
     ../../modules/os/nix.nix
     ../../modules/os/tz.nix
-    ../../modules/os/audio.nix
     ../../modules/os/users.nix
   ];
 
