@@ -1,2 +1,2 @@
-{ imports = [ ./shell.nix ./desktop/tiling.nix ]; }
+{ imports = [ ./shell.nix ]; }
 
