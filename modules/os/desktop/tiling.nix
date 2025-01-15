@@ -21,5 +21,6 @@
       withUWSM = true;
       xwayland.enable = true;
     };
+
   };
 }
