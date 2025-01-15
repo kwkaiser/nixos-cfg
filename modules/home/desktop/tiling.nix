@@ -5,6 +5,6 @@
 
   config = lib.mkIf config.desktop.tiling.enable {
     home.file.".config/hypr/hyprland.conf".source =
-      "../../../../dotfiles/hyprland.conf";
+      config.lib.file.mkOutOfStoreSymlink ../../../dotfiles/hyprland.conf;
   };
 }

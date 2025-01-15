@@ -10,5 +10,6 @@
   home.sessionVariables = { EDITOR = "vim"; };
 
   programs.home-manager.enable = true;
+  desktop.tiling.enable = true;
 
 }
