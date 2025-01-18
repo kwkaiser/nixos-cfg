@@ -2,7 +2,7 @@
   options = { audio.pulse.enable = lib.mkEnableOption "enables pulse audio"; };
 
   config = lib.mkIf config.audio.pulse.enable {
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
