@@ -12,9 +12,11 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, hyprland, ... }@inputs: {
     nixosConfigurations.vm = let system = "x86_64-linux";
     in nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs system; };
