@@ -16,10 +16,6 @@
     xdg.portal.enable = true;
     xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
 
-    programs.hyprland = {
-      enable = true;
-      withUWSM = true;
-      xwayland.enable = true;
-    };
+    programs.hyprland.enable = true;
   };
 }
