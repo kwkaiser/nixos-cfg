@@ -4,7 +4,7 @@
 
   # Config
   audio.pulse.enable = true;
-  # desktop.tiling.enable = true;
+  desktop.tiling.enable = true;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs system; };
