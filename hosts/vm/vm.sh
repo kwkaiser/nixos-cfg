@@ -15,5 +15,6 @@ virt-install \
   --disk path=data/vm/dev3.qcow2,size=5,format=qcow2 \
   --cdrom data/isos/nixos-minimal.iso \
   --os-variant nixos-unstable \
+  --video virtio \
   --graphics spice \
   --boot uefi,cdrom,hd 
