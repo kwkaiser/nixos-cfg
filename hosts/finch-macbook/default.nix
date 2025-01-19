@@ -1,10 +1,4 @@
-{ inputs, system, lib, archi, ... }:
-let
-  commonArgs = {
-    primaryUser = "kwkaiser";
-    homeDir = "/Users/kwkaiser";
-  };
-in {
+{ inputs, system, lib, archi, commonArgs, ... }: {
   nixpkgs.hostPlatform = lib.mkDefault archi;
   system.stateVersion = 5;
 
@@ -16,4 +10,6 @@ in {
 
   # Pass common args to home manager modules
   home-manager.extraSpecialArgs = { inherit inputs archi commonArgs; };
+
+  foo.alacritty.enabled = true;
 }
