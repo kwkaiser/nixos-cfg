@@ -39,7 +39,11 @@
       darwinConfigurations."finch-macbook" = let archi = "aarch64-darwin";
       in nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs archi; };
-        modules = [ ./hosts/finch-macbook ];
+        modules = [
+          home-manager.darwinModules.default
+          ./hosts/finch-macbook
+          ./modules/mix
+        ];
       };
 
       homeManagerModules.default = ./modules/home;

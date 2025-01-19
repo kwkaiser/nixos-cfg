@@ -8,6 +8,4 @@
   home.file = { };
 
   home.sessionVariables = { EDITOR = "vim"; };
-
-  programs.home-manager.enable = true;
 }
