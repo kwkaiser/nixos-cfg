@@ -24,9 +24,9 @@
 
   outputs =
     { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, ... }@inputs: {
-      nixosConfigurations.vm = let system = "x86_64-linux";
+      nixosConfigurations.vm = let archi = "x86_64-linux";
       in nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs system; };
+        specialArgs = { inherit inputs archi; };
 
         modules = [
           disko.nixosModules.disko
@@ -36,15 +36,9 @@
         ];
       };
 
-      darwinConfigurations."finch-macbook" = let system = "aarch64-darwin";
+      darwinConfigurations."finch-macbook" = let archi = "aarch64-darwin";
       in nix-darwin.lib.darwinSystem {
-        specialArgs = {
-          inherit inputs system;
-          nixpkgs = {
-            inherit system;
-            hostPlatform = system;
-          };
-        };
+        specialArgs = { inherit inputs archi; };
         modules = [ ./hosts/finch-macbook ];
       };
 
