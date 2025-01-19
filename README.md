@@ -45,4 +45,8 @@ With this approach, it's relatively easy to make updates in the host, have them 
 
 To rebuild:
 
-- `sudo nixos-rebuild switch --flake github:kwkaiser/nixos-cfg#vm --no-write-lock-file`
+- `nixos-rebuild switch --flake .#host` to rebuild locally
+- `nixos-rebuild switch --flake github:kwkaiser/nixos-cfg#host` to rebuild from git
+- `nix run nix-darwin -- switch --flake .#host` to rebuild on darwin
+
+You may need to include `--no-write-lock-file` depending on the env
