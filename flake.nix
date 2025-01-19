@@ -37,11 +37,7 @@
 
       darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs; };
-        modules = [
-          home-manager.darwinModules.default
-          ./hosts/finch-macbook
-          ./modules
-        ];
+        modules = [ ./hosts/finch-macbook.nix ./modules ];
       };
 
       homeManagerModules.default = ./modules/home;
