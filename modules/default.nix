@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, archi, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
   # Other modules
   imports = [ ./shell ];
 
