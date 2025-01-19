@@ -5,8 +5,6 @@
   };
 
   config = lib.mkIf config.mine.shell.zsh.enabled {
-    # Home config
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
-
 }
