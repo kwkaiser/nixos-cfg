@@ -1,11 +1,10 @@
 { config, pkgs, ... }: {
-
-  home.shell = pkgs.zsh;
-
   programs.zsh = {
     enable = true;
-    ohMyZsh.enable = true;
-    plugins = [ "git" "zsh-autosuggestions" ];
-    theme = "robbyrussell";
+    enableCompletion = true;
+    oh-my-zsh = {
+      enable = true;
+      theme = "robbyrussell";
+    };
   };
 }
