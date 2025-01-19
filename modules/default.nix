@@ -1,14 +1,13 @@
 { pkgs, config, lib, inputs, ... }: {
-  # Other modules
-  imports = [ ./shell ];
+  imports = [ ./shell ./tz.nix ./nix.nix ];
 
   options = {
-    bingus.username = lib.mkOption {
+    mine.username = lib.mkOption {
       type = lib.types.str;
       description = "Username for the primary user";
     };
 
-    bingus.homeDir = lib.mkOption {
+    mine.homeDir = lib.mkOption {
       type = lib.types.str;
       description = "Home directory for the primary user";
     };
