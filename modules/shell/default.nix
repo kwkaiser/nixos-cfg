@@ -9,9 +9,7 @@
     environment.systemPackages = with pkgs; [ alacritty ];
 
     # Home config
-    home-manager.users.${config.bingus.username} = {
-      imports = [ ./home.nix ];
-    };
+    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 
 }

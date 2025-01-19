@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, ... }: {
-  imports = [ ./shell ./tz.nix ./nix.nix ];
+  imports = [ ./shell ./nix.nix ];
 
   options = {
     mine.username = lib.mkOption {
@@ -14,12 +14,12 @@
   };
 
   config = {
-    users.users.${config.bingus.username} = {
-      home = builtins.toPath "${config.bingus.homeDir}";
+    users.users.${config.mine.username} = {
+      home = builtins.toPath "${config.mine.homeDir}";
       description = "Primary user";
     };
 
     # HM only modules
-    home-manager.users.${config.bingus.username} = { imports = [ ./hm.nix ]; };
+    home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
   };
 }
