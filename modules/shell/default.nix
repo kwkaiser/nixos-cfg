@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, archi, ... }: {
+{ pkgs, config, lib, inputs, archi, commonArgs, ... }: {
   options = {
     foo.alacritty.enabled =
       lib.mkEnableOption "whether or not to use zsh shell";
@@ -9,9 +9,8 @@
     environment.systemPackages = with pkgs; [ alacritty ];
 
     # Home config
-    home-manager = {
-      extraSpecialArgs = { inherit inputs archi; };
-      users = { "kwkaiser" = { imports = [ ./home.nix ]; }; };
+    home-manager.users.${commonArgs.primaryUser} = {
+      imports = [ ./home.nix ];
     };
   };
 

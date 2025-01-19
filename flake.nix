@@ -42,7 +42,7 @@
         modules = [
           home-manager.darwinModules.default
           ./hosts/finch-macbook
-          ./modules/mix
+          ./modules
         ];
       };
 
