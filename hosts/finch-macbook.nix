@@ -4,4 +4,5 @@
 
   mine.username = "kwkaiser";
   mine.homeDir = "/Users/kwkaiser";
+  mine.shell.zsh.enabled = true;
 }
