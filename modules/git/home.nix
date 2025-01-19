@@ -1,7 +1,7 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, bonus, ... }: {
   programs.git = {
     enable = true;
-    userName = config.mine.email;
+    userName = bonus.mine.email;
     aliases = {
       co = "checkout";
       pl = "pull";

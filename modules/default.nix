@@ -26,7 +26,10 @@
 
     # HM only modules
 
-    home-manager.extraSpecialArgs = { inherit inputs; };
+    home-manager.extraSpecialArgs = {
+      inherit inputs;
+      bonus = config;
+    };
     home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
   };
 }
