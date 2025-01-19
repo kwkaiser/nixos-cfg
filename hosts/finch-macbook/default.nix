@@ -1,5 +1,5 @@
-{ inputs, system, lib, archi, ... }: {
-  nixpkgs.hostPlatform = lib.mkDefault archi;
+{ inputs, system, lib, ... }: {
+  nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
   system.stateVersion = 5;
 
   bingus.username = "kwkaiser";

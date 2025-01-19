@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, archi, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
   options = {
     foo.alacritty.enabled =
       lib.mkEnableOption "whether or not to use zsh shell";
