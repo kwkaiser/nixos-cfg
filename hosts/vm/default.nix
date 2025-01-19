@@ -1,4 +1,4 @@
-{ inputs, system, ... }: {
+{ inputs, archi, ... }: {
   # Host specific
   imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ];
 
@@ -7,7 +7,7 @@
   desktop.tiling.enable = true;
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs system; };
+    extraSpecialArgs = { inherit inputs archi; };
     users = {
       "kwkaiser" = {
         imports = [ ./home.nix inputs.self.outputs.homeManagerModules.default ];

@@ -1,4 +1,4 @@
-{ inputs, system, lib, ... }: {
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
+{ inputs, system, lib, archi, ... }: {
+  nixpkgs.hostPlatform = lib.mkDefault archi;
   system.stateVersion = 5;
 }
