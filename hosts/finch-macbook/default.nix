@@ -4,7 +4,7 @@
 
   # Define user
   users.users.${commonArgs.primaryUser} = {
-    home = "${commonArgs.primaryUser}";
+    home = builtins.toPath "${commonArgs.homeDir}";
     description = "Primary user";
   };
 
