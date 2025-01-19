@@ -13,4 +13,6 @@
   };
 
   imports = [ ./shell ];
+
+  foo.alacritty.enabled = true;
 }
