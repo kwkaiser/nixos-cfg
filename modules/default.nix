@@ -20,6 +20,7 @@
     };
 
     # HM only modules
+
     home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
   };
 }
