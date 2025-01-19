@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, ... }: {
-  imports = [ ./shell ./nix.nix ];
+  imports = [ ./shell ./nix.nix ./git ];
 
   options = {
     mine.username = lib.mkOption {
@@ -10,6 +10,11 @@
     mine.homeDir = lib.mkOption {
       type = lib.types.str;
       description = "Home directory for the primary user";
+    };
+
+    mine.email = lib.mkOption {
+      type = lib.types.str;
+      description = "Default email associated with that user";
     };
   };
 
