@@ -36,9 +36,14 @@
         ];
       };
 
-      darwinConfigurations."finch-macbook" = let archi = "aarch64-darwin";
+      darwinConfigurations."finch-macbook" = let
+        archi = "aarch64-darwin";
+        commonArgs = {
+          primaryUser = "kwkaiser";
+          homeDir = "/Users/kwkaiser";
+        };
       in nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs archi; };
+        specialArgs = { inherit inputs archi commonArgs; };
         modules = [
           home-manager.darwinModules.default
           ./hosts/finch-macbook
