@@ -28,7 +28,7 @@
 
     home-manager.extraSpecialArgs = {
       inherit inputs;
-      bonus = config;
+      bconfig = config;
     };
     home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
   };
