@@ -21,6 +21,7 @@
   config = {
     users.users.${config.mine.username} = {
       home = builtins.toPath "${config.mine.homeDir}";
+      isNormalUser = true;
       description = "Primary user";
     };
 

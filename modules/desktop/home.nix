@@ -1,7 +1,4 @@
 { pkgs, lib, config, inputs, home, ... }: {
-
-  home.packages = with pkgs; [ kitty wl-clipboard ];
-
   wayland.windowManager.hyprland.enable = true;
 
   wayland.windowManager.hyprland.settings = {
