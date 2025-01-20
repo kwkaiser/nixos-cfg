@@ -25,7 +25,10 @@
   outputs =
     { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, ... }@inputs: {
       nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = {
+          inherit inputs;
+          isDarwin = false;
+        };
 
         modules = [
           disko.nixosModules.disko
@@ -37,7 +40,10 @@
       };
 
       darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = {
+          inherit inputs;
+          isDarwin = true;
+        };
         modules = [
           home-manager.darwinModules.default
           ./hosts/finch-macbook.nix
