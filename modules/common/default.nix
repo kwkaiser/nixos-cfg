@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, foo, ... }: {
-  imports = [ ./shell ./nix.nix ./git ./user ];
+  imports = [ ./shell ./nix.nix ./git ./user.nix ];
 
   # HM only modules
   home-manager.extraSpecialArgs = {
