@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, ... }: {
-  imports = [ ./shell ./nix.nix ./git ];
+  imports = [ ./shell ./nix.nix ./git ./desktop ];
 
   options = {
     mine.username = lib.mkOption {

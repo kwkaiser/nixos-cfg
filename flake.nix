@@ -30,8 +30,8 @@
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.default
-          ./modules/os
           ./hosts/vm
+          ./modules
         ];
       };
 

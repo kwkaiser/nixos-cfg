@@ -1,17 +1,11 @@
-{ inputs, ... }: {
-  # Host specific
+{ inputs, lib, ... }: {
   imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ];
 
-  # Config
-  audio.pulse.enable = true;
-  desktop.tiling.enable = true;
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  system.stateVersion = 5;
 
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    users = {
-      "kwkaiser" = {
-        imports = [ ./home.nix inputs.self.outputs.homeManagerModules.default ];
-      };
-    };
-  };
+  mine.username = "kwkaiser";
+  mine.homeDir = "/Users/kwkaiser";
+  mine.email = "karl@kwkaiser.io";
+  mine.desktop.tiling.enable = true;
 }
