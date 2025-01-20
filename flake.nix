@@ -42,6 +42,7 @@
           home-manager.darwinModules.default
           ./hosts/finch-macbook.nix
           ./modules/common
+          ./modules/darwin
         ];
       };
     };
