@@ -10,5 +10,15 @@
       rbx = "rebase -X ours";
       br = "branch";
     };
-  };
+
+  } // (if bconfig.mine.git.signsCommits then {
+    extraConfig = {
+      commit.gpgsign = true;
+      gpg.format = "ssh";
+      user.defaultKeyCommand =
+        "sh -c 'ssh-add -L | grep -i AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm'";
+    };
+  } else
+    { });
+
 }
