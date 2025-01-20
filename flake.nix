@@ -31,7 +31,8 @@
           disko.nixosModules.disko
           home-manager.nixosModules.default
           ./hosts/vm
-          ./modules
+          ./modules/common
+          ./modules/nixos
         ];
       };
 
@@ -43,10 +44,8 @@
         modules = [
           home-manager.darwinModules.default
           ./hosts/finch-macbook.nix
-          ./modules
+          ./modules/common
         ];
       };
-
-      homeManagerModules.default = ./modules/home;
     };
 }
