@@ -8,4 +8,5 @@
   mine.homeDir = "/home/kwkaiser";
   mine.email = "karl@kwkaiser.io";
   mine.desktop.tiling.enable = true;
+  mine.shell.zsh.enable = true;
 }
