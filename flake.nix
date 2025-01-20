@@ -38,7 +38,7 @@
       darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
-          isDarwin = true;
+          foo = true;
         };
         modules = [
           home-manager.darwinModules.default
