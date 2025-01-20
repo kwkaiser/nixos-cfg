@@ -1,35 +1,10 @@
 { pkgs, config, lib, inputs, foo, ... }: {
-  imports = [ ./shell ./nix.nix ./git ];
+  imports = [ ./shell ./nix.nix ./git ./user ];
 
-  options = {
-    mine.username = lib.mkOption {
-      type = lib.types.str;
-      description = "Username for the primary user";
-    };
-
-    mine.homeDir = lib.mkOption {
-      type = lib.types.str;
-      description = "Home directory for the primary user";
-    };
-
-    mine.email = lib.mkOption {
-      type = lib.types.str;
-      description = "Default email associated with that user";
-    };
+  # HM only modules
+  home-manager.extraSpecialArgs = {
+    inherit inputs;
+    bconfig = config;
   };
-
-  config = {
-    # Conditionally include isNormalUser if not in darwin
-    users.users.${config.mine.username} = {
-      home = builtins.toPath "${config.mine.homeDir}";
-      description = "Primary user";
-    } // (if pkgs.stdenv.isDarwin then { } else { isNormalUser = true; });
-
-    # HM only modules
-    home-manager.extraSpecialArgs = {
-      inherit inputs;
-      bconfig = config;
-    };
-    home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
-  };
+  home-manager.users.${config.mine.username} = { imports = [ ./hm.nix ]; };
 }
