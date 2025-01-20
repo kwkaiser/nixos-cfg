@@ -1,1 +1,3 @@
-{ pkgs, config, lib, inputs, ... }: { imports = [ ./desktop ]; }
+{ pkgs, config, lib, inputs, isDarwin, ... }: {
+  imports = (if isDarwin then [ ./darwin ] else [ ./nixos ]);
+}
