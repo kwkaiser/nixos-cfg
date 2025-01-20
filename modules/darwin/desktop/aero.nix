@@ -17,6 +17,10 @@
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
         cmd-shift-l = "move right";
+        cmd-shift-f = "layout floating tiling";
+        cmd-shift-b = "layout tiling";
+        cmd-slash = "layout v_tiles";
+        cmd-backslash = "layout h_tiles";
         cmd-1 = "workspace 1";
         cmd-2 = "workspace 2";
         cmd-3 = "workspace 3";
@@ -38,5 +42,6 @@
         cmd-shift-9 = "move-node-to-workspace 9";
       };
     };
+
   };
 }
