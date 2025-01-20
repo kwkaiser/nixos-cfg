@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, foo, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
   imports = [ ./shell ./nix.nix ./git ./user.nix ];
 
   # HM only modules

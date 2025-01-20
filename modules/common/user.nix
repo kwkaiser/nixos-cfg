@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, foo, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
   options = {
     mine.username = lib.mkOption {
       type = lib.types.str;

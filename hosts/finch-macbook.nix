@@ -5,4 +5,5 @@
   mine.username = "kwkaiser";
   mine.homeDir = "/Users/kwkaiser";
   mine.email = "karl@kwkaiser.io";
+  mine.desktop.tiling = true;
 }
