@@ -1,8 +1,7 @@
-{ pkgs, config, lib, inputs, ... }:
-let isDarwin = pkgs.stdenv.isDarwin;
-in {
+{ pkgs, config, lib, inputs, isDarwin ? false, ... }: {
   # Exclude certain modules
-  imports = [ ./shell ./nix.nix ./git ./desktop ];
+  imports = [ ./shell ./nix.nix ./git ]
+    ++ (if isDarwin then [ ] else [ ./desktop ]);
 
   options = {
     mine.username = lib.mkOption {
