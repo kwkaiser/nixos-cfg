@@ -1,4 +1,7 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, ... }:
+let isDarwin = pkgs.stdenv.isDarwin;
+in {
+  # Exclude certain modules
   imports = [ ./shell ./nix.nix ./git ./desktop ];
 
   options = {
@@ -19,14 +22,13 @@
   };
 
   config = {
+    # Conditionally include isNormalUser if not in darwin
     users.users.${config.mine.username} = {
       home = builtins.toPath "${config.mine.homeDir}";
-      isNormalUser = true;
       description = "Primary user";
-    };
+    } // (if isDarwin then { } else { isNormalUser = true; });
 
     # HM only modules
-
     home-manager.extraSpecialArgs = {
       inherit inputs;
       bconfig = config;
