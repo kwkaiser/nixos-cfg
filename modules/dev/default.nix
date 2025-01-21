@@ -1,1 +1,1 @@
-{ pkgs, config, lib, inputs, ... }: { includes = [ ./node ]; }
+{ pkgs, config, lib, inputs, ... }: { imports = [ ./node ]; }
