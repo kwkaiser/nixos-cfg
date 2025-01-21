@@ -12,6 +12,7 @@
     };
     extraConfig = {
       push.default = "current";
+      push.autoSetupRemote = true;
       pull.default = "current";
     };
 
