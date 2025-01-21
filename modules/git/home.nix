@@ -10,6 +10,10 @@
       rbx = "rebase -X ours";
       br = "branch";
     };
+    extraConfig = {
+      push.default = "current";
+      pull.default = "current";
+    };
 
   } // (if bconfig.mine.git.signsCommits then {
     extraConfig = {
