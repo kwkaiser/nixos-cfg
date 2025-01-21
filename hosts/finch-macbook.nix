@@ -7,4 +7,5 @@
   mine.email = "karl@kwkaiser.io";
   mine.desktop.tiling.enable = true;
   mine.git.signsCommits = true;
+  mine.dev.node.enable = true;
 }
