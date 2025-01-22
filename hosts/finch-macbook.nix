@@ -8,4 +8,5 @@
   mine.desktop.tiling.enable = true;
   mine.git.signsCommits = true;
   mine.dev.node.enable = true;
+  mine.dev.editor.neovim.enable = true;
 }
