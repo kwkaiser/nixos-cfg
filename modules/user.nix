@@ -14,13 +14,25 @@
       type = lib.types.str;
       description = "Default email associated with that user";
     };
+
+    mine.primarySshKey = lib.mkOption {
+      type = lib.types.str;
+      description = "Default SSH associated with that user";
+    };
   };
 
   config = {
-    # Conditionally include isNormalUser if not in darwin
+    # Conditionally include user properties if not on darwin
     users.users.${config.mine.username} = {
       home = builtins.toPath "${config.mine.homeDir}";
       description = "Primary user";
-    } // (if pkgs.stdenv.isDarwin then { } else { isNormalUser = true; });
+      openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
+    } // (if pkgs.stdenv.isDarwin then
+      { }
+    else {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "networkmanager" ];
+      initialPassword = "bingus";
+    });
   };
 }
