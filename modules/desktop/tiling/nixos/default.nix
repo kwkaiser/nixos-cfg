@@ -4,16 +4,6 @@
   };
 
   config = lib.mkIf config.mine.desktop.tiling.enable {
-    # System config
-    environment.systemPackages = with pkgs; [
-      waybar
-      dunst
-      libnotify
-      swww
-      kitty
-      rofi-wayland
-    ];
-
     xdg.portal.enable = true;
     xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
 
