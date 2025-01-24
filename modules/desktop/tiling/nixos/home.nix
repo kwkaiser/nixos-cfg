@@ -1,13 +1,23 @@
-{ pkgs, lib, config, inputs, home, ... }: {
+{ pkgs, lib, config, inputs, home, bconfig, ... }: {
 
-  home.packages = with pkgs; [ kitty gtk3 ];
+  home.packages = with pkgs; [ kitty gtk3 xorg.xrandr ];
 
   wayland.windowManager.hyprland.enable = true;
   services.dunst.enable = true;
   services.hyprpaper.enable = true;
-  programs.waybar.enable = true;
   programs.rofi.enable = true;
 
+  programs.waybar = {
+    enable = true;
+    settings = {
+      mainBar = {
+        output = [ bconfig.mine.desktop.tiling.monitor ];
+        layer = "top";
+        position = "top";
+        height = 30;
+      };
+    };
+  };
   home.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
@@ -27,6 +37,10 @@
       "$mod, l, movefocus, r"
       "$mod, j, movefocus, d"
       "$mod, k, movefocus, u"
+      "$mod SHIFT, h, movewindow, l"
+      "$mod SHIFT, l, movewindow, r"
+      "$mod SHIFT, j, movewindow, d"
+      "$mod SHIFT, k, movewindow, u"
 
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
