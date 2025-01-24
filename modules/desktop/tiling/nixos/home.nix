@@ -2,6 +2,14 @@
 
   home.packages = with pkgs; [ kitty gtk3 xorg.xrandr ];
 
+  colorScheme = nix-colors.colorSchemes.dracula;
+
+  # TODO: get nix colors working
+  # programs.kitty.settings = {
+  #   foreground = "#${config.colorScheme.palette.base05}";
+  #   background = "#${config.colorScheme.palette.base00}";
+  # };
+
   wayland.windowManager.hyprland.enable = true;
   services.dunst.enable = true;
   services.hyprpaper.enable = true;
@@ -10,11 +18,39 @@
   programs.waybar = {
     enable = true;
     settings = {
-      mainBar = {
+      topBar = {
         output = [ bconfig.mine.desktop.tiling.monitor ];
         layer = "top";
         position = "top";
         height = 30;
+
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [ "hyprland/window" ];
+        "hyprland/workspaces" = { on-click = "activate"; };
+      };
+      bottomBar = {
+        output = [ bconfig.mine.desktop.tiling.monitor ];
+        layer = "top";
+        position = "bottom";
+        height = 30;
+
+        modules-left = [ "cpu" ];
+        modules-center = [ "clock" ];
+        modules-right = [ "memory" ];
+
+        cpu = {
+          interval = 10;
+          format = " {}%";
+        };
+        clock = {
+          interval = 1;
+          format = "{:%H:%M:%S}";
+        };
+        memory = {
+          interval = 30;
+          format = "{}%";
+          max-length = 10;
+        };
       };
     };
   };
@@ -25,6 +61,7 @@
   };
 
   wayland.windowManager.hyprland.settings = {
+    exec-once = "waybar";
     "$mod" = "SUPER";
     "$terminal" = "kitty";
 
