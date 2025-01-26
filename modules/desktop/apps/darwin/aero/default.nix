@@ -1,10 +1,10 @@
 { pkgs, config, lib, inputs, ... }: {
   options = {
-    mine.desktop.tiling.enable =
+    mine.desktop.apps.aero.enable =
       lib.mkEnableOption "Whether or not to use aerospace shell";
   };
 
-  config = lib.mkIf config.mine.desktop.tiling.enable {
+  config = lib.mkIf config.mine.desktop.apps.aero.enable {
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
     services.aerospace.settings = {
