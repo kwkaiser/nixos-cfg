@@ -1,5 +1,16 @@
 { pkgs, config, lib, inputs, ... }: {
   imports = [ ./shell ./nix.nix ./git ./user.nix ./desktop ./dev ./editor ];
+  imports = (if isDarwin then [
+    ./darwin
+    ./common
+    ./nix.nix
+    ./user.nix
+  ] else [
+    ./nixos
+    ./common
+    ./nix.nix
+    ./user.nix
+  ]);
 
   # HM only modules
   home-manager.extraSpecialArgs = {
