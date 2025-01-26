@@ -24,8 +24,8 @@
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs =
-    { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, hyprland, nix-darwin
+    , nix-colors, ... }@inputs: {
       nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
