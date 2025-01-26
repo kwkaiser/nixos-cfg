@@ -14,6 +14,7 @@
   mine.desktop.apps.waybar.enable = true;
   # TODO: find a way to reduce duplication around this
   mine.desktop.apps.waybar.monitor = "Virtual-1";
+  mine.desktop.apps.kitty.enable = true;
 
   mine.shell.zsh.enable = true;
 }
