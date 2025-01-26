@@ -1,2 +1,4 @@
-{ pkgs, lib, config, ... }: { imports = [ ./common ]; }
+{ pkgs, config, lib, inputs, isDarwin, ... }: {
+  imports = (if isDarwin then [ ./darwin ./common ] else [ ./nixos ./common ]);
+}
 
