@@ -1,2 +1,5 @@
-{ pkgs, config, lib, inputs, ... }: { imports = [ ./hyprland ./waybar ]; }
+{ pkgs, config, lib, inputs, ... }: {
+
+  imports = [ ./hyprland ./waybar ];
+}
 
