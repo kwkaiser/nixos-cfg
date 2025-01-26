@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, isDarwin, ... }: {
   imports = (if isDarwin then [
     ./darwin
     ./common

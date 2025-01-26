@@ -3,7 +3,7 @@
     enable = true;
     settings = {
       topBar = {
-        output = [ bconfig.mine.desktop.apps.waybar.monitor ];
+        output = [ bconfig.mine.waybar.monitor ];
         layer = "top";
         position = "top";
         height = 30;
@@ -12,7 +12,7 @@
         "hyprland/workspaces" = { on-click = "activate"; };
       };
       bottomBar = {
-        output = [ bconfig.mine.desktop.apps.waybar.monitor ];
+        output = [ bconfig.mine.waybar.monitor ];
         layer = "top";
         position = "bottom";
         height = 30;
