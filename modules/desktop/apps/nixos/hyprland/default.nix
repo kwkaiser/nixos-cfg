@@ -14,7 +14,7 @@
     programs.hyprland.enable = true;
 
     # Home manager config
-    home-manager.users.${config.mine.username} = { imports = [ ./home ]; };
+    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 }
 
