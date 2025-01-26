@@ -1,10 +1,9 @@
 { pkgs, lib, config, ... }: {
 
   options = {
-    mine.desktop.apps.waybar.enable =
-      lib.mkEnableOption "Enables waybar as a statusbar";
+    mine.waybar.enable = lib.mkEnableOption "Enables waybar as a statusbar";
 
-    mine.desktop.apps.waybar.monitor = lib.mkOption {
+    mine.waybar.monitor = lib.mkOption {
       type = lib.types.str;
       description = "Primary monitor";
     };
