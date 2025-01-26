@@ -12,8 +12,8 @@
 
   mine.desktop.apps.hyprland.enable = true;
   mine.desktop.apps.waybar.enable = true;
+  # TODO: find a way to reduce duplication around this
+  mine.desktop.apps.waybar.monitor = "Virtual-1";
 
-  # TODO edit
-  mine.desktop.tiling.monitor = "Virtual-1";
   mine.shell.zsh.enable = true;
 }
