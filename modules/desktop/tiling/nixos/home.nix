@@ -2,14 +2,6 @@
 
   home.packages = with pkgs; [ kitty gtk3 xorg.xrandr ];
 
-  colorScheme = nix-colors.colorSchemes.dracula;
-
-  # TODO: get nix colors working
-  # programs.kitty.settings = {
-  #   foreground = "#${config.colorScheme.palette.base05}";
-  #   background = "#${config.colorScheme.palette.base00}";
-  # };
-
   wayland.windowManager.hyprland.enable = true;
   services.dunst.enable = true;
   services.hyprpaper.enable = true;
@@ -24,8 +16,7 @@
         position = "top";
         height = 30;
 
-        modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "hyprland/window" ];
+        modules-center = [ "hyprland/workspaces" ];
         "hyprland/workspaces" = { on-click = "activate"; };
       };
       bottomBar = {
