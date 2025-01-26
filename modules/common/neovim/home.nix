@@ -1,1 +1,6 @@
-{ config, pkgs, bconfig, ... }: { programs.neovim.enable = true; }
+{ config, pkgs, bconfig, ... }: {
+  programs.neovim = {
+    enable = true;
+    vimAlias = true;
+  };
+}
