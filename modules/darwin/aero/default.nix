@@ -4,7 +4,7 @@
       lib.mkEnableOption "Whether or not to use aerospace shell";
   };
 
-  config = lib.mkIf config.aero.enable {
+  config = lib.mkIf config.mine.aero.enable {
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
     services.aerospace.settings = {
