@@ -5,8 +5,9 @@
   mine.username = "kwkaiser";
   mine.homeDir = "/Users/kwkaiser";
   mine.email = "karl@kwkaiser.io";
-  mine.desktop.tiling.enable = true;
+
+  mine.aero.enable = true;
   mine.git.signsCommits = true;
-  mine.dev.node.enable = true;
-  mine.dev.editor.neovim.enable = true;
+  mine.node.enable = true;
+  mine.neovim.enable = true;
 }
