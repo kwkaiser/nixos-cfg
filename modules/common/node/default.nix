@@ -1,10 +1,10 @@
 { pkgs, config, lib, inputs, ... }: {
   options = {
-    mine.dev.node.enable =
+    mine.node.enable =
       lib.mkEnableOption "Whether to enable a node environment";
   };
 
-  config = lib.mkIf config.mine.dev.node.enable {
+  config = lib.mkIf config.mine.node.enable {
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 }
