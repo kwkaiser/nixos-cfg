@@ -1,5 +1,4 @@
 { pkgs, config, lib, inputs, ... }: {
-  imports = [ ./shell ./nix.nix ./git ./user.nix ./desktop ./dev ./editor ];
   imports = (if isDarwin then [
     ./darwin
     ./common
