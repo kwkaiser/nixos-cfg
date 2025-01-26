@@ -1,1 +1,1 @@
-{ pkgs, config, lib, inputs, ... }: { imports = [ ./tiling ]; }
+{ pkgs, config, lib, inputs, ... }: { imports = [ ./tiling ./apps ]; }
