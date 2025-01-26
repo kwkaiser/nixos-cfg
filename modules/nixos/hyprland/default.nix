@@ -5,11 +5,9 @@
 
   };
 
-  config = lib.mkIf config.hyprland.enable {
-
+  config = lib.mkIf config.mine.hyprland.enable {
     xdg.portal.enable = true;
     xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
-
     programs.hyprland.enable = true;
 
     # Home manager config

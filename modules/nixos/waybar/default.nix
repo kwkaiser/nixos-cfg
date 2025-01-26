@@ -9,7 +9,7 @@
     };
   };
 
-  config = lib.mkIf config.waybar.enable {
+  config = lib.mkIf config.mine.waybar.enable {
     # Home manager config
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
