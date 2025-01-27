@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, ... }: {
 
-  imports = [ ./hyprland ./waybar ];
+  imports = [ ./hyprland ./waybar ./rofi ];
 }
 

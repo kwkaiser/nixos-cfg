@@ -2,7 +2,6 @@
 
   options = {
     mine.rofi.enable = lib.mkEnableOption "Enables hyprland desktop";
-
   };
 
   config = lib.mkIf config.mine.rofi.enable {

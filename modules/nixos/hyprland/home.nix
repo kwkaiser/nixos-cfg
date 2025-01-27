@@ -3,7 +3,6 @@
   wayland.windowManager.hyprland.enable = true;
   services.dunst.enable = true;
   services.hyprpaper.enable = true;
-  programs.rofi.enable = true;
 
   wayland.windowManager.hyprland.settings = {
     exec-once = "waybar";
