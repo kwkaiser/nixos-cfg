@@ -11,9 +11,11 @@
       br = "branch";
     };
     extraConfig = {
-      push.default = "current";
-      push.autoSetupRemote = true;
-      pull.default = "current";
+      push = {
+        default = "current";
+        autoSetupRemote = true;
+      };
+      branch.autoSetupMerge = "always";
     };
 
   } // (if bconfig.mine.git.signsCommits then {
