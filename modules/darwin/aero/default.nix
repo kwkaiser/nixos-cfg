@@ -7,6 +7,7 @@
   config = lib.mkIf config.mine.aero.enable {
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
+
     services.aerospace.settings = {
       mode.main.binding = {
         cmd-h = "focus left";
@@ -44,5 +45,7 @@
       };
     };
 
+    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
+
 }
