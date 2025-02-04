@@ -7,6 +7,7 @@
   config = lib.mkIf config.mine.aero.enable {
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
+    system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
 
     services.aerospace.settings = {
       mode.main.binding = {
@@ -44,8 +45,5 @@
         cmd-shift-0 = "move-node-to-workspace 10";
       };
     };
-
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
-
 }
