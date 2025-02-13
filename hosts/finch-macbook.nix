@@ -12,4 +12,5 @@
   mine.git.signsCommits = true;
   mine.node.enable = true;
   mine.neovim.enable = true;
+  mine.zsh.enable = true;
 }
