@@ -1,3 +1,4 @@
 { pkgs, lib, config, ... }: {
-  imports = [ ./kitty ./git ./neovim ./node ./zsh ./cursor ./keepass ];
+  imports =
+    [ ./kitty ./git ./neovim ./node ./zsh ./cursor ./keepass ./syncthing ];
 }
