@@ -5,6 +5,17 @@
   };
 
   config = lib.mkIf config.mine.cursor.enable {
+    homebrew = {
+      enable = true;
+      onActivation = {
+        autoUpdate = true;
+        cleanup = "zap";
+      };
+      brews = [ ];
+      casks = [ "cursor" ];
+      taps = [ ];
+    };
+
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 }
