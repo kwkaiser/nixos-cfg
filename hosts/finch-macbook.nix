@@ -13,4 +13,5 @@
   mine.node.enable = true;
   mine.neovim.enable = true;
   mine.zsh.enable = true;
+  mine.cursor.enable = true;
 }
