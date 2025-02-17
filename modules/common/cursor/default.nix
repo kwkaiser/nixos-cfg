@@ -7,10 +7,7 @@
   config = lib.mkIf config.mine.cursor.enable {
     homebrew = {
       enable = true;
-      onActivation = {
-        autoUpdate = true;
-        cleanup = "zap";
-      };
+      onActivation = { autoUpdate = true; };
       brews = [ ];
       casks = [ "cursor" ];
       taps = [ ];
