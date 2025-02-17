@@ -1,3 +1,4 @@
 hardware.nix
 data
 *.txt
+.DS_Store
