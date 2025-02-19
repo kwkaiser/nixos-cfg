@@ -10,7 +10,7 @@
 
   mine.aero.enable = true;
   mine.git.signsCommits = false;
-  mine.node.enable = true;
+  mine.node.enable = false;
   mine.neovim.enable = true;
   mine.zsh.enable = true;
   mine.cursor.enable = true;
