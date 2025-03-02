@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }: {
 
   options = {
-    mine.rofi.enable = lib.mkEnableOption "Enables hyprland desktop";
+    mine.rofi.enable = lib.mkEnableOption "Enables rofi application launching";
   };
 
   config = lib.mkIf config.mine.rofi.enable {
