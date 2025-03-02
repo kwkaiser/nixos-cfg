@@ -17,4 +17,6 @@
   mine.kitty.enable = true;
   mine.rofi.enable = true;
   mine.zsh.enable = true;
+  mine.keepass.enable = true;
+  mine.keepass.firefox = true;
 }
