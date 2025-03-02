@@ -1,15 +1,10 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, inputs, ... }: {
   programs.firefox = {
     enable = true;
     profiles = {
       kwkaiser = {
-        extensions = [
-          "ublock-filters"
-          "ublock-badware"
-          "ublock-privacy"
-          "ublock-unbreak"
-          "ublock-quick-fixes"
-        ];
+        extensions = with inputs.firefox-addons.packages.${pkgs.system};
+          [ ublock-origin ];
       };
     };
   };
