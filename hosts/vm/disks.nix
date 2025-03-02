@@ -85,15 +85,6 @@
           "encrypted" = {
             type = "zfs_fs";
             mountpoint = "/data";
-            # options = {
-            #   encryption = "aes-256-gcm";
-            #   keyformat = "passphrase";
-            #   keylocation = "file:///tmp/secret.key";
-            # };
-            # # use this to read the key during boot
-            # postCreateHook = ''
-            #   zfs set keylocation="prompt" "data/encrypted";
-            # '';
           };
         };
       };
