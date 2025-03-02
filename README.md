@@ -26,7 +26,6 @@ Installation of NixOS is accomplished through [NixOS anywhere](https://github.co
 ```
 nix --experimental-features 'nix-command flakes' \
   run github:nix-community/nixos-anywhere -- \
-  --generate-hardware-config nixos-generate-config ./hardware.nix \
   --flake .<name of flake> \
   --target-host nixos@<network addr>
 ```
