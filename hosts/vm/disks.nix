@@ -36,6 +36,67 @@
           };
         };
       };
+
+      data1 = {
+        type = "disk";
+        device = "/dev/disk/by-id/virtio-dev2_serial";
+        content = {
+          type = "gpt";
+          partitions = {
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "data";
+              };
+            };
+          };
+        };
+      };
+      data2 = {
+        type = "disk";
+        device = "/dev/disk/by-id/virtio-dev3_serial";
+        content = {
+          type = "gpt";
+          partitions = {
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "data";
+              };
+            };
+          };
+        };
+      };
+    };
+    zpool = {
+      data = {
+        type = "zpool";
+        mode = "mirror";
+        rootFsOptions = {
+          compression = "zstd";
+          "com.sun:auto-snapshot" = "true";
+        };
+        postCreateHook =
+          "zfs list -t snapshot -H -o name | grep -E '^data@blank$' || zfs snapshot data@blank";
+
+        datasets = {
+          "encrypted" = {
+            type = "zfs_fs";
+            mountpoint = "/data";
+            # options = {
+            #   encryption = "aes-256-gcm";
+            #   keyformat = "passphrase";
+            #   keylocation = "file:///tmp/secret.key";
+            # };
+            # # use this to read the key during boot
+            # postCreateHook = ''
+            #   zfs set keylocation="prompt" "data/encrypted";
+            # '';
+          };
+        };
+      };
     };
   };
 }
