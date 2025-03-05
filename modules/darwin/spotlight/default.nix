@@ -1,4 +1,7 @@
 { pkgs, config, lib, inputs, ... }: {
+  # Script used to get spotlight search working for applications. 
+  # See https://github.com/LnL7/nix-darwin/issues/214
+
   system.activationScripts.postUserActivation.text = ''
     apps_source="${config.system.build.applications}/Applications"
     moniker="Nix Trampolines"
