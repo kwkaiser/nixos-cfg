@@ -1,10 +1,13 @@
 { pkgs, config, lib, inputs, ... }: {
-  system.activationScripts.applications.text = ''
-    apps=$(ls ${pkgs.system-path}/Applications)
-    for app in $apps; do
-      if [ -d "${pkgs.system-path}/Applications/$app" ]; then
-        ln -sf "${pkgs.system-path}/Applications/$app" "/Applications/$app"
-      fi
+  system.activationScripts.postUserActivation.text = ''
+    app_folder="$HOME/Applications/Nix Trampolines"
+    rm -rf "$app_folder"
+    mkdir -p "$app_folder"
+    for app in $(find "${config.system.build.applications}/Applications" -type l); do
+        app_target="$app_folder/$(basename $app)"
+        real_app="$(readlink $app)"
+        echo "mkalias \"$real_app\" \"$app_target\"" >&2
+        ${pkgs.mkalias}/bin/mkalias "$real_app" "$app_target"
     done
   '';
 
