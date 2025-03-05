@@ -1,2 +1,2 @@
-{ pkgs, config, lib, inputs, ... }: { imports = [ ./aero ]; }
+{ pkgs, config, lib, inputs, ... }: { imports = [ ./aero ./spotlight ]; }
 
