@@ -13,7 +13,6 @@
   mine.node.enable = false;
   mine.neovim.enable = true;
   mine.zsh.enable = true;
-  mine.cursor.enable = true;
   mine.keepass.enable = true;
   mine.syncthing.enable = true;
 }
