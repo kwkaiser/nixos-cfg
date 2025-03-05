@@ -1,14 +1,11 @@
 { pkgs, config, lib, inputs, ... }: {
   system.activationScripts.postUserActivation.text = ''
-    app_folder="$HOME/Applications/Nix Trampolines"
-    rm -rf "$app_folder"
-    mkdir -p "$app_folder"
-    for app in $(find "${config.system.build.applications}/Applications" -type l); do
-        app_target="$app_folder/$(basename $app)"
-        real_app="$(readlink $app)"
-        echo "mkalias \"$real_app\" \"$app_target\"" >&2
-        ${pkgs.mkalias}/bin/mkalias "$real_app" "$app_target"
-    done
+    apps_source="${config.system.build.applications}/Applications"
+    moniker="Nix Trampolines"
+    app_target_base="$HOME/Applications"
+    app_target="$app_target_base/$moniker"
+    mkdir -p "$app_target"
+    ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --copy-unsafe-links --delete "$apps_source/" "$app_target"
   '';
 
   home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
