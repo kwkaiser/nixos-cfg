@@ -15,6 +15,7 @@
   home-manager.extraSpecialArgs = {
     inherit inputs;
     bconfig = config;
+    isDarwin = isDarwin;
   };
   home-manager.users.${config.mine.username} = {
     # Attach nix-colors
