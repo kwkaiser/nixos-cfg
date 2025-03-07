@@ -1,1 +1,5 @@
-{ pkgs, config, ... }: { home.packages = with pkgs; [ code-cursor ]; }
+{ pkgs, config, ... }:
+{
+  # do nothing
+  # home.packages = with pkgs; [ code-cursor ];
+}
