@@ -37,6 +37,7 @@
           home-manager.nixosModules.default
           ./hosts/vm
           ./modules
+          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];
       };
 
@@ -49,6 +50,7 @@
           home-manager.darwinModules.default
           ./hosts/finch-macbook.nix
           ./modules
+          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];
       };
     };
