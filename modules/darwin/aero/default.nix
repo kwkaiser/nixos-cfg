@@ -11,10 +11,10 @@
 
     services.aerospace.settings = {
       mode.main.binding = {
-        cmd-h = "focus left";
-        cmd-j = "focus down";
-        cmd-k = "focus up";
-        cmd-l = "focus right";
+        # cmd-h = "focus left";
+        # cmd-j = "focus down";
+        # cmd-k = "focus up";
+        # cmd-l = "focus right";
         cmd-shift-h = "move left";
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
