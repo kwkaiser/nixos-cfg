@@ -1,5 +1,7 @@
 { inputs, system, lib, ... }: {
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
+  # Required for some installations
+  homebrew.enable = true;
   system.stateVersion = 5;
 
   mine.username = "kwkaiser";
