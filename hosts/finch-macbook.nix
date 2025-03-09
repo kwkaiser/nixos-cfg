@@ -16,4 +16,5 @@
   mine.keepass.enable = true;
   mine.syncthing.enable = true;
   mine.cursor.enable = true;
+  mine.steam.enable = true;
 }
