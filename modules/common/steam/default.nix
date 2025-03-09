@@ -1,5 +1,4 @@
 { pkgs, lib, config, isDarwin, ... }: {
-
   options = {
     mine.steam.enable = lib.mkEnableOption "Enables steam gaming platform";
   };
