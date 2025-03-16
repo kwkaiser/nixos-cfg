@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }: {
+{ pkgs, lib, config, isDarwin, ... }: {
   options = {
     mine.notes = {
       enable = lib.mkEnableOption "Enables obsidian for note taking";
@@ -6,7 +6,14 @@
     };
   };
 
-  config = lib.mkIf config.mine.notes.enable {
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
-  };
+  config = lib.mkIf config.mine.notes.enable (lib.mkMerge [
+    {
+      home-manager.users.${config.mine.username} = {
+        imports = [ ./home.nix ];
+      };
+    }
+    (lib.mkIf (isDarwin && config.mine.notes.untrusted) {
+      homebrew.casks = [ "cryptomator" ];
+    })
+  ]);
 }
