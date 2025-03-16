@@ -19,4 +19,8 @@
   mine.syncthing.enable = true;
   mine.cursor.enable = true;
   mine.steam.enable = true;
+  mine.notes = {
+    enable = true;
+    untrusted = true;
+  };
 }
