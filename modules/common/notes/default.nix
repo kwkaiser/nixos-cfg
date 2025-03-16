@@ -2,7 +2,8 @@
   options = {
     mine.notes = {
       enable = lib.mkEnableOption "Enables obsidian for note taking";
-      untrusted = lib.mkEnableOption "Enables cryptomator for encrypted notes";
+      untrusted =
+        lib.mkEnableOption "Enables veracrypt-fuse-t for encrypted notes";
     };
   };
 
@@ -13,7 +14,7 @@
       };
     }
     (lib.mkIf (isDarwin && config.mine.notes.untrusted) {
-      homebrew.casks = [ "cryptomator" ];
+      homebrew.casks = [ "veracrypt-fuse-t" ];
     })
   ]);
 }
