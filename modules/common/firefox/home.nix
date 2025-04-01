@@ -4,7 +4,12 @@
     profiles = {
       kwkaiser = {
         extensions = with inputs.firefox-addons.packages.${pkgs.system};
-          [ ublock-origin ];
+          [
+            ublock-origin
+            keepassxc-browser
+            i-dont-care-about-cookies
+            sponsorblock
+          ];
       };
     };
   };
