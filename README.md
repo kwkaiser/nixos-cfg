@@ -23,12 +23,7 @@ Installation of NixOS is accomplished through [NixOS anywhere](https://github.co
 - Change the root password in the installer & retrieve IP (should be network accessible via bridge device)
 - Run:
 
-```
-nix --experimental-features 'nix-command flakes' \
-  run github:nix-community/nixos-anywhere -- \
-  --flake .<name of flake> \
-  --target-host nixos@<network addr>
-```
+`nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#vm --target-host nixos@<network addr>`
 
 This approach should be possible on most linux distros, provided they have nix installed.
 
