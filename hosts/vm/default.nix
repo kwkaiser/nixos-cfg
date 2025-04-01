@@ -19,4 +19,5 @@
   mine.zsh.enable = true;
   mine.keepass.enable = true;
   mine.firefox.enable = true;
+  mine.messaging.enable = true;
 }
