@@ -23,4 +23,5 @@
     enable = true;
     untrusted = true;
   };
+  mine.messaging.enable = true;
 }
