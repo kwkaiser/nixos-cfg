@@ -7,14 +7,11 @@
     };
   };
 
-  config = lib.mkIf config.mine.notes.enable (lib.mkMerge [
-    {
-      home-manager.users.${config.mine.username} = {
-        imports = [ ./home.nix ];
-      };
-    }
-    (lib.mkIf (isDarwin && config.mine.notes.untrusted) {
-      homebrew.casks = [ "veracrypt-fuse-t" ];
-    })
-  ]);
+  config = lib.mkIf config.mine.notes.enable {
+    home-manager.users.${config.mine.username} = {
+      imports = [ ./home.nix ];
+    };
+  } // (if isDarwin then {
+    homebrew.casks = lib.mkIf config.mine.notes.untrusted [ "veracrypt-fuse-t" ];
+  } else { });
 }
