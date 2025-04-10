@@ -3,7 +3,7 @@
   services.dunst.enable = true;
 
   wayland.windowManager.hyprland.settings = {
-    exec-once = "waybar";
+    exec-once = [ "waybar" "hyprpaper" ];
     "$mod" = "SUPER";
     "$terminal" = "kitty";
 
@@ -63,9 +63,7 @@
 
   services.hyprpaper.enable = true;
   services.hyprpaper.settings = {
-    ipc = "on";
-    splash = false;
-    splash_offset = 2.0;
+    preload = [ "~/nixos-cfg/assets/backgrounds/cherry.jpg" ];
     wallpaper = [ ",~/nixos-cfg/assets/backgrounds/cherry.jpg" ];
   };
 }
