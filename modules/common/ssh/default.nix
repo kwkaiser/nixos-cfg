@@ -25,10 +25,12 @@
     # On Darwin, we need to use the launchd service instead
     launchd.user.agents.ssh-agent = {
       serviceConfig = {
-        ProgramArguments = [ "/usr/bin/ssh-agent" "-D" "-a" "/tmp/ssh-agent.socket" ];
+        ProgramArguments =
+          [ "/usr/bin/ssh-agent" "-D" "-a" "/tmp/ssh-agent.socket" ];
         RunAtLoad = true;
         KeepAlive = true;
       };
     };
-  } else { });
-} 
+  } else
+    { });
+}
