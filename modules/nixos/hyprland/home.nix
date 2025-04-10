@@ -1,7 +1,6 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
   wayland.windowManager.hyprland.enable = true;
   services.dunst.enable = true;
-  services.hyprpaper.enable = true;
 
   wayland.windowManager.hyprland.settings = {
     exec-once = "waybar";
@@ -60,5 +59,13 @@
       placeholder_text = "Unlock:";
       shadow_passes = 2;
     };
+  };
+
+  services.hyprpaper.enable = true;
+  services.hyprpaper.settings = {
+    ipc = "on";
+    splash = false;
+    splash_offset = 2.0;
+    wallpaper = [ ",~/nixos-cfg/assets/backgrounds/cherry.jpg" ];
   };
 }
