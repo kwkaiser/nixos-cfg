@@ -23,4 +23,5 @@
   mine.cursor.enable = true;
   mine.steam.enable = true;
   mine.notes.enable = true;
+  mine.ssh.enable = true;
 }
