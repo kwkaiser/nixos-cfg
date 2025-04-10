@@ -12,5 +12,6 @@
     ./cursor
     ./steam
     ./notes
+    ./ssh
   ];
 }
