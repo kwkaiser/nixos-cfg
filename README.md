@@ -44,3 +44,7 @@ To rebuild:
 - `nix run nix-darwin -- switch --flake .#host` to rebuild on darwin
 
 You may need to include `--no-write-lock-file` depending on the env
+
+## To updaste
+
+- `nix --experimental-features 'nix-command flakes' flake update`
