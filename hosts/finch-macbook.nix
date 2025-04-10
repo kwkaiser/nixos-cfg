@@ -24,4 +24,5 @@
     untrusted = true;
   };
   mine.messaging.enable = true;
+  mine.ssh.enable = true;
 }
