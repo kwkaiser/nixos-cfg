@@ -1,9 +1,8 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
   wayland.windowManager.hyprland.enable = true;
-  services.dunst.enable = true;
 
   wayland.windowManager.hyprland.settings = {
-    exec-once = [ "waybar" "hyprpaper" ];
+    exec-once = [ "waybar" "hyprpaper" "swaync" ];
     "$mod" = "SUPER";
     "$terminal" = "kitty";
 
