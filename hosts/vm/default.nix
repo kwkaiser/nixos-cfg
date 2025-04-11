@@ -24,4 +24,5 @@
   mine.steam.enable = true;
   mine.notes.enable = true;
   mine.ssh.enable = true;
+  mine.swaync.enable = true;
 }

@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, ... }: {
   options = {
     mine.swaync.enable =
       lib.mkEnableOption "Whether or not to enable swaync notification daemon";
