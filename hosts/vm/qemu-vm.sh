@@ -21,25 +21,23 @@ mkdir -pv data/vm/shared
 # mount --bind /home/kwkaiser/desktop/nix data/vm/shared
 
 # Run the VM
-qemu-system-aarch64 \
-    -machine virt,highmem=on \
-    -accel hvf \
-    -cpu host \
-    -smp 8 \
-    -m 8G \
-    -device virtio-gpu-pci \
-    -display default,show-cursor=on \
-    -device qemu-xhci \
-    -device usb-kbd \
-    -device usb-tablet \
-    -device virtio-net,netdev=net0 \
-    -netdev user,id=net0 \
-    -drive file=data/vm/dev1.qcow2,format=qcow2,if=virtio \
-    -drive file=data/vm/dev2.qcow2,format=qcow2,if=virtio \
-    -drive file=data/vm/dev3.qcow2,format=qcow2,if=virtio \
-    -cdrom data/isos/nixos-minimal.iso \
-    -fsdev local,id=shared,path=data/vm/shared,security_model=passthrough \
-    -device virtio-9p-pci,fsdev=shared,mount_tag=shared-dir
+qemu-system-x86_64 \
+  -m 4G \
+  -smp 2 \
+  -cpu Haswell \
+  -machine q35,accel=tcg \
+  -drive file=data/vm/dev1.qcow2,format=qcow2,if=virtio \
+  -drive file=data/vm/dev2.qcow2,format=qcow2,if=virtio \
+  -drive file=data/vm/dev3.qcow2,format=qcow2,if=virtio \
+  -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
+  -device ide-cd,drive=cdrom \
+  -boot d \
+  -display cocoa \
+  -vga std \
+  -usb -device usb-kbd -device usb-mouse \
+  -serial mon:stdio \
+  -netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443 \
+  -device virtio-net-pci,netdev=net0
 
 # Cleanup: unmount the shared directory when done
 # umount data/vm/shared 
