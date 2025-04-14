@@ -13,5 +13,6 @@
     ./steam
     ./notes
     ./ssh
+    ./virt
   ];
 }
