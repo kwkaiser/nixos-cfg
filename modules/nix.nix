@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, isDarwin, ... }:
+{
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-}
+} // (if isDarwin then { nix.linux-builder.enable = true; } else { })
