@@ -46,6 +46,21 @@
         ];
       };
 
+      nixosConfigurations.vm-thin = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          isDarwin = false;
+        };
+
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.default
+          ./hosts/vm-thin
+          ./modules
+          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
+        ];
+      };
+
       darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
