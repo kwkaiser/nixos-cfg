@@ -1,24 +1,21 @@
 #!/bin/bash
 
 # Create VM directory if it doesn't exist
-mkdir -pv data/vm
+mkdir -pv data/vm-thin
 
 # Create disk images if they don't exist
-if [ ! -f "data/vm/dev1.qcow2" ]; then
-    qemu-img create -f qcow2 data/vm/dev1.qcow2 20G
+if [ ! -f "data/vm-thin/dev1.qcow2" ]; then
+    qemu-img create -f qcow2 data/vm-thin/dev1.qcow2 20G
 fi
-if [ ! -f "data/vm/dev2.qcow2" ]; then
-    qemu-img create -f qcow2 data/vm/dev2.qcow2 5G
+if [ ! -f "data/vm-thin/dev2.qcow2" ]; then
+    qemu-img create -f qcow2 data/vm-thin/dev2.qcow2 5G
 fi
-if [ ! -f "data/vm/dev3.qcow2" ]; then
-    qemu-img create -f qcow2 data/vm/dev3.qcow2 5G
+if [ ! -f "data/vm-thin/dev3.qcow2" ]; then
+    qemu-img create -f qcow2 data/vm-thin/dev3.qcow2 5G
 fi
 
 # Create a shared directory mount point
-mkdir -pv data/vm/shared
-
-# Mount the host directory
-# mount --bind /home/kwkaiser/desktop/nix data/vm/shared
+mkdir -pv data/vm-thin/shared
 
 # Detect OS and set machine/acceleration parameters
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -37,9 +34,9 @@ qemu-system-x86_64 \
   -smp 2 \
   -cpu Haswell \
   $MACHINE_ARGS \
-  -drive file=data/vm/dev1.qcow2,format=qcow2,if=virtio \
-  -drive file=data/vm/dev2.qcow2,format=qcow2,if=virtio \
-  -drive file=data/vm/dev3.qcow2,format=qcow2,if=virtio \
+  -drive file=data/vm-thin/dev1.qcow2,format=qcow2,if=virtio \
+  -drive file=data/vm-thin/dev2.qcow2,format=qcow2,if=virtio \
+  -drive file=data/vm-thin/dev3.qcow2,format=qcow2,if=virtio \
   -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
   -device ide-cd,drive=cdrom \
   -boot d \
@@ -49,6 +46,3 @@ qemu-system-x86_64 \
   -serial mon:stdio \
   -netdev vmnet-shared,id=net0 \
   -device virtio-net-pci,netdev=net0
-
-# Cleanup: unmount the shared directory when done
-# umount data/vm/shared 
