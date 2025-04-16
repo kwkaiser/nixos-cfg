@@ -28,8 +28,8 @@
     stylix.url = "github:danth/stylix/release-24.11";
   };
 
-  outputs =
-    { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, stylix
+    , ... }@inputs: {
       nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
