@@ -23,7 +23,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     NET_ARGS="-netdev vmnet-shared,id=net0" 
     QEMU_EFI_PATH="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
 
-    echo "Running on Linux, using KVM acceleration"
+    echo "Running on Linux, using KVM acceleration with GTK display"
 else
     MACHINE_ARGS="-machine q35,accel=tcg"
     DISPLAY_ARGS="-display cocoa"
@@ -52,7 +52,6 @@ qemu-system-x86_64 \
   -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
   -device ide-cd,drive=cdrom \
   -boot d \
-  -vga std \
   -usb -device usb-kbd -device usb-mouse \
   -serial mon:stdio \
   -device virtio-net-pci,netdev=net0
