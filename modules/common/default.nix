@@ -14,5 +14,6 @@
     ./notes
     ./ssh
     ./virt
+    ./stylix
   ];
 }
