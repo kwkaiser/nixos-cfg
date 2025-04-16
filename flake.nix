@@ -41,7 +41,7 @@
           disko.nixosModules.disko
           home-manager.nixosModules.default
           ./hosts/vm-common
-          ./hosts/vm
+          ./hosts/vm/full.nix
           ./modules
           ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];
@@ -57,7 +57,7 @@
           disko.nixosModules.disko
           home-manager.nixosModules.default
           ./hosts/vm-common
-          ./hosts/vm-thin
+          ./hosts/vm/thin.nix
           ./modules
           ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];
