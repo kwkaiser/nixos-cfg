@@ -25,6 +25,8 @@ Installation of NixOS is accomplished through [NixOS anywhere](https://github.co
 
 `nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#vm --target-host nixos@<network addr>`
 
+Note you may need to include `--build-on-remote` if you're building on a host that is not `x86_64` (such as macbook).
+
 This approach should be possible on most linux distros, provided they have nix installed.
 
 ## Development
