@@ -38,6 +38,7 @@
 
         modules = [
           disko.nixosModules.disko
+          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/vm-common
           ./hosts/vm/full.nix
@@ -54,6 +55,7 @@
 
         modules = [
           disko.nixosModules.disko
+          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/vm-common
           ./hosts/vm/thin.nix

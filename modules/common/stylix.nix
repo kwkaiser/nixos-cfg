@@ -1,5 +1,6 @@
 { pkgs, config, lib, inputs, ... }: {
   stylix.enable = true;
-  stylix.image =
-    /Users/kwkaiser/Desktop/nixos-cfg/assets/backgrounds/cherry.jpg;
+  stylix.image = ../../assets/backgrounds/cherry.jpg;
+  stylix.base16Scheme =
+    "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
 }
