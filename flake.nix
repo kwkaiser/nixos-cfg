@@ -25,7 +25,7 @@
     };
 
     hyprland.url = "github:hyprwm/Hyprland";
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/release-24.11";
   };
 
   outputs =
@@ -69,6 +69,7 @@
         };
         modules = [
           home-manager.darwinModules.default
+          stylix.darwinModules.stylix
           ./hosts/finch-macbook.nix
           ./modules
           ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
