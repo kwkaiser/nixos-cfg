@@ -2,6 +2,7 @@
   programs.git = {
     enable = true;
     userName = bconfig.mine.email;
+    userEmail = bconfig.mine.email;
     aliases = {
       co = "checkout";
       pl = "pull";
