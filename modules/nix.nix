@@ -2,7 +2,7 @@
 {
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-} // (if isDarwin then {
+} // (if isDarwin then { 
   nix = {
     linux-builder = {
       enable = true;
