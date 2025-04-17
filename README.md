@@ -14,7 +14,11 @@ Packages that don't require any configuration or custom installation tweaks are 
 
 ## Virtual machines
 
-Some hosts have virtual machines for testing things locally. Generally these are created directory from [qemu](https://wiki.archlinux.org/title/QEMU) for the sake of cross-platform support. Check for a `created.sh` script under `/hosts/<machine>`.
+VMs can be built for most machines via qemu:
+
+- `nix --extra-experimental-features 'nix-command flakes' build .#nixosConfigurations.<host>.config.system.build.vm`
+- `export QEMU_NET_OPTS="hostfwd=tcp:127.0.0.1:2222-:22,hostfwd=tcp:127.0.0.1:24680-:80"`
+- `ssh -p 2222 kwkaiser@127.0.0.1`
 
 ## Installation
 
