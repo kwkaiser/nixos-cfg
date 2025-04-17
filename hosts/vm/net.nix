@@ -3,4 +3,5 @@
   networking.hostName = "vm";
   networking.networkmanager.enable = true;
   mine.ssh.enable = true;
+  networking.firewall.allowedTCPPorts = [ 22 80 ];
 }
