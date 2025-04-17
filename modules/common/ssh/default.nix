@@ -14,6 +14,8 @@
       '';
     };
 
+    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
+
   } // (if isDarwin then
     { }
   else {
