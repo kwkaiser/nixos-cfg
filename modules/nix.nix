@@ -5,7 +5,7 @@
 } // (if isDarwin then { 
   nix = {
     linux-builder = {
-      enable = true;
+      enable = false;
       ephemeral = true;
       systems = [ "x86_64-linux" ];
     };
