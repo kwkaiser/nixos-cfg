@@ -3,6 +3,7 @@
     virtualisation = {
       memorySize = 2048;
       cores = 3;
+      diskSize = 5120;
 
       qemu.drives = [
         {
@@ -19,14 +20,6 @@
           deviceExtraOpts = {
             id = "dev2";
             serial = "dev2";
-          };
-        }
-        {
-          name = "dev3";
-          file = builtins.getEnv "PWD" + "/data/vm-thin/drive3.qcow2";
-          deviceExtraOpts = {
-            id = "dev3";
-            serial = "dev3";
           };
         }
       ];

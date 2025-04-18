@@ -4,7 +4,7 @@
     disk = {
       main = {
         type = "disk";
-        device = "/dev/vda";
+        device = "/dev/vdd";
         content = {
           type = "gpt";
           partitions = {
@@ -32,7 +32,7 @@
 
       data1 = {
         type = "disk";
-        device = "/dev/disk/by-id/virtio-dev2";
+        device = "/dev/disk/by-id/virtio-dev1";
         content = {
           type = "gpt";
           partitions = {
@@ -48,7 +48,7 @@
       };
       data2 = {
         type = "disk";
-        device = "/dev/disk/by-id/virtio-dev3";
+        device = "/dev/disk/by-id/virtio-dev2";
         content = {
           type = "gpt";
           partitions = {
