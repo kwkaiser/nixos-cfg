@@ -1,10 +1,17 @@
 { config, pkgs, ... }: {
   virtualisation.vmVariant = {
     virtualisation = {
-      memorySize = 2048; # Use 2048MiB memory.
+      memorySize = 2048;
       cores = 3;
-      diskSize = 5120; # 5GB main disk
-      emptyDiskImages = [ 5120 5120 ]; # Two additional 5GB disks
+
+      qemu.drives = [{
+        name = "foo";
+        file = builtins.getEnv "PWD" + "/test.qcow2";
+        deviceExtraOpts = {
+          id = "my_drive";
+          serial = "1234567890";
+        };
+      }];
     };
   };
 }
