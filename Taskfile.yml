@@ -1,0 +1,27 @@
+version: '3'
+
+vars:
+  host: "vm-thin"  
+
+tasks:
+  clean:
+    desc: Removes vm images
+    cmds:
+      - rm -rf data/*
+
+  vm:
+    desc: Build the VM configuration for specified host
+    args:
+      - name: host
+        desc: The host to build
+        required: true
+        default: vm-thin
+    cmds:
+      - rm -rf data/{{.host}}
+      - mkdir -p data/{{.host}}
+      - qemu-img create -f qcow2 data/{{.host}}/drive1.qcow2 5G
+      - qemu-img create -f qcow2 data/{{.host}}/drive2.qcow2 5G
+      - qemu-img create -f qcow2 data/{{.host}}/drive3.qcow2 5G
+      - nix --extra-experimental-features 'nix-command flakes' build --impure .#nixosConfigurations.{{.host}}.config.system.build.vm 
+      - ./result/bin/*
+      - rm ./vm.qcow2

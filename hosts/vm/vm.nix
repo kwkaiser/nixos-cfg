@@ -4,14 +4,32 @@
       memorySize = 2048;
       cores = 3;
 
-      qemu.drives = [{
-        name = "foo";
-        file = builtins.getEnv "PWD" + "/test.qcow2";
-        deviceExtraOpts = {
-          id = "my_drive";
-          serial = "1234567890";
-        };
-      }];
+      qemu.drives = [
+        {
+          name = "dev1";
+          file = builtins.getEnv "PWD" + "/data/vm-thin/drive1.qcow2";
+          deviceExtraOpts = {
+            id = "dev1";
+            serial = "dev1";
+          };
+        }
+        {
+          name = "dev2";
+          file = builtins.getEnv "PWD" + "/data/vm-thin/drive2.qcow2";
+          deviceExtraOpts = {
+            id = "dev2";
+            serial = "dev2";
+          };
+        }
+        {
+          name = "dev3";
+          file = builtins.getEnv "PWD" + "/data/vm-thin/drive3.qcow2";
+          deviceExtraOpts = {
+            id = "dev3";
+            serial = "dev3";
+          };
+        }
+      ];
     };
   };
 }
