@@ -36,16 +36,15 @@ set_qemu_args () {
     if [[ "$ARCH" == "linux"* ]]; then
         MACHINE_ARGS=(-enable-kvm)
         DISPLAY_ARGS=(
-            -vga qxl
-            -device qxl-vga,vgamem_mb=64,ram_size_mb=64,vgamem_mb=64,xres=1920,yres=1080
-            -spice port=5900,addr=127.0.0.1,disable-ticketing
+            -device virtio-gpu-pci,max_outputs=1,xres=1920,yres=1080
+            -spice port=5900,addr=127.0.0.1,disable-ticketing=on,gl=on
             -device virtio-serial-pci
             -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0
             -chardev spicevmc,id=spicechannel0,name=vdagent
         )
         QEMU_EFI_PATH="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
 
-        echo "Running on Linux, using KVM acceleration with SPICE display"
+        echo "Running on Linux, using KVM acceleration with SPICE display at 1920x1080"
     else
         MACHINE_ARGS=(-machine q35,accel=tcg)
         DISPLAY_ARGS=(-display cocoa)
