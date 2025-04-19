@@ -2,12 +2,17 @@ version: '3'
 
 vars:
   host: "vm-thin"  
+  arch: "linux"
 
 tasks:
   clean:
-    desc: Removes vm images
     cmds:
       - rm -rf data/*
+
+  get-iso:
+    cmds:
+      - mkdir -p data/isos
+      - wget https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso -O data/isos/nixos-minimal.iso
 
   vm:
     desc: Build the VM configuration for specified host
@@ -16,6 +21,7 @@ tasks:
       - mkdir -p data/{{.host}}
       - qemu-img create -f qcow2 data/{{.host}}/drive1.qcow2 5G
       - qemu-img create -f qcow2 data/{{.host}}/drive2.qcow2 5G
+      - qemu-img create -f qcow2 data/{{.host}}/drive3.qcow2 5G
       - nix --extra-experimental-features 'nix-command flakes' build --impure .#nixosConfigurations.{{.host}}.config.system.build.vm 
       - export QEMU_NET_OPTS="hostfwd=tcp::2221-:22" && ./result/bin/*
       - rm ./vm.qcow2
@@ -24,4 +30,51 @@ tasks:
   install:
     desc: SSH into the VM
     cmds:
-      - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://kwkaiser@vm
+      - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://kwkaiser@vm --post-kexec-ssh-port 2221 -p 2221
+
+  foo2:
+    desc: Run VM with OS-specific optimizations
+    cmds:
+      - rm -rf data/{{.host}}
+      - mkdir -p data/{{.host}}
+      - qemu-img create -f qcow2 data/{{.host}}/drive1.qcow2 5G
+      - qemu-img create -f qcow2 data/{{.host}}/drive2.qcow2 5G
+      - qemu-img create -f qcow2 data/{{.host}}/drive3.qcow2 5G
+
+      - |
+        if [[ "{{.arch}}" == "linux" ]]; then
+          MACHINE_ARGS="-enable-kvm"
+          DISPLAY_ARGS="-display gtk"
+          NET_ARGS="-netdev vmnet-shared,id=net0"
+          QEMU_EFI_PATH="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
+          echo "Running on Linux, using KVM acceleration with GTK display"
+        else
+          MACHINE_ARGS="-machine q35,accel=tcg"
+          DISPLAY_ARGS="-display cocoa"
+          NET_ARGS="-netdev user,id=net0 -device virtio-net-pci,netdev=net0"
+          QEMU_EFI_PATH="$(nix --experimental-features 'nix-command flakes' eval --raw nixpkgs#qemu)/share/qemu/edk2-x86_64-code.fd"
+          echo "Running on macOS, using TCG emulation"
+        fi
+
+        qemu-system-x86_64 \
+          -m 10G \
+          -smp 6 \
+          -cpu host \
+          "$MACHINE_ARGS" \
+          "$DISPLAY_ARGS" \
+          "$NET_ARGS" \
+          -drive if=pflash,format=raw,readonly=on,file="$QEMU_EFI_PATH" \
+          -drive file=data/{{.host}}/drive1.qcow2,format=qcow2,if=none,id=drive1 \
+          -device virtio-blk-pci,drive=drive1,serial=dev1 \
+          -drive file=data/{{.host}}/drive2.qcow2,format=qcow2,if=none,id=drive2 \
+          -device virtio-blk-pci,drive=drive2,serial=dev2 \
+          -drive file=data/{{.host}}/drive3.qcow2,format=qcow2,if=none,id=drive3 \
+          -device virtio-blk-pci,drive=drive3,serial=dev3 \
+          -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
+          -device ide-cd,drive=cdrom \
+          -boot d \
+          -usb -device usb-kbd -device usb-mouse \
+          -serial mon:stdio \
+          -device virtio-net-pci,netdev=net0
+        
+       
