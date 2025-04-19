@@ -30,3 +30,19 @@ tasks:
   view:
     cmds: 
       - remote-viewer spice://127.0.0.1:5900
+
+  rebuild:
+    desc: Syncs configuration and rebuilds remote system
+    cmds:
+      - |
+        rsync -avz --delete \
+          --exclude '.git' \
+          --exclude 'data' \
+          --exclude 'result' \
+          --exclude 'result-*' \
+          -e "ssh -p 2222" \
+          ./ kwkaiser@127.0.0.1:/home/kwkaiser/nixos-cfg/
+      - |
+        ssh -p 2222 kwkaiser@localhost "cd /home/kwkaiser/nixos-cfg && sudo nixos-rebuild switch --flake .#{{.host}}"
+
+   

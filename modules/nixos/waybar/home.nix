@@ -47,7 +47,6 @@
       }
 
       /* WORKSPACE */
-
       #workspaces button {
         min-width: 8px;
         padding-left: 16px;
@@ -60,11 +59,7 @@
         border-radius: 7px;
       }
 
-
-
-
       /* SYS STATS */
-
       #cpu,
       #memory,
       #clock,
