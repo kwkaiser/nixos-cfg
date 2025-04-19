@@ -35,7 +35,7 @@ set_qemu_args () {
 
     if [[ "$ARCH" == "linux"* ]]; then
         MACHINE_ARGS=(-enable-kvm)
-        DISPLAY_ARGS=(-display gtk)
+        DISPLAY_ARGS=(-display gtk,grab-on-hover=on)
         QEMU_EFI_PATH="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
 
         echo "Running on Linux, using KVM acceleration with GTK display"
@@ -76,8 +76,7 @@ run_vm() {
     -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
     -device ide-cd,drive=cdrom \
     -boot d \
-    -usb -device usb-kbd -device usb-mouse \
-    -serial mon:stdio
+    -usb -device usb-kbd -device usb-mouse 
 }
 
 trap cleanup ERR EXIT INT TERM
