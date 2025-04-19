@@ -10,10 +10,6 @@
     @theme "/dev/null"
 
     * {
-        bg:	#${config.colorScheme.palette.base00};
-        fg: #${config.colorScheme.palette.base01} ;
-        button: #${config.colorScheme.palette.base04};
-
         background-color: @bg;
         text-color: @fg;
     }
@@ -24,7 +20,6 @@
         width: 50%;
         padding: 5px;
         border: 1px;
-        border-color: #${config.colorScheme.palette.base04};
     }
 
     prompt {
