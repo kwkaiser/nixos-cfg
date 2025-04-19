@@ -26,10 +26,11 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     stylix.url = "github:danth/stylix/release-24.11";
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, stylix
-    , ... }@inputs: {
+    , nix-colors, ... }@inputs: {
       nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
