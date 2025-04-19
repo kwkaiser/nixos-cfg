@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 parse_args() {
     if [ $# -lt 3 ]; then
@@ -31,20 +32,20 @@ create_disks () {
 
 set_qemu_args () {
     local num_disks=$1
+
     if [[ "$ARCH" == "linux"* ]]; then
         MACHINE_ARGS=(-enable-kvm)
         DISPLAY_ARGS=(-display gtk)
-        NET_ARGS=(-netdev vmnet-shared,id=net0)
         QEMU_EFI_PATH="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
 
         echo "Running on Linux, using KVM acceleration with GTK display"
     else
         MACHINE_ARGS=(-machine q35,accel=tcg)
         DISPLAY_ARGS=(-display cocoa)
-        NET_ARGS=(-netdev user,id=net0 -device virtio-net-pci,netdev=net0)
         QEMU_EFI_PATH="$(nix --experimental-features 'nix-command flakes' eval --raw nixpkgs#qemu)/share/qemu/edk2-x86_64-code.fd"
         echo "Running on macOS, using TCG emulation"
     fi
+    NET_ARGS=(-netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0)
 
     # Build disk arguments dynamically
     DISK_ARGS=()
@@ -56,6 +57,11 @@ set_qemu_args () {
     done
 }
 
+cleanup () {
+    echo "Cleaning up VM directory for host: $HOST"
+    rm -rf "data/$HOST"
+}
+
 run_vm() {
     # Run the VM
     qemu-system-x86_64 \
@@ -65,17 +71,17 @@ run_vm() {
     "${MACHINE_ARGS[@]}" \
     "${DISPLAY_ARGS[@]}" \
     "${NET_ARGS[@]}" \
-    -drive if=pflash,format=raw,readonly=on,file="$QEMU_EFI_PATH" \
     "${DISK_ARGS[@]}" \
+    -drive if=pflash,format=raw,readonly=on,file="$QEMU_EFI_PATH" \
     -drive file=data/isos/nixos-minimal.iso,format=raw,if=none,id=cdrom \
     -device ide-cd,drive=cdrom \
     -boot d \
     -usb -device usb-kbd -device usb-mouse \
-    -serial mon:stdio \
-    -device virtio-net-pci,netdev=net0
+    -serial mon:stdio
 }
 
-# Parse command line arguments
+trap cleanup ERR EXIT INT TERM
+
 parse_args "$@"
 create_disks "$NUM_DISKS"
 set_qemu_args "$NUM_DISKS"
