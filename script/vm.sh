@@ -37,7 +37,7 @@ set_qemu_args () {
         MACHINE_ARGS=(-enable-kvm)
         DISPLAY_ARGS=(
             -device virtio-gpu-pci,max_outputs=1,xres=1920,yres=1080
-            -spice port=5900,addr=127.0.0.1,disable-ticketing=on,gl=on
+            -spice unix=on,addr=/tmp/vm_spice.socket,disable-ticketing=on,gl=on
             -device virtio-serial-pci
             -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0
             -chardev spicevmc,id=spicechannel0,name=vdagent
