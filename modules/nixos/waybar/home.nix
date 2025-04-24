@@ -3,10 +3,10 @@
     enable = true;
     settings = {
       topBar = {
-        output = "*";
+        output = [ bconfig.mine.waybar.monitor ];
         layer = "top";
         position = "top";
-        height = 30;
+        height = 48;
         margin-top = 0;
         margin-bottom = 0;
         margin-left = 0;
@@ -20,10 +20,10 @@
         };
       };
       bottomBar = {
-        output = "*";
+        output = [ bconfig.mine.waybar.monitor ];
         layer = "top";
         position = "bottom";
-        height = 30;
+        height = 48;
         margin-top = 0;
         margin-bottom = 0;
         margin-left = 0;
