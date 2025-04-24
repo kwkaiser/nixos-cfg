@@ -2,7 +2,13 @@
   wayland.windowManager.hyprland.enable = true;
 
   wayland.windowManager.hyprland.settings = {
-    exec-once = [ "waybar" "hyprpaper" "swaync" ];
+    exec-once = [
+      "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      "waybar &"
+      "hyprpaper &"
+      "swaync &"
+    ];
     "$mod" = "SUPER";
     "$terminal" = "kitty";
 
