@@ -3,19 +3,31 @@
     enable = true;
     settings = {
       topBar = {
-        output = [ bconfig.mine.waybar.monitor ];
+        output = "*";
         layer = "top";
         position = "top";
         height = 30;
+        margin-top = 0;
+        margin-bottom = 0;
+        margin-left = 0;
+        margin-right = 0;
 
         modules-center = [ "hyprland/workspaces" ];
-        "hyprland/workspaces" = { on-click = "activate"; };
+        "hyprland/workspaces" = {
+          on-click = "activate";
+          format = "{name}";
+          active-only = false;
+        };
       };
       bottomBar = {
-        output = [ bconfig.mine.waybar.monitor ];
+        output = "*";
         layer = "top";
         position = "bottom";
         height = 30;
+        margin-top = 0;
+        margin-bottom = 0;
+        margin-left = 0;
+        margin-right = 0;
 
         modules-left = [ "cpu" ];
         modules-center = [ "clock" ];
@@ -40,10 +52,12 @@
     style = ''
       * {
         font-size: 11px;
+        font-family: "JetBrainsMono Nerd Font";
       }
 
       window#waybar {
-        background: transparent;
+        background-color: @theme-base00;
+        border-bottom: 1px solid @theme-base01;
       }
 
       /* WORKSPACE */
@@ -57,6 +71,11 @@
         margin-left: 4px;
         margin-right: 4px;
         border-radius: 7px;
+        background-color: @theme-base01;
+      }
+
+      #workspaces button.active {
+        background-color: @theme-base02;
       }
 
       /* SYS STATS */
@@ -73,6 +92,7 @@
         margin-bottom: 8px;
         margin-left: 8px;
         margin-right: 8px;
+        background-color: @theme-base01;
       }
 
       #network {
