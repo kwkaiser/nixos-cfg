@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  host: "vm-thin"  
+  host: "vm"  
   arch: "linux"
   disks: 3
 
