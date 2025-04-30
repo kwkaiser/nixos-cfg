@@ -68,7 +68,6 @@
         margin-top: 8px;
         margin-left: 4px;
         margin-right: 4px;
-        border-radius: 7px;
         background-color: @base01;
         color: @base05;
       }
