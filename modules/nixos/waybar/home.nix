@@ -52,12 +52,10 @@
     style = ''
       * {
         font-size: 11px;
-        font-family: "JetBrainsMono Nerd Font";
       }
 
       window#waybar {
-        background-color: @theme-base00;
-        border-bottom: 1px solid @theme-base01;
+        background: transparent;
       }
 
       /* WORKSPACE */
@@ -71,11 +69,13 @@
         margin-left: 4px;
         margin-right: 4px;
         border-radius: 7px;
-        background-color: @theme-base01;
+        background-color: @base01;
+        color: @base05;
       }
 
       #workspaces button.active {
-        background-color: @theme-base02;
+        background-color: @base02;
+        color: @base06;
       }
 
       /* SYS STATS */
@@ -92,7 +92,8 @@
         margin-bottom: 8px;
         margin-left: 8px;
         margin-right: 8px;
-        background-color: @theme-base01;
+        background-color: @base01;
+        color: @base05;
       }
 
       #network {
