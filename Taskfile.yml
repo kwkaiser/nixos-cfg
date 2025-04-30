@@ -25,7 +25,7 @@ tasks:
   install:
     desc: Installs nixos on the vm
     cmds:
-      - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://nixos@127.0.0.1 --post-kexec-ssh-port 2222 -p 2222
+      - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://nixos@127.0.0.1 --post-kexec-ssh-port 2222 -p 2222 --disko-mode disko
 
   view:
     cmds: 
