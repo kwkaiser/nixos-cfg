@@ -2,7 +2,6 @@
   home.packages = with pkgs; [ libnotify ];
   services.swaync = {
     enable = true;
-    skipDisplay = true;
     settings = {
       positionX = "right";
       positionY = "top";
@@ -19,7 +18,13 @@
       notification-icon-size = 64;
       notification-body-image-height = 100;
       notification-body-image-width = 200;
-      skip-display = true;
+      hide-on-clear = true;
+      hide-on-action = true;
+      widgets = [ "title" "notifications" "dnd" "volume" ];
+      popup = {
+        enabled = false;
+        timeout = 0;
+      };
     };
     style = ''
       * {
