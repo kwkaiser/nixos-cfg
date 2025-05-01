@@ -13,10 +13,31 @@
         margin-right = 0;
 
         modules-center = [ "hyprland/workspaces" ];
+        modules-right = [ "custom/notification" ];
         "hyprland/workspaces" = {
           on-click = "activate";
           format = "{name}";
           active-only = false;
+        };
+        "custom/notification" = {
+          "tooltip" = false;
+          "format" = "bingus";
+          "format-icons" = {
+            "notification" = "bongus";
+            "none" = "";
+            "dnd-notification" = "bongus_dnd";
+            "dnd-none" = "";
+            "inhibited-notification" = "bongus_inhibited";
+            "inhibited-none" = "";
+            "dnd-inhibited-notification" = "bongus_inhibited_notif";
+            "dnd-inhibited-none" = "";
+          };
+          "return-type" = "json";
+          "exec-if" = "which swaync-client";
+          "exec" = "swaync-client -swb";
+          "on-click" = "swaync-client -t -sw";
+          "on-click-right" = "swaync-client -d -sw";
+          "escape" = true;
         };
       };
       bottomBar = {
@@ -48,7 +69,6 @@
         };
       };
     };
-
     style = ''
       * {
         font-size: 11px;
@@ -77,6 +97,7 @@
       #workspaces button.active {
         background-color: @base02;
         color: @base06;
+        min-width: 32px;
       }
 
       /* SYS STATS */
@@ -100,6 +121,15 @@
       #network {
         padding-left: 6px;
         padding-right: 6px;
+      }
+
+      /* NOTIFICATION */
+      #custom-notification {
+        background-color: @base01;
+        color: white;
+        border-radius: 7px;
+        padding: 0 10px;
+        margin: 8px;
       }
     '';
   };
