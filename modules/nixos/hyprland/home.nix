@@ -1,4 +1,5 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
+  home.packages = with pkgs; [ swww ];
   wayland.windowManager.hyprland.enable = true;
 
   wayland.windowManager.hyprland.settings = {
@@ -6,8 +7,8 @@
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "waybar &"
-      "hyprpaper &"
       "swaync &"
+      "sleep 1 && swww-daemon &"
     ];
     "$mod" = "SUPER";
     "$terminal" = "kitty";
@@ -60,6 +61,4 @@
       shadow_passes = 2;
     };
   };
-
-  services.hyprpaper.enable = true;
 }
