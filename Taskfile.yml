@@ -29,7 +29,7 @@ tasks:
 
   view:
     cmds: 
-      - remote-viewer spice://127.0.0.1:5900
+      - remote-viewer --size=1920x1080 spice://127.0.0.1:5900 
 
   rebuild:
     desc: Syncs configuration and rebuilds remote system
