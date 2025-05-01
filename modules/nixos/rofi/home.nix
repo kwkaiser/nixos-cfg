@@ -19,8 +19,8 @@
 
       "prompt" = {
         enabled = true;
-        horizontal-align = 0.5;
-        vertical-align = 0.5;
+        horizontal-align = mkLiteral "0.5";
+        vertical-align = mkLiteral "0.5";
         border = mkLiteral "2px";
         border-radius = mkLiteral "7px";
         padding = mkLiteral "0 1% 0";
