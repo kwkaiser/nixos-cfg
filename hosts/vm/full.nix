@@ -13,7 +13,7 @@
   mine.hyprland.enable = true;
   mine.waybar.enable = true;
   # TODO: find a way to reduce duplication around this
-  mine.waybar.monitor = "Virtual-1";
+  mine.waybar.primaryMonitor = "Virtual-1";
   mine.kitty.enable = true;
   mine.rofi.enable = true;
   mine.zsh.enable = true;
