@@ -2,6 +2,8 @@
 { ... }: {
   disko.devices = {
     disk = {
+
+      # Primary disk with boot & root partitions
       main = {
         type = "disk";
         device = "/dev/vda";
@@ -35,57 +37,80 @@
         };
       };
 
-      data1 = {
-        type = "disk";
-        device = "/dev/disk/by-id/virtio-dev2";
-        content = {
-          type = "gpt";
-          partitions = {
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "data";
-              };
-            };
-          };
-        };
-      };
-      data2 = {
-        type = "disk";
-        device = "/dev/disk/by-id/virtio-dev3";
-        content = {
-          type = "gpt";
-          partitions = {
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "data";
-              };
-            };
-          };
-        };
-      };
-    };
-    zpool = {
-      data = {
-        type = "zpool";
-        mode = "mirror";
-        rootFsOptions = {
-          compression = "zstd";
-          "com.sun:auto-snapshot" = "true";
-        };
-        postCreateHook =
-          "zfs list -t snapshot -H -o name | grep -E '^data@blank$' || zfs snapshot data@blank";
+      # data = {
+      #   type = "disk";
+      #   device = "/dev/vdb";
+      #   content = {
+      #     type = "gpt";
+      #     partitions = {
+      #       luks = {
+      #         size = "100%";
+      #         content = {
+      #           type = "luks";
+      #           name = "data";
+      #           settings.allowDiscards = true;
+      #           content = {
+      #             type = "filesystem";
+      #             format = "ext4";
+      #             mountpoint = "/home/kwkaiser/data";
+      #           };
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
 
-        datasets = {
-          "encrypted" = {
-            type = "zfs_fs";
-            mountpoint = "/data";
-          };
-        };
-      };
+      # data1 = {
+      #   type = "disk";
+      #   device = "/dev/disk/by-id/virtio-dev2";
+      #   content = {
+      #     type = "gpt";
+      #     partitions = {
+      #       zfs = {
+      #         size = "100%";
+      #         content = {
+      #           type = "zfs";
+      #           pool = "data";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
+      # data2 = {
+      #   type = "disk";
+      #   device = "/dev/disk/by-id/virtio-dev3";
+      #   content = {
+      #     type = "gpt";
+      #     partitions = {
+      #       zfs = {
+      #         size = "100%";
+      #         content = {
+      #           type = "zfs";
+      #           pool = "data";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
     };
+    # zpool = {
+    #   data = {
+    #     type = "zpool";
+    #     mode = "mirror";
+    #     rootFsOptions = {
+    #       compression = "zstd";
+    #       "com.sun:auto-snapshot" = "true";
+    #     };
+    #     postCreateHook =
+    #       "zfs list -t snapshot -H -o name | grep -E '^data@blank$' || zfs snapshot data@blank";
+
+    #     datasets = {
+    #       "encrypted" = {
+    #         type = "zfs_fs";
+    #         mountpoint = "/data";
+    #       };
+    #     };
+    #   };
+    # };
   };
 }
