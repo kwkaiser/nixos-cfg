@@ -2,7 +2,7 @@
 { ... }: {
   disko.devices = {
     disk = {
-      main = {
+      primary = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
@@ -25,30 +25,40 @@
                 randomEncryption = true;
               };
             };
-            primary = {
+            luks = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
+                type = "luks";
+                name = "root";
+                settings.allowDiscards = true;
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/";
+                };
               };
             };
           };
         };
       };
 
-      secondary = {
+      data = {
         type = "disk";
         device = "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
-            primary = {
+            luks = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/home/kwkaiser/steamlib";
+                type = "luks";
+                name = "data";
+                settings.allowDiscards = true;
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/home/kwkaiser/data";
+                };
               };
             };
           };
