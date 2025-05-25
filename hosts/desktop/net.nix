@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
-  networking.hostId = "22a4d930";
-  networking.hostName = "vm";
+  networking.hostId = "007f0101";
+  networking.hostName = "desktop";
   networking.networkmanager.enable = true;
   mine.ssh.enable = true;
   networking.firewall.allowedTCPPorts = [ 22 80 ];
