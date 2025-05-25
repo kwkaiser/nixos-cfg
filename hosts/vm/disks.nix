@@ -37,28 +37,28 @@
         };
       };
 
-      # data = {
-      #   type = "disk";
-      #   device = "/dev/vdb";
-      #   content = {
-      #     type = "gpt";
-      #     partitions = {
-      #       luks = {
-      #         size = "100%";
-      #         content = {
-      #           type = "luks";
-      #           name = "data";
-      #           settings.allowDiscards = true;
-      #           content = {
-      #             type = "filesystem";
-      #             format = "ext4";
-      #             mountpoint = "/home/kwkaiser/data";
-      #           };
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
+      data = {
+        type = "disk";
+        device = "/dev/vdb";
+        content = {
+          type = "gpt";
+          partitions = {
+            luks = {
+              size = "100%";
+              content = {
+                type = "luks";
+                name = "data";
+                settings.allowDiscards = true;
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/home/kwkaiser/data";
+                };
+              };
+            };
+          };
+        };
+      };
 
       # data1 = {
       #   type = "disk";
