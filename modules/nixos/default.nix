@@ -1,5 +1,5 @@
 { pkgs, config, lib, inputs, ... }: {
 
-  imports = [ ./hyprland ./waybar ./rofi ./swaync ];
+  imports = [ ./hyprland ./waybar ./rofi ./swaync ./kde ];
 }
 
