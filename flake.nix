@@ -78,6 +78,22 @@
         ];
       };
 
+      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          isDarwin = false;
+        };
+
+        modules = [
+          disko.nixosModules.disko
+          stylix.nixosModules.stylix
+          home-manager.nixosModules.default
+          ./hosts/desktop
+          ./modules
+          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
+        ];
+      };
+
       darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
