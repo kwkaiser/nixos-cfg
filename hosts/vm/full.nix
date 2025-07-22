@@ -2,7 +2,7 @@
   imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   mine.username = "kwkaiser";
   mine.homeDir = "/home/kwkaiser";

@@ -11,7 +11,7 @@ tasks:
       - mkdir -p data/isos
       - |
         if [ ! -f "data/isos/nixos-minimal.iso" ]; then
-          wget https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso -O data/isos/nixos-minimal.iso
+          wget https://channels.nixos.org/nixos-25.05/latest-nixos-minimal-x86_64-linux.iso -O data/isos/nixos-minimal.iso
         else
           echo "ISO file already exists"
         fi
