@@ -16,6 +16,7 @@
   # mine.waybar.secondaryMonitor = "DP-2";
   # mine.swaync.enable = true;
   mine.kitty.enable = true;
+  mine.syncthing.enable = true;
   mine.rofi.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;
