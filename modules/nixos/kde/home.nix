@@ -168,7 +168,7 @@
       # };
 
       virtualDesktops = {
-        number = 5;
+        number = 10;
         rows = 1;
       };
     };
@@ -284,6 +284,9 @@
         "Switch to Desktop 5" = "Meta+5";
         "Switch to Desktop 6" = "Meta+6";
         "Switch to Desktop 7" = "Meta+7";
+        "Switch to Desktop 8" = "Meta+8";
+        "Switch to Desktop 9" = "Meta+9";
+        "Switch to Desktop 10" = "Meta+0";
         "Window Close" = "Meta+Q";
         "Window Fullscreen" = "Meta+M";
         "Window Move Center" = "Ctrl+Alt+C";
@@ -293,6 +296,10 @@
         "Window to Desktop 4" = "Meta+$";
         "Window to Desktop 5" = "Meta+%";
         "Window to Desktop 6" = "Meta+^";
+        "Window to Desktop 7" = "Meta+&";
+        "Window to Desktop 8" = "Meta+*";
+        "Window to Desktop 9" = "Meta+(";
+        "Window to Desktop 10" = "Meta+)";
       };
 
       plasmashell = { "show-on-mouse-pos" = ""; };
