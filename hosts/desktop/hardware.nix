@@ -26,7 +26,7 @@
   hardware.cpu.amd.updateMicrocode =
     lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   services.xserver.videoDrivers = [ "amdgpu" ]; # or "amdgpu", "intel"
 
