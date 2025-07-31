@@ -3,6 +3,25 @@
   wayland.windowManager.hyprland.enable = true;
 
   wayland.windowManager.hyprland.settings = {
+    monitor =
+      [ "DP-2,1920x1080@144,0x0,1,transform,1" "DP-1,1920x1080@144,1080x0,1" ];
+
+    # Workspace assignments
+    workspace = [
+      # Workspaces 1-5 on left monitor (DP-1)
+      "1, monitor:DP-2"
+      "2, monitor:DP-2"
+      "3, monitor:DP-2"
+      "4, monitor:DP-2"
+      "5, monitor:DP-2"
+      # Workspaces 6-10 on right monitor (DP-2)
+      "6, monitor:DP-1"
+      "7, monitor:DP-1"
+      "8, monitor:DP-1"
+      "9, monitor:DP-1"
+      "10, monitor:DP-1"
+    ];
+
     exec-once = [
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -18,6 +37,7 @@
       "$mod SHIFT, Q, killactive"
       "$mod SHIFT, E, exit"
       "$mod SHIFT, X, exec, hyprlock"
+      "$mod, f, fullscreen"
       # Navigation
       "$mod, h, movefocus, l"
       "$mod, l, movefocus, r"
@@ -30,15 +50,38 @@
 
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
-      let _ = i + 1;
+      let ws = i + 1;
       in [
-        "$mod, ${toString i}, workspace, ${toString i}"
-        "$mod SHIFT, ${toString i}, movetoworkspace, ${toString i}"
+        "$mod, ${toString ws}, workspace, ${toString ws}"
+        "$mod SHIFT, ${toString ws}, movetoworkspace, ${toString ws}"
       ]) 9)) ++ [
         "$mod, 0, workspace, 10"
       ]
       # Application launch keybinds
       ++ [ "$mod SHIFT, D, exec, rofi -show drun" ];
+
+    # Animation configuration with reduced timing
+    animations = {
+      enabled = true;
+
+      bezier = [
+        "wind, 0.05, 0.9, 0.1, 1.05"
+        "winIn, 0.1, 1.1, 0.1, 1.1"
+        "winOut, 0.3, -0.3, 0, 1"
+        "liner, 1, 1, 1, 1"
+      ];
+
+      animation = [
+        "windows, 1, 3, wind, slide" # Reduced from ~6-7 to 3
+        "windowsIn, 1, 3, winIn, slide" # Reduced from ~6-7 to 3
+        "windowsOut, 1, 2, winOut, slide" # Reduced from ~4-5 to 2
+        "windowsMove, 1, 3, wind, slide" # Reduced from ~6-7 to 3
+        "border, 1, 1, liner" # Reduced from ~10 to 1
+        "borderangle, 1, 4, liner" # Reduced from ~8 to 4
+        "fade, 1, 5, default" # Reduced from ~10 to 5
+        "workspaces, 1, 3, wind" # Reduced from ~6 to 3
+      ];
+    };
 
   };
 
