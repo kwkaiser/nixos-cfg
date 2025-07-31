@@ -37,6 +37,17 @@
           "mousewheel.default.delta_multiplier_x" = 100;
           "mousewheel.default.delta_multiplier_y" = 100;
           "mousewheel.default.delta_multiplier_z" = 100;
+
+          # Privacy settings - preserve cookies and site data when Firefox closes
+          "privacy.sanitize.sanitizeOnShutdown" = false;
+          "privacy.clearOnShutdown.cache" = false;
+          "privacy.clearOnShutdown.cookies" = false;
+          "privacy.clearOnShutdown.downloads" = false;
+          "privacy.clearOnShutdown.formdata" = false;
+          "privacy.clearOnShutdown.history" = false;
+          "privacy.clearOnShutdown.sessions" = false;
+          "privacy.clearOnShutdown.siteSettings" = false;
+          "privacy.clearOnShutdown.offlineApps" = false;
         };
       };
     };

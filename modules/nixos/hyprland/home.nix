@@ -64,6 +64,11 @@
       "$mod SHIFT, j, movewindow, d"
       "$mod SHIFT, k, movewindow, u"
 
+      # Stacked-like behavior
+      "$mod, s, togglegroup" # Create/toggle group (tabbed/stacked container)
+      "$mod, e, moveoutofgroup" # Exit group mode back to normal tiling
+      "$mod, Tab, changegroupactive, f" # Navigate between tabs in group
+
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
       let ws = i + 1;
