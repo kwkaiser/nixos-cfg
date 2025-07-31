@@ -1,6 +1,21 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
-  home.packages = with pkgs; [ swww jq ];
+  home.packages = with pkgs; [ swww jq bibata-cursors ];
   wayland.windowManager.hyprland.enable = true;
+
+  services.gammastep = {
+    enable = true;
+    latitude = 42.35;
+    longitude = -71.05;
+  };
+
+  home.pointerCursor = {
+    name =
+      "Bibata-Modern-Classic"; # or "Adwaita", "phinger-cursors-light", etc.
+    package = pkgs.bibata-cursors; # match the package
+    size = 24;
+    gtk.enable = true; # applies to GTK apps too
+    x11.enable = true; # enables for XWayland too
+  };
 
   wayland.windowManager.hyprland.settings = {
     monitor =
@@ -38,6 +53,7 @@
       "$mod SHIFT, E, exit"
       "$mod SHIFT, X, exec, hyprlock"
       "$mod, f, fullscreen"
+      "$mod SHIFT, R, exec, hyprctl reload"
       # Navigation
       "$mod, h, movefocus, l"
       "$mod, l, movefocus, r"
