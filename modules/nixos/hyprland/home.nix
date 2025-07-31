@@ -1,5 +1,5 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
-  home.packages = with pkgs; [ swww ];
+  home.packages = with pkgs; [ swww jq ];
   wayland.windowManager.hyprland.enable = true;
 
   wayland.windowManager.hyprland.settings = {
@@ -58,7 +58,9 @@
         "$mod, 0, workspace, 10"
       ]
       # Application launch keybinds
-      ++ [ "$mod SHIFT, D, exec, rofi -show drun" ];
+      ++ [
+        "$mod SHIFT, D, exec, sh -c 'ACTIVE_MONITOR=$(hyprctl monitors -j | jq -r \".[] | select(.focused == true) | .name\"); if [ \"$ACTIVE_MONITOR\" = \"DP-2\" ]; then rofi -show drun -monitor 0; else rofi -show drun -monitor 1; fi'"
+      ];
 
     # Animation configuration with reduced timing
     animations = {
