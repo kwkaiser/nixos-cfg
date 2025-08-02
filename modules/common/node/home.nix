@@ -1,3 +1,3 @@
 { config, pkgs, bconfig, ... }: {
-  home.packages = with pkgs; [ nodejs_18 nodenv pango cairo pixman fontconfig ];
+  home.packages = with pkgs; [ nodejs_20 nodenv pango cairo pixman fontconfig ];
 }
