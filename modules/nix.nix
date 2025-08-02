@@ -1,7 +1,6 @@
 { config, pkgs, isDarwin, ... }:
 {
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  
 } // (if isDarwin then { 
   nix = {
     linux-builder = {
@@ -12,7 +11,11 @@
     settings = {
       trusted-users = [ "@admin" "kwkaiser" ];
       extra-trusted-users = [ "@admin" "kwkaiser" ];
+      experimental-features = [ "nix-command" "flakes" ];
     };
   };
 } else
-  { })
+  { 
+   nixpkgs.config.allowUnfree = true;
+   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  })
