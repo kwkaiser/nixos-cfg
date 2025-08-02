@@ -100,7 +100,7 @@
         ];
       };
 
-      darwinConfigurations."finch-macbook" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."work-macbook" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
           isDarwin = true;
@@ -108,7 +108,7 @@
         modules = [
           home-manager.darwinModules.default
           stylix.darwinModules.stylix
-          ./hosts/finch-macbook.nix
+          ./hosts/work-macbook.nix
           ./modules
           ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];
