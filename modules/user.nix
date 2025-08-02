@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, inputs, isDarwin, ... }: {
   options = {
     mine.username = lib.mkOption {
       type = lib.types.str;
@@ -24,8 +24,6 @@
   
 
   config = {
-    system.primaryUser = config.mine.username;
-
     security.sudo.extraConfig = ''
       ${config.mine.username} ALL=(ALL) NOPASSWD: ALL
     '';
@@ -34,16 +32,17 @@
       home = builtins.toPath "${config.mine.homeDir}";
       description = "Primary user";
       openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
+    };
 
-    } // (if pkgs.stdenv.isDarwin then
-      { 
-      }
-    else {
-      users.users.root.password = "bingus";
+
+  } // (if isDarwin then {
+    system.primaryUser = config.mine.username;
+  } else { 
+    users.users.root.password = "bingus";
+    users.users.${config.mine.username} = {
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" ];
       initialPassword = "bingus";
-
-    });
-  };
+    };
+  });
 }
