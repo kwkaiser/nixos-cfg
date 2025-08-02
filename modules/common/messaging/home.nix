@@ -1,4 +1,8 @@
 { config, pkgs, isDarwin, lib, ... }: {
+
+} // (if isDarwin then {
+  # Do nothing, managed through homebrew
+} else {
   home.packages = with pkgs; [ slack signal-desktop caprine discord ];
-  services = lib.mkIf (!isDarwin) { kdeconnect.enable = true; };
-}
+  services.kdeconnect.enable = true;
+})
