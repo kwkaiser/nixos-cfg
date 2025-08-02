@@ -21,20 +21,25 @@
     };
   };
 
+  
+
   config = {
+    system.primaryUser = config.mine.username;
+
     security.sudo.extraConfig = ''
       ${config.mine.username} ALL=(ALL) NOPASSWD: ALL
     '';
 
-    users.users.root.password = "bingus";
     users.users.${config.mine.username} = {
       home = builtins.toPath "${config.mine.homeDir}";
       description = "Primary user";
       openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
 
     } // (if pkgs.stdenv.isDarwin then
-      { }
+      { 
+      }
     else {
+      users.users.root.password = "bingus";
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" ];
       initialPassword = "bingus";
