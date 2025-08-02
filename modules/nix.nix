@@ -1,17 +1,15 @@
-{ config, pkgs, isDarwin, ... }:
+{ config, pkgs, isDarwin, lib, ... }:
 {
   
 } // (if isDarwin then { 
   nix = {
-    linux-builder = {
-      enable = false;
-      ephemeral = true;
-      systems = [ "x86_64-linux" ];
-    };
     settings = {
       trusted-users = [ "@admin" "kwkaiser" ];
       extra-trusted-users = [ "@admin" "kwkaiser" ];
       experimental-features = [ "nix-command" "flakes" ];
+      builders = lib.mkForce [
+        "ssh-ng://desktop x86_64-darwin - 0"
+      ];
     };
   };
 } else
