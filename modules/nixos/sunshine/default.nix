@@ -1,17 +1,15 @@
-{ pkgs, lib, config, ... }: {
-
-  options = { mine.rofi.enable = lib.mkEnableOption "Enables sunshine"; };
+{ pkgs, config, lib, ... }: {
+  options = {
+    mine.sunshine.enable =
+      lib.mkEnableOption "Whether or not to enable sunshine";
+  };
 
   config = lib.mkIf config.mine.sunshine.enable {
-
     services.sunshine = {
       enable = true;
       autoStart = true;
       capSysAdmin = true;
-    }
-    # Home manager config
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
-
+      openFirewall = true;
+    };
   };
 }
-
