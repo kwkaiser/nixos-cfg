@@ -7,9 +7,9 @@
     if isDarwin then {
       homebrew.casks = [ "steam" ];
     } else {
-      home-manager.users.${config.mine.username} = {
-        imports = [ ./home.nix ];
-      };
+      # home-manager.users.${config.mine.username} = {
+      #   imports = [ ./home.nix ];
+      # };
 
       programs.steam = {
         enable = true;
