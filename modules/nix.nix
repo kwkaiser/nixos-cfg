@@ -4,11 +4,11 @@
 } // (if isDarwin then { 
   nix = {
     settings = {
-      trusted-users = [ "@admin" "kwkaiser" ];
-      extra-trusted-users = [ "@admin" "kwkaiser" ];
+      trusted-users = [ "@admin" "kwkaiser" "root" ];
+      extra-trusted-users = [ "@admin" "kwkaiser" "root" ];
       experimental-features = [ "nix-command" "flakes" ];
       builders = lib.mkForce [
-        "ssh-ng://desktop x86_64-darwin - 0"
+        "ssh-ng://desktop x86_64-linux - 0"
       ];
     };
   };

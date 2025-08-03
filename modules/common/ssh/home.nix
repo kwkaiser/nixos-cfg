@@ -10,5 +10,11 @@
         forwardAgent = true;
       };
     };
+    extraConfig = ''
+      Host *
+        ServerAliveInterval 300
+        ServerAliveCountMax 2
+        TCPKeepAlive yes
+    '';
   };
 }
