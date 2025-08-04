@@ -9,8 +9,8 @@
       ephemeral = true;
     };
     settings = {
-      trusted-users = [ "@admin" "kwkaiser" "root" ];
-      extra-trusted-users = [ "@admin" "kwkaiser" "root" ];
+      trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
+      extra-trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
       experimental-features = [ "nix-command" "flakes" ];
     };
   };
