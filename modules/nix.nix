@@ -3,6 +3,7 @@
   
 } // (if isDarwin then { 
   nix = {
+    distributedBuilds = true;
     settings = {
       trusted-users = [ "@admin" "kwkaiser" "root" ];
       extra-trusted-users = [ "@admin" "kwkaiser" "root" ];
