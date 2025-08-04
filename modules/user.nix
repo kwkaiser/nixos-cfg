@@ -33,7 +33,7 @@
     users.users.${config.mine.username} = {
       description = "Primary user";
       openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
-      extraGroups = [ "wheel" "networkmanager" ];
+      home = builtins.toPath "${config.mine.homeDir}";
     };
   } else { 
     users.users.root.password = "bingus";
