@@ -9,8 +9,9 @@
       extra-trusted-users = [ "@admin" "kwkaiser" "root" ];
       experimental-features = [ "nix-command" "flakes" ];
       builders = lib.mkForce [
-        "ssh-ng://desktop x86_64-linux - 0"
+        "ssh-ng://desktop x86_64-linux - 4 1"
       ];
+      builders-use-substitutes = true;
     };
   };
 } else
