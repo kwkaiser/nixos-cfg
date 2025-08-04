@@ -28,19 +28,20 @@
       ${config.mine.username} ALL=(ALL) NOPASSWD: ALL
     '';
 
-    users.users.${config.mine.username} = {
-      home = builtins.toPath "${config.mine.homeDir}";
-      description = "Primary user";
-      openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
-    };
-
-
   } // (if isDarwin then {
     system.primaryUser = config.mine.username;
+    users.users.${config.mine.username} = {
+      description = "Primary user";
+      openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
+      extraGroups = [ "wheel" "networkmanager" ];
+    };
   } else { 
     users.users.root.password = "bingus";
     users.users.${config.mine.username} = {
       isNormalUser = true;
+      description = "Primary user";
+      home = builtins.toPath "${config.mine.homeDir}";
+      openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
       extraGroups = [ "wheel" "networkmanager" ];
       initialPassword = "bingus";
     };
