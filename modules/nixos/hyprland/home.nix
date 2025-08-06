@@ -1,5 +1,5 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
-  home.packages = with pkgs; [ swww jq bibata-cursors ];
+  home.packages = with pkgs; [ swww jq bibata-cursors xfce.thunar ];
   wayland.windowManager.hyprland.enable = true;
 
   services.gammastep = {
