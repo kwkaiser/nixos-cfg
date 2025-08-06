@@ -88,10 +88,6 @@
       "$mod ALT, j, moveintogroup, d" # Add current window to group below
       "$mod ALT, k, moveintogroup, u" # Add current window to group above
 
-      # Focus parent/child (sway-like)
-      "$mod, a, exec, hyprctl dispatch focuswindow address:$(hyprctl activewindow -j | jq -r .address)" # Focus parent equivalent
-      "$mod SHIFT, a, exec, hyprctl dispatch focuswindow address:$(hyprctl activewindow -j | jq -r .address)" # Focus child equivalent
-
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
       let ws = i + 1;
@@ -103,10 +99,20 @@
       ]
       # Application launch keybinds
       ++ [
+        "$mod, D, exec, sh -c 'ACTIVE_MONITOR=$(hyprctl monitors -j | jq -r \".[] | select(.focused == true) | .name\"); MONITOR_FLAG=\"\"; if [ \"$ACTIVE_MONITOR\" = \"DP-2\" ]; then MONITOR_FLAG=\"-monitor 0\"; else MONITOR_FLAG=\"-monitor 1\"; fi; SELECTION=$(hyprctl clients -j | jq -r \".[] | select(.workspace.id != -99) | .title\" | rofi -dmenu -i -p \"Window\" $MONITOR_FLAG); if [ -n \"$SELECTION\" ]; then ADDRESS=$(hyprctl clients -j | jq -r \".[] | select(.title == \\\"$SELECTION\\\") | .address\" | head -1); hyprctl dispatch focuswindow address:\"$ADDRESS\"; fi'"
         "$mod SHIFT, D, exec, sh -c 'ACTIVE_MONITOR=$(hyprctl monitors -j | jq -r \".[] | select(.focused == true) | .name\"); if [ \"$ACTIVE_MONITOR\" = \"DP-2\" ]; then rofi -show drun -monitor 0; else rofi -show drun -monitor 1; fi'"
       ];
 
-    # Animation configuration with reduced timing
+    group = {
+      groupbar = {
+        enabled = true;
+        font_size = 12;
+        height = 18;
+        render_titles = true;
+        scrolling = true;
+      };
+    };
+
     animations = {
       enabled = true;
 
