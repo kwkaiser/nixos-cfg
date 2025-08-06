@@ -10,6 +10,7 @@
     ./firefox
     ./messaging
     ./cursor
+    ./gtk
     ./steam
     ./notes
     ./ssh
