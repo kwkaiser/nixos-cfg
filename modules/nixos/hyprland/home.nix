@@ -64,10 +64,33 @@
       "$mod SHIFT, j, movewindow, d"
       "$mod SHIFT, k, movewindow, u"
 
-      # Stacked-like behavior
-      "$mod, s, togglegroup" # Create/toggle group (tabbed/stacked container)
+      # Layout management (similar to sway)
+      "$mod, w, exec, hyprctl dispatch layoutmsg orientationtop" # Set tabbed layout
+      "$mod, s, togglegroup" # Create/toggle group (stacked/tabbed container)
       "$mod, e, moveoutofgroup" # Exit group mode back to normal tiling
-      "$mod, Tab, changegroupactive, f" # Navigate between tabs in group
+      "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom" # Split vertically
+      "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright" # Split horizontally
+
+      # Tab navigation
+      "$mod, Tab, changegroupactive, f" # Navigate between tabs in group (forward)
+      "$mod SHIFT, Tab, changegroupactive, b" # Navigate between tabs in group (backward)
+      "$mod, bracketleft, changegroupactive, b" # Navigate to previous tab in group ([)
+      "$mod, bracketright, changegroupactive, f" # Navigate to next tab in group (])
+
+      # Tab movement within group (reorder tabs)
+      "$mod SHIFT, bracketleft, movegroupwindow, b" # Move current tab one position left
+      "$mod SHIFT, bracketright, movegroupwindow, f" # Move current tab one position right
+
+      # Add/Remove tabs from groups
+      "$mod SHIFT, g, moveoutofgroup" # Remove current window from group
+      "$mod ALT, h, moveintogroup, l" # Add current window to group on the left
+      "$mod ALT, l, moveintogroup, r" # Add current window to group on the right
+      "$mod ALT, j, moveintogroup, d" # Add current window to group below
+      "$mod ALT, k, moveintogroup, u" # Add current window to group above
+
+      # Focus parent/child (sway-like)
+      "$mod, a, exec, hyprctl dispatch focuswindow address:$(hyprctl activewindow -j | jq -r .address)" # Focus parent equivalent
+      "$mod SHIFT, a, exec, hyprctl dispatch focuswindow address:$(hyprctl activewindow -j | jq -r .address)" # Focus child equivalent
 
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
