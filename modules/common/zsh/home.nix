@@ -10,14 +10,14 @@
       theme = "robbyrussell";
     };
 
-    initContent = ''
-      # Homebrew (Apple Silicon)
-      /opt/homebrew/bin/brew shellenv >> ~/.zshrc_homebrew_env
+    # initContent = ''
+    #   # Homebrew (Apple Silicon)
+    #   /opt/homebrew/bin/brew shellenv >> ~/.zshrc_homebrew_env
 
-            if [ -f ~/.zshrc_homebrew_env ]; then
-              source ~/.zshrc_homebrew_env
-            fi
-    '';
+    #         if [ -f ~/.zshrc_homebrew_env ]; then
+    #           source ~/.zshrc_homebrew_env
+    #         fi
+    # '';
 
   };
 
