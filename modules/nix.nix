@@ -1,7 +1,8 @@
 { config, pkgs, isDarwin, lib, ... }:
 {
-  
-} // (if isDarwin then { 
+  # Global nixpkgs configuration for all systems
+  nixpkgs.config.allowUnfree = true;
+} // (if isDarwin then {
   nix = {
     distributedBuilds = true;
     linux-builder = {
@@ -14,8 +15,6 @@
       experimental-features = [ "nix-command" "flakes" ];
     };
   };
-} else
-  { 
-   nixpkgs.config.allowUnfree = true;
-   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  })
+} else {
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+})

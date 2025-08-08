@@ -12,6 +12,7 @@
     ./cursor
     ./gtk
     ./steam
+    ./spotify
     ./notes
     ./ssh
     ./virt
