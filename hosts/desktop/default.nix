@@ -32,4 +32,5 @@
   mine.ssh.enable = true;
   mine.docker.enable = true;
   mine.sunshine.enable = true;
+  mine.spotify.enable = true;
 }
