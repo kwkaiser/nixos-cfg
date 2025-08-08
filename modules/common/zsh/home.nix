@@ -17,10 +17,10 @@
             if [ -f ~/.zshrc_homebrew_env ]; then
               source ~/.zshrc_homebrew_env
             fi
-
-      export PATH="$HOME/.encore/bin:$HOME/.local/bin:$PATH"
     '';
 
   };
+
+  home.sessionPath = [ "$HOME/.encore/bin" "$HOME/.local/bin" ];
 
 }
