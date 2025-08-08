@@ -18,5 +18,8 @@
               source ~/.zshrc_homebrew_env
             fi
     '';
+
   };
+
+  home.sessionPath = [ "$HOME/.encore/bin" "$HOME/.local/bin" ];
 }

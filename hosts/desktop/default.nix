@@ -4,6 +4,8 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   system.stateVersion = "25.05";
 
+  programs.nix-ld.enable = true;
+
   mine.username = "kwkaiser";
   mine.homeDir = "/home/kwkaiser";
   mine.email = "karl@kwkaiser.io";
