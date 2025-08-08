@@ -12,19 +12,8 @@
       extraConfig = ''
         AddKeysToAgent yes
       '';
-    };
+    } // (if isDarwin then { } else { startAgent = true; });
 
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
-
-  } // (if isDarwin then
-    { }
-  else {
-    programs.ssh = {
-      startAgent = true;
-      settings = {
-        PasswordAuthentication = false;
-        PermitRootLogin = "no";
-      };
-    };
-  });
+  };
 }
