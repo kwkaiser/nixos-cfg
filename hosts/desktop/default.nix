@@ -30,5 +30,6 @@
   mine.steam.enable = true;
   mine.notes.enable = true;
   mine.ssh.enable = true;
+  mine.docker.enable = true;
   mine.sunshine.enable = true;
 }

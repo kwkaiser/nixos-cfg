@@ -15,6 +15,7 @@
     ./notes
     ./ssh
     ./virt
+    ./docker
     ./stylix.nix
   ];
 }
