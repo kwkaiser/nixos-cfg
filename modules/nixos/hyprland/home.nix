@@ -1,5 +1,16 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
   home.packages = with pkgs; [ swww jq bibata-cursors xfce.thunar ];
+
+  home.shellAliases = {
+    "getTabIndex" =
+      "hyprctl activewindow -j | jq -r '. as $win | ($win.grouped | index($win.address)) as $idx | { index: $idx, size: (.grouped | length) }'";
+    "someShit" = ''
+      getTabIndex >> ~/Desktop/getTabIndex.txt
+    '';
+    "moveLeft" = ''
+      idx=$(getTabIndex | jq -r .index); if [ -z "$idx" ] || [ "$idx" = "null" ]; then hyprctl dispatch movewindow l; elif (( idx == 0 )); then hyprctl dispatch moveoutofgroup; else hyprctl dispatch movegroupwindow b; fi'';
+  };
+
   wayland.windowManager.hyprland.enable = true;
 
   services.gammastep = {
@@ -39,6 +50,7 @@
 
     exec-once = [
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+
       "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "waybar &"
       "swaync &"
@@ -54,6 +66,8 @@
       "$mod SHIFT, X, exec, hyprlock"
       "$mod, f, fullscreen"
       "$mod SHIFT, R, exec, hyprctl reload"
+      "$mod, m, exec, bash -c 'someShit'"
+
       # Navigation
       "$mod, h, movefocus, l"
       "$mod, l, movefocus, r"
@@ -81,12 +95,8 @@
       "$mod SHIFT, bracketleft, movegroupwindow, b" # Move current tab one position left
       "$mod SHIFT, bracketright, movegroupwindow, f" # Move current tab one position right
 
-      # Add/Remove tabs from groups
-      "$mod SHIFT, g, moveoutofgroup" # Remove current window from group
-      "$mod ALT, h, moveintogroup, l" # Add current window to group on the left
-      "$mod ALT, l, moveintogroup, r" # Add current window to group on the right
-      "$mod ALT, j, moveintogroup, d" # Add current window to group below
-      "$mod ALT, k, moveintogroup, u" # Add current window to group above
+      # Quick notification cleanup
+      "$mod, n, exec, swaync-client --close-latest"
 
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
@@ -136,6 +146,41 @@
     };
 
   };
+
+  # Keybinds for submaps must live in `extraConfig`
+  wayland.windowManager.hyprland.extraConfig = ''
+    # Fine notification control 
+
+    bind = $mod SHIFT, n, submap, notifications
+    submap = notifications
+
+    bind = , o, exec, swaync-client -t 
+    bind = , c, exec, swaync-client -C
+    bind = , d, exec, swaync-client -d
+
+    bind = , escape, submap, reset
+    bind = , enter, submap, reset
+
+    submap = reset
+
+    # Tab navigation ------
+
+    bind = $mod SHIFT, t, submap, tabs
+    submap = tabs
+
+    bind = $mod SHIFT, h, moveintogroup, l
+    bind = $mod SHIFT, l, moveintogroup, r
+    bind = $mod SHIFT, j, moveintogroup, d
+    bind = $mod SHIFT, k, moveintogroup, u
+    bind = $mod SHIFT, g, moveoutofgroup
+
+    bind = , escape, submap, reset
+    bind = , enter, submap, reset
+
+    submap = reset
+
+
+  '';
 
   programs.hyprlock.enable = true;
   programs.hyprlock.settings = {
