@@ -12,5 +12,16 @@
         hyprctl dispatch movegroupwindow b
       fi
     '')
+    (pkgs.writeShellScriptBin "moveRight" ''
+      idx=$(hyprctl activewindow -j | jq -r '. as $win | ($win.grouped | index($win.address)) as $idx | { index: $idx, size: (.grouped | length) }' | jq -r .index)
+      size=$(hyprctl activewindow -j | jq -r '.grouped | length')
+      if [ -z "$idx" ] || [ "$idx" = "null" ]; then
+        hyprctl dispatch movewindow r
+      elif [ "$idx" -eq $((size - 1)) ]; then
+        hyprctl dispatch moveoutofgroup
+      else
+        hyprctl dispatch movegroupwindow f
+      fi
+    '')
   ];
 }
