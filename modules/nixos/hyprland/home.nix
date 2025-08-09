@@ -1,15 +1,7 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
   home.packages = with pkgs; [ swww jq bibata-cursors xfce.thunar ];
-  imports = [ ./script.nix ];
 
-  # home.shellAliases = {
-  #   "getTabIndex" =
-  #     "hyprctl activewindow -j | jq -r '. as $win | ($win.grouped | index($win.address)) as $idx | { index: $idx, size: (.grouped | length) }'";
-
-  #   "moveLeft" = ''
-  #     idx=$(getTabIndex | jq -r .index); if [ -z "$idx" ] || [ "$idx" = "null" ]; then hyprctl dispatch movewindow l; elif (( idx == 0 )); then hyprctl dispatch moveoutofgroup; else hyprctl dispatch movegroupwindow b; fi
-  #   '';
-  # };
+  imports = [ ./scripts.nix ];
 
   wayland.windowManager.hyprland.enable = true;
 
@@ -66,7 +58,7 @@
       "$mod SHIFT, X, exec, hyprlock"
       "$mod, f, fullscreen"
       "$mod SHIFT, R, exec, hyprctl reload"
-      "$mod, m, exec, bingus"
+      "$mod, m, exec, moveLeft"
 
       # Navigation
       "$mod, h, movefocus, l"
