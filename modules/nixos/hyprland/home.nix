@@ -1,5 +1,11 @@
 { pkgs, lib, config, inputs, home, bconfig, ... }: {
-  home.packages = with pkgs; [ swww jq bibata-cursors xfce.thunar ];
+  home.packages = with pkgs; [
+    swww
+    jq
+    bibata-cursors
+    xfce.thunar
+    sway-contrib.grimshot
+  ];
 
   imports = [ ./scripts.nix ];
 
@@ -58,7 +64,11 @@
       "$mod SHIFT, X, exec, hyprlock"
       "$mod, f, fullscreen"
       "$mod SHIFT, R, exec, hyprctl reload"
-      "$mod, m, exec, moveLeft"
+      "$mod, m, exec, shiftTabLeft"
+
+      # Screenshots
+      "$mod SHIFT, C, exec, grimshot save area ~/Documents/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"
+      "$mod, c, exec, grimshot copy area"
 
       # Navigation
       "$mod, h, movefocus, l"
@@ -77,18 +87,25 @@
       "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom" # Split vertically
       "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright" # Split horizontally
 
-      # Tab navigation
-      "$mod, Tab, changegroupactive, f" # Navigate between tabs in group (forward)
-      "$mod SHIFT, Tab, changegroupactive, b" # Navigate between tabs in group (backward)
-      "$mod, bracketleft, changegroupactive, b" # Navigate to previous tab in group ([)
-      "$mod, bracketright, changegroupactive, f" # Navigate to next tab in group (])
+      # Tabbing
+      "$mod, bracketleft, changegroupactive, b"
+      "$mod, bracketright, changegroupactive, f"
+      "$mod SHIFT, bracketleft, exec, shiftTabLeft"
+      "$mod SHIFT, bracketright, exec, shiftTabRight"
 
-      # Tab movement within group (reorder tabs)
-      "$mod SHIFT, bracketleft, movegroupwindow, b" # Move current tab one position left
-      "$mod SHIFT, bracketright, movegroupwindow, f" # Move current tab one position right
-
-      # Quick notification cleanup
+      # Notifications
+      "$mod SHIFT, b, exec, swaync-client -C"
+      "$mod SHIFT, n, exec, swaync-client -t"
       "$mod, n, exec, swaync-client --close-latest"
+
+      # Audio
+      "$mod, code:96, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+      "$mod, code:95, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+      "$mod, code:76, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+
+      "$mod SHIFT, code:96, exec, playerctl next"
+      "$mod SHIFT, code:95, exec, playerctl play-pause"
+      "$mod SHIFT, code:76, exec, playerctl previous"
 
       # Workspaces
     ] ++ (builtins.concatLists (builtins.genList (i:
@@ -138,41 +155,6 @@
     };
 
   };
-
-  # Keybinds for submaps must live in `extraConfig`
-  wayland.windowManager.hyprland.extraConfig = ''
-    # Fine notification control 
-
-    bind = $mod SHIFT, n, submap, notifications
-    submap = notifications
-
-    bind = , o, exec, swaync-client -t 
-    bind = , c, exec, swaync-client -C
-    bind = , d, exec, swaync-client -d
-
-    bind = , escape, submap, reset
-    bind = , enter, submap, reset
-
-    submap = reset
-
-    # Tab navigation ------
-
-    bind = $mod SHIFT, t, submap, tabs
-    submap = tabs
-
-    bind = $mod SHIFT, h, moveintogroup, l
-    bind = $mod SHIFT, l, moveintogroup, r
-    bind = $mod SHIFT, j, moveintogroup, d
-    bind = $mod SHIFT, k, moveintogroup, u
-    bind = $mod SHIFT, g, moveoutofgroup
-
-    bind = , escape, submap, reset
-    bind = , enter, submap, reset
-
-    submap = reset
-
-
-  '';
 
   programs.hyprlock.enable = true;
   programs.hyprlock.settings = {
