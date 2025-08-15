@@ -94,6 +94,10 @@
       "$mod SHIFT, bracketleft, exec, shiftTabLeft"
       "$mod SHIFT, bracketright, exec, shiftTabRight"
 
+      # Misc programs
+      "$mod SHIFT, f, exec, thunar"
+      "$mod, b, exec, obsidian"
+
       # Notifications
       "$mod SHIFT, b, exec, swaync-client -C"
       "$mod SHIFT, n, exec, swaync-client -t"
