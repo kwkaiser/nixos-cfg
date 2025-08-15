@@ -4,6 +4,7 @@
     jq
     bibata-cursors
     xfce.thunar
+    xfce.tumbler
     sway-contrib.grimshot
   ];
 
