@@ -18,12 +18,11 @@
   };
 
   home.pointerCursor = {
-    name =
-      "Bibata-Modern-Classic"; # or "Adwaita", "phinger-cursors-light", etc.
-    package = pkgs.bibata-cursors; # match the package
+    name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors;
     size = 24;
-    gtk.enable = true; # applies to GTK apps too
-    x11.enable = true; # enables for XWayland too
+    gtk.enable = true;
+    x11.enable = true;
   };
 
   wayland.windowManager.hyprland.settings = {
@@ -81,11 +80,11 @@
       "$mod SHIFT, k, movewindow, u"
 
       # Layout management (similar to sway)
-      "$mod, w, exec, hyprctl dispatch layoutmsg orientationtop" # Set tabbed layout
-      "$mod, s, togglegroup" # Create/toggle group (stacked/tabbed container)
-      "$mod, e, moveoutofgroup" # Exit group mode back to normal tiling
-      "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom" # Split vertically
-      "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright" # Split horizontally
+      "$mod, w, exec, hyprctl dispatch layoutmsg orientationtop"
+      "$mod, s, togglegroup"
+      "$mod, e, moveoutofgroup"
+      "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom"
+      "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright"
 
       # Tabbing
       "$mod, bracketleft, changegroupactive, b"
@@ -143,14 +142,14 @@
       ];
 
       animation = [
-        "windows, 1, 3, wind, slide" # Reduced from ~6-7 to 3
-        "windowsIn, 1, 3, winIn, slide" # Reduced from ~6-7 to 3
-        "windowsOut, 1, 2, winOut, slide" # Reduced from ~4-5 to 2
-        "windowsMove, 1, 3, wind, slide" # Reduced from ~6-7 to 3
-        "border, 1, 1, liner" # Reduced from ~10 to 1
-        "borderangle, 1, 4, liner" # Reduced from ~8 to 4
-        "fade, 1, 5, default" # Reduced from ~10 to 5
-        "workspaces, 1, 3, wind" # Reduced from ~6 to 3
+        "windows, 1, 3, wind, slide"
+        "windowsIn, 1, 3, winIn, slide"
+        "windowsOut, 1, 2, winOut, slide"
+        "windowsMove, 1, 3, wind, slide"
+        "border, 1, 1, liner"
+        "borderangle, 1, 4, liner"
+        "fade, 1, 5, default"
+        "workspaces, 1, 3, wind"
       ];
     };
 
