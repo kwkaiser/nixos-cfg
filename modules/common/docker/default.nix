@@ -5,11 +5,10 @@
 
   config = lib.mkIf config.mine.docker.enable {
     # Stub
-  }
-  // (if isDarwin then {
-  } else
-    { 
-      virtualisation.docker = { enable = true; };
-      users.users.${config.mine.username}.extraGroups = [ "docker" ];
-    });
+  } // (if isDarwin then
+    { }
+  else {
+    virtualisation.docker = { enable = true; };
+    users.users.${config.mine.username}.extraGroups = [ "docker" ];
+  });
 }
