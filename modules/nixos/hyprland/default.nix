@@ -13,12 +13,11 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.greetd}/bin/agreety --cmd Hyprland";
+          command = "${pkgs.hyprland}/bin/Hyprland";
+          user = config.mine.username;
         };
       };
     };
-
-    programs.regreet.enable = true;
 
     security.pam.services.hyprlock = { };
 
