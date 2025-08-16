@@ -33,7 +33,8 @@
     };
     matchBlocks = {
       "desktop-wakeup" = {
-        hostname = "livingroom";
+        hostname = "192.168.4.109";
+        proxyJump = "kwkaiser@box.kwkaiser.io";
         user = "bingus";
         forwardAgent = true;
         extraOptions = {
