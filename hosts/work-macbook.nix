@@ -9,7 +9,7 @@
   mine.email = "karl@kwkaiser.io";
 
   homebrew.enable = true;
-  homebrew.brewPrefix = "/opt/homebrew/bin";
+  homebrew.brewPrefix = "/usr/local/bin";
 
   mine.aero.enable = true;
   mine.git.signsCommits = true;
