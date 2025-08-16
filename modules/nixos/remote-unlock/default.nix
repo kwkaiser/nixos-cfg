@@ -4,14 +4,14 @@
     mine.remoteUnlock.enable =
       lib.mkEnableOption "Enables initramfs ssh for decrypting over ssh";
 
-    mine.remoteUnlock.requiredKernelModules = mkOption {
-      type = types.listOf types.str;
+    mine.remoteUnlock.requiredKernelModules = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
       description =
         "List of kernel modules that are required for remote unlock.";
     };
 
-    mine.remoteUnlock.ethDevice = mkOption {
-      type = types.str;
+    mine.remoteUnlock.ethDevice = lib.mkOption {
+      type = lib.types.str;
       description = "The name of the ethernet device to use for remote unlock.";
     };
   };
