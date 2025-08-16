@@ -8,6 +8,18 @@
     xdg.portal.enable = true;
     xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
     programs.hyprland.enable = true;
+
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.greetd}/bin/agreety --cmd Hyprland";
+        };
+      };
+    };
+
+    programs.regreet.enable = true;
+
     security.pam.services.hyprlock = { };
 
     # Home manager config
