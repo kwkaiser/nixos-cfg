@@ -12,6 +12,14 @@
       };
     };
     matchBlocks = {
+      "livingroom" = {
+        hostname = "192.168.4.109";
+        user = "bingus";
+        proxyJump = "kwkaiser@box.kwkaiser.io";
+        forwardAgent = true;
+      };
+    };
+    matchBlocks = {
       "desktop-unlock" = {
         hostname = "192.168.4.110";
         user = "root";
@@ -25,8 +33,8 @@
     };
     matchBlocks = {
       "desktop-wakeup" = {
-        hostname = "box.kwkaiser.io";
-        user = "kwkaiser";
+        hostname = "livingroom";
+        user = "bingus";
         forwardAgent = true;
         extraOptions = {
           StrictHostKeyChecking = "no";
