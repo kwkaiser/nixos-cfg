@@ -9,16 +9,18 @@
     # Home manager config
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
 
-    networking.firewall = rec {
-      allowedTCPPortRanges = [{
-        from = 1714;
-        to = 1764;
-      }];
-      allowedUDPPortRanges = allowedTCPPortRanges;
-    };
+    
 
   } // (if isDarwin then {
     homebrew.casks = [ "slack" "signal" "caprine" "discord" ];
   } else
-    { });
+    { 
+      networking.firewall = rec {
+        allowedTCPPortRanges = [{
+          from = 1714;
+          to = 1764;
+        }];
+        allowedUDPPortRanges = allowedTCPPortRanges;
+      };
+    });
 }
