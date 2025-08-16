@@ -8,9 +8,7 @@
         user = "kwkaiser";
         proxyJump = "kwkaiser@box.kwkaiser.io";
         forwardAgent = true;
-        extraConfig = ''
-          StrictHostKeyChecking no
-        '';
+        extraOptions = { StrictHostKeyChecking = "no"; };
       };
     };
     matchBlocks = {
@@ -19,10 +17,10 @@
         user = "root";
         proxyJump = "kwkaiser@box.kwkaiser.io";
         forwardAgent = true;
-        RemoteCommand = "cryptsetup-askpass";
-        extraConfig = ''
-          StrictHostKeyChecking no
-        '';
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+          RemoteCommand = "cryptsetup-askpass";
+        };
       };
     };
     matchBlocks = {
@@ -30,10 +28,10 @@
         hostname = "box.kwkaiser.io";
         user = "kwkaiser";
         forwardAgent = true;
-        RemoteCommand = "wakeonlan 70:85:c2:dc:da:23";
-        extraConfig = ''
-          StrictHostKeyChecking no
-        '';
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+          RemoteCommand = "wakeonlan 70:85:c2:dc:da:23";
+        };
       };
     };
     extraConfig = ''
