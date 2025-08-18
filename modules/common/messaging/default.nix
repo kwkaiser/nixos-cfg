@@ -5,22 +5,18 @@
       "Enables messaging applications (Slack, Signal, Caprine, Discord)";
   };
 
-  config = lib.mkIf config.mine.messaging.enable {
+  config = lib.mkIf config.mine.messaging.enable ({
     # Home manager config
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
-
-    
-
   } // (if isDarwin then {
     homebrew.casks = [ "slack" "signal" "caprine" "discord" ];
-  } else
-    { 
-      networking.firewall = rec {
-        allowedTCPPortRanges = [{
-          from = 1714;
-          to = 1764;
-        }];
-        allowedUDPPortRanges = allowedTCPPortRanges;
-      };
-    });
+  } else {
+    networking.firewall = rec {
+      allowedTCPPortRanges = [{
+        from = 1714;
+        to = 1764;
+      }];
+      allowedUDPPortRanges = allowedTCPPortRanges;
+    };
+  }));
 }
