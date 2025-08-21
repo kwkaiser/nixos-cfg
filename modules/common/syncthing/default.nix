@@ -1,14 +1,10 @@
-{ pkgs, config, lib, inputs, isDarwin, ... }: {
-  options = {
-    mine.syncthing.enable =
-      lib.mkEnableOption "Whether or not to use syncthing";
-  };
+{ pkgs, lib, config, isDarwin, ... }: {
 
-  config = lib.mkIf config.mine.syncthing.enable {
+  options = { mine.syncthing.enable = lib.mkEnableOption "Enables syncthing"; };
 
-  } // (if isDarwin then {
+  config = lib.mkIf config.mine.syncthing.enable ({ } // (if isDarwin then {
     homebrew.casks = [ "syncthing" ];
   } else {
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
-  });
+  }));
 }
