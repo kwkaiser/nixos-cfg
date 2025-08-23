@@ -70,7 +70,7 @@
 
       secondaryConfig = {
         secondaryTopBar = {
-          output = [ bconfig.mine.waybar.secondaryMonitor "moonlight" ];
+          output = [ bconfig.mine.waybar.secondaryMonitor ];
           layer = "top";
           position = "top";
           height = 48;
@@ -86,7 +86,7 @@
         };
 
         secondaryBottomBar = {
-          output = [ bconfig.mine.waybar.secondaryMonitor "moonlight" ];
+          output = [ bconfig.mine.waybar.secondaryMonitor ];
           layer = "top";
           position = "bottom";
           height = 48;
