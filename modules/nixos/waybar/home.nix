@@ -4,7 +4,7 @@
     settings = let
       mainConfig = {
         mainBar = {
-          output = [ bconfig.mine.waybar.primaryMonitor ];
+          output = [ bconfig.mine.waybar.primaryMonitor "moonlight" ];
           layer = "top";
           position = "top";
           height = 48;
@@ -42,7 +42,7 @@
         };
 
         bottomBar = {
-          output = [ bconfig.mine.waybar.primaryMonitor ];
+          output = [ bconfig.mine.waybar.primaryMonitor "moonlight" ];
           layer = "top";
           position = "bottom";
           height = 48;
@@ -70,7 +70,7 @@
 
       secondaryConfig = {
         secondaryTopBar = {
-          output = [ bconfig.mine.waybar.secondaryMonitor ];
+          output = [ bconfig.mine.waybar.secondaryMonitor "moonlight" ];
           layer = "top";
           position = "top";
           height = 48;
@@ -86,7 +86,7 @@
         };
 
         secondaryBottomBar = {
-          output = [ bconfig.mine.waybar.secondaryMonitor ];
+          output = [ bconfig.mine.waybar.secondaryMonitor "moonlight" ];
           layer = "top";
           position = "bottom";
           height = 48;
