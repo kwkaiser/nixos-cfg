@@ -2,6 +2,7 @@
 {
   # Global nixpkgs configuration for all systems
   nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = with pkgs; [ nixfmt-rfc-style ];
 } // (if isDarwin then {
   nix = {
     distributedBuilds = true;
@@ -27,8 +28,6 @@
       automatic = true;
       persistent = true;
     };
-    settings = {
-      experimental-features = ["nix-command", "flakes"];
-    };
+    settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 })
