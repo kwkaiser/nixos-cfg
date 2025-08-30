@@ -12,13 +12,11 @@
       br = "branch";
     };
     extraConfig = {
-      push = {
-        default = "current";
-        autoSetupRemote = true;
-      };
-      branch.autoSetupMerge = "always";
+      push.default = "current";         
+      push.autoSetupRemote = true;      
+      branch.autoSetupMerge = "always"; 
+      pull.rebase = true;
     };
-
   } // (if bconfig.mine.git.signsCommits then {
     extraConfig = {
       commit.gpgsign = true;
