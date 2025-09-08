@@ -13,9 +13,9 @@
   # mine.hyprland.enable = true;
   # mine.waybar.enable = true;
   # TODO: find a way to reduce duplication around this
-  # mine.waybar.primaryMonitor = "Virtual-1";
-  mine.kitty.enable = true;
-  mine.rofi.enable = true;
+  mine.kde.enable = true;
+  # mine.kitty.enable = true;
+  # mine.rofi.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;
   mine.firefox.enable = true;
@@ -24,6 +24,4 @@
   mine.steam.enable = true;
   mine.notes.enable = true;
   mine.ssh.enable = true;
-  mine.kde.enable = true;
-  # mine.swaync.enable = true;
 }

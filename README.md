@@ -42,3 +42,7 @@ This approach should be possible on most linux distros, provided they have nix i
 ## To update
 
 - `nix flake update`
+
+## To build vm:
+
+- `nix build .#nixosConfigurations.<flake name>.config.system.build.vm`
