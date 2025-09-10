@@ -2,6 +2,7 @@
 {
   # Global nixpkgs configuration for all systems
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = _: true;
   environment.systemPackages = with pkgs; [ nixfmt-rfc-style ];
 } // (if isDarwin then {
   nix = {
