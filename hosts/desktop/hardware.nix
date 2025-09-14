@@ -27,6 +27,12 @@
     lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+  hardware.graphics.extraPackages = with pkgs; [
+    mesa
+    vulkan-loader
+    vulkan-validation-layers
+  ];
 
   services.xserver.videoDrivers = [ "amdgpu" ]; # or "amdgpu", "intel"
 
