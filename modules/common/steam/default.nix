@@ -6,15 +6,6 @@
   config = lib.mkIf config.mine.steam.enable (if isDarwin then {
     homebrew.casks = [ "steam" ];
   } else {
-    # home-manager.users.${config.mine.username} = {
-    #   imports = [ ./home.nix ];
-    # };
-
-    programs.gamescope = {
-      enable = true;
-      capSysNice = true;
-    };
-
     programs.steam = {
       enable = true;
       remotePlay.openFirewall = true;
