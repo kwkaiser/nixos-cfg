@@ -2,12 +2,10 @@
   imports = (if isDarwin then [
     ./darwin
     ./common
-    ./nix.nix
     ./user.nix
   ] else [
     ./nixos
     ./common
-    ./nix.nix
     ./user.nix
   ]);
 
