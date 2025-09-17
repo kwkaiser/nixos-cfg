@@ -4,6 +4,8 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnfreePredicate = _: true;
   environment.systemPackages = with pkgs; [ nixfmt-rfc-style ];
+  home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
+
 } // (if isDarwin then {
   nix = {
     distributedBuilds = true;
