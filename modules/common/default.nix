@@ -1,6 +1,7 @@
 { pkgs, lib, config, ... }: {
   imports = [
     ./kitty
+    ./nix
     ./git
     ./neovim
     ./node
