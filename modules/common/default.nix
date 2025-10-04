@@ -5,6 +5,7 @@
     ./git
     ./neovim
     ./node
+    ./python
     ./zsh
     ./keepass
     ./syncthing

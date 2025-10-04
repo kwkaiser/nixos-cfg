@@ -34,6 +34,7 @@
   mine.docker.enable = true;
   mine.sunshine.enable = true;
   mine.spotify.enable = true;
+  mine.python.enable = true;
   mine.remoteUnlock.enable = true;
   mine.remoteUnlock.requiredKernelModules = [ "igb" ];
   mine.remoteUnlock.ethDevice = "enp8s0";
