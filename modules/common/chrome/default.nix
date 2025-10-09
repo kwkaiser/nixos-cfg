@@ -1,9 +1,9 @@
 { pkgs, config, lib, inputs, ... }: {
   options = {
-    mine.chromium.enable = lib.mkEnableOption "Whether or not to use chromium";
+    mine.chrome.enable = lib.mkEnableOption "Whether or not to use chrome";
   };
 
-  config = lib.mkIf config.mine.chromium.enable {
+  config = lib.mkIf config.mine.chrome.enable {
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 }

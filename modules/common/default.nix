@@ -10,7 +10,7 @@
     ./keepass
     ./syncthing
     ./firefox
-    ./chromium
+    ./chrome
     ./messaging
     ./cursor
     ./gtk
