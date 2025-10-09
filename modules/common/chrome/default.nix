@@ -4,6 +4,6 @@
   };
 
   config = lib.mkIf config.mine.chrome.enable {
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
+    environment.systemPackages = with pkgs; [ google-chrome ];
   };
 }
