@@ -4,6 +4,11 @@
   };
 
   config = lib.mkIf config.mine.chrome.enable {
-    environment.systemPackages = with pkgs; [ chromium ];
+    environment.systemPackages = with pkgs; [ chromium terraform ];
   };
 }
+
+/* *
+   code -> aws cloudformation -> creating a template for services that we want
+   aws cloudformation -> creates bullshit in cloud
+*/
