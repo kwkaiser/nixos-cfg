@@ -5,7 +5,7 @@
     '')
 
     (pkgs.writeShellScriptBin "upgrade" ''
-      cd ~/Documents/nixos-cfg && sudo nixos-rebuild switch --flake .#{{.host}}
+      cd ~/Documents/nixos-cfg && sudo nixos-rebuild switch --flake .#$(hostname)
     '')
   ];
 }
