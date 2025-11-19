@@ -44,7 +44,6 @@
 
         modules = [
           disko.nixosModules.disko
-          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/vm/full.nix
           ./modules
@@ -60,7 +59,6 @@
 
         modules = [
           disko.nixosModules.disko
-          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/vm/thin.nix
           ./modules
@@ -76,7 +74,6 @@
 
         modules = [
           disko.nixosModules.disko
-          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/vm/full.nix
           ./modules
@@ -92,7 +89,6 @@
 
         modules = [
           disko.nixosModules.disko
-          stylix.nixosModules.stylix
           home-manager.nixosModules.default
           ./hosts/desktop
           ./modules

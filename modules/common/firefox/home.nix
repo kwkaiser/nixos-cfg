@@ -4,7 +4,7 @@
     profiles = {
       kwkaiser = {
         extensions.packages =
-          with inputs.firefox-addons.packages.${pkgs.system}; [
+          with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [
             ublock-origin
             keepassxc-browser
             i-dont-care-about-cookies
