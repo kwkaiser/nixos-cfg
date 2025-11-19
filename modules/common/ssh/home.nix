@@ -1,8 +1,16 @@
 { config, pkgs, lib, bconfig, ... }: {
   programs.ssh = {
     enable = true;
-    forwardAgent = true;
+    enableDefaultConfig = false;
     matchBlocks = {
+      "*" = {
+        forwardAgent = true;
+        extraOptions = {
+          ServerAliveInterval = "300";
+          ServerAliveCountMax = "2";
+          TCPKeepAlive = "yes";
+        };
+      };
       "desktop" = {
         hostname = "192.168.4.110";
         user = "kwkaiser";
@@ -10,16 +18,12 @@
         forwardAgent = true;
         extraOptions = { StrictHostKeyChecking = "no"; };
       };
-    };
-    matchBlocks = {
       "livingroom" = {
         hostname = "192.168.4.109";
         user = "bingus";
         proxyJump = "kwkaiser@box.kwkaiser.io";
         forwardAgent = true;
       };
-    };
-    matchBlocks = {
       "desktop-unlock" = {
         hostname = "192.168.4.110";
         user = "root";
@@ -30,8 +34,6 @@
           RemoteCommand = "cryptsetup-askpass";
         };
       };
-    };
-    matchBlocks = {
       "desktop-wakeup" = {
         hostname = "192.168.4.109";
         proxyJump = "kwkaiser@box.kwkaiser.io";
@@ -43,11 +45,5 @@
         };
       };
     };
-    extraConfig = ''
-      Host *
-        ServerAliveInterval 300
-        ServerAliveCountMax 2
-        TCPKeepAlive yes
-    '';
   };
 }
