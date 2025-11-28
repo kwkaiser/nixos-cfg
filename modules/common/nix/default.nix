@@ -8,11 +8,8 @@
 
 } // (if isDarwin then {
   nix = {
+    enable = false;
     distributedBuilds = true;
-    linux-builder = {
-      enable = true;
-      ephemeral = true;
-    };
     settings = {
       trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
       extra-trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
