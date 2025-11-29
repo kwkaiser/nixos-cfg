@@ -19,9 +19,15 @@
   if isDarwin then
     {
       nix = {
-        enable = false;
+        enable = true;
+        linux-builder = {
+          enable = true;
+          systems = [
+            "x86_64-linux"
+            "aarch64-linux"
+          ];
+        };
         distributedBuilds = true;
-        # external-builders = [{"systems":["aarch64-linux","x86_64-linux"],"program":"/usr/local/bin/determinate-nixd","args":["builder"]}];
         settings = {
           trusted-users = [
             "@admin"
@@ -38,9 +44,7 @@
           experimental-features = [
             "nix-command"
             "flakes"
-            "external-builders"
           ];
-          extra-experimental-features = "external-builders";
         };
       };
     }
