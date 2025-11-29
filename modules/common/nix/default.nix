@@ -26,7 +26,19 @@
             "x86_64-linux"
             "aarch64-linux"
           ];
-          config.boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
+          ephemeral = true;
+          maxJobs = 6;
+          config = {
+            virtualisation = {
+              cores = 6;
+              darwin-builder = {
+                diskSize = 30 * 1024;
+                memorySize = 6 * 1024;
+              };
+            };
+            # We have to emulate aarch64 on x86 qemu, see https://github.com/golang/go/issues/69255
+            boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
+          };
         };
         distributedBuilds = true;
         settings = {
