@@ -1,4 +1,11 @@
-{ config, pkgs, lib, bconfig, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  bconfig,
+  ...
+}:
+{
   programs.direnv.enable = true;
 
   programs.zsh = {
@@ -10,17 +17,15 @@
       theme = "robbyrussell";
     };
 
-    # initContent = ''
-    #   # Homebrew (Apple Silicon)
-    #   /opt/homebrew/bin/brew shellenv >> ~/.zshrc_homebrew_env
-
-    #         if [ -f ~/.zshrc_homebrew_env ]; then
-    #           source ~/.zshrc_homebrew_env
-    #         fi
-    # '';
+    initContent = ''
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    '';
 
   };
 
-  home.sessionPath = [ "$HOME/.encore/bin" "$HOME/.local/bin" ];
+  home.sessionPath = [
+    "$HOME/.encore/bin"
+    "$HOME/.local/bin"
+  ];
 
 }
