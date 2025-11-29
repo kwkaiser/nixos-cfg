@@ -1,4 +1,10 @@
-{ pkgs, lib, config, isDarwin, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
 
   options = {
     mine.cursor.enable = lib.mkEnableOption "Installs & configures cursor";
@@ -8,7 +14,5 @@
     home-manager.users.${config.mine.username} = {
       imports = [ ./home.nix ];
     };
-  } // (if isDarwin then {
-    homebrew.casks = [ "cursor" ];
-  } else { });
+  };
 }
