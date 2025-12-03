@@ -4,3 +4,4 @@ data
 result
 *.qcow2
 keys/*
+*.fd
