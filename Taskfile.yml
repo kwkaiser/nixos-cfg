@@ -6,44 +6,9 @@ vars:
   disks: 3
 
 tasks:
-  get-iso:
+  homelab-vm:
     cmds:
-      - mkdir -p data/isos
-      - |
-        if [ ! -f "data/isos/nixos-minimal.iso" ]; then
-          wget https://channels.nixos.org/nixos-25.05/latest-nixos-minimal-x86_64-linux.iso -O data/isos/nixos-minimal.iso
-        else
-          echo "ISO file already exists"
-        fi
-
-  vm:
-    desc: Boots up testing vm
-    deps: [get-iso]
-    cmds:
-      - ./script/vm.sh {{.host}} {{.arch}} {{.disks}}
-
-  install:
-    desc: Installs nixos on the vm
-    cmds:
-      - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://nixos@127.0.0.1 --post-kexec-ssh-port 2222 -p 2222 --disko-mode disko
-
-  view:
-    cmds:
-      - remote-viewer spice://127.0.0.1:5900
-
-  rebuild:
-    desc: Syncs configuration and rebuilds remote system
-    cmds:
-      - |
-        rsync -avz --delete \
-          --exclude '.git' \
-          --exclude 'data' \
-          --exclude 'result' \
-          --exclude 'result-*' \
-          -e "ssh -p 2222" \
-          ./ kwkaiser@127.0.0.1:/home/kwkaiser/nixos-cfg/
-      - |
-        ssh -p 2222 kwkaiser@localhost "cd /home/kwkaiser/nixos-cfg && sudo nixos-rebuild switch --flake .#{{.host}}"
+      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko
 
   clean:
     cmds:
