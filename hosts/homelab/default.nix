@@ -1,6 +1,5 @@
 { inputs, lib, ... }: {
-  imports =
-    [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ./tz.nix ./virt.nix ];
+  imports = [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ./tz.nix ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   system.stateVersion = "25.05";
