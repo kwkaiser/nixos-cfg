@@ -9,6 +9,7 @@
     ./sunshine
     ./remote-unlock
     ./k3s
+    ./nfs
   ];
 }
 
