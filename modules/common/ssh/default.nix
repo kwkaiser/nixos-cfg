@@ -12,7 +12,12 @@
       extraConfig = ''
         AddKeysToAgent yes
       '';
-    } // (if isDarwin then { } else { startAgent = true; });
+    } // (if isDarwin then
+      { }
+    else
+      {
+        # startAgent = true;  # disabled because it conflicts with keyring
+      });
 
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
