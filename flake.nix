@@ -51,7 +51,7 @@
         ];
       };
 
-      nixosConfigurations.vm-thin = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.homelab = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
           isDarwin = false;
@@ -60,22 +60,7 @@
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.default
-          ./hosts/vm/thin.nix
-          ./modules
-          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
-        ];
-      };
-
-      nixosConfigurations.vm-full = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = false;
-        };
-
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.default
-          ./hosts/vm/full.nix
+          ./hosts/homelab/default.nix
           ./modules
           ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
         ];

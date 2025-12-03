@@ -1,7 +1,7 @@
-version: '3'
+version: "3"
 
 vars:
-  host: "vm"  
+  host: "vm"
   arch: "linux"
   disks: 3
 
@@ -28,8 +28,8 @@ tasks:
       - nix --experimental-features 'nix-command flakes' run github:nix-community/nixos-anywhere -- --flake .#{{.host}} --target-host ssh://nixos@127.0.0.1 --post-kexec-ssh-port 2222 -p 2222 --disko-mode disko
 
   view:
-    cmds: 
-      - remote-viewer spice://127.0.0.1:5900 
+    cmds:
+      - remote-viewer spice://127.0.0.1:5900
 
   rebuild:
     desc: Syncs configuration and rebuilds remote system
@@ -45,4 +45,11 @@ tasks:
       - |
         ssh -p 2222 kwkaiser@localhost "cd /home/kwkaiser/nixos-cfg && sudo nixos-rebuild switch --flake .#{{.host}}"
 
-   
+  clean:
+    cmds:
+      - rm -rf data
+      - rm -rf result
+      - rm -rf result-*
+      - rm -rf keys
+      - rm -rf *.fd
+      - rm -rf *.qcow2
