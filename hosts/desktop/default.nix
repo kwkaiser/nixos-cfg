@@ -39,4 +39,5 @@
   mine.remoteUnlock.enable = true;
   mine.remoteUnlock.requiredKernelModules = [ "igb" ];
   mine.remoteUnlock.ethDevice = "enp8s0";
+  mine.keyring.enable = true;
 }
