@@ -20,15 +20,6 @@
 
     # services.dbus.packages = [ pkgs.gnome-keyring ];
 
-    home-manager.users.${config.mine.username} = {
-      services.gnome-keyring = {
-        enable = true;
-        components = [ "pkcs11" "secrets" "ssh" ];
-      };
-
-      home.sessionVariables = {
-        SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
-      };
-    };
+    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
   };
 }

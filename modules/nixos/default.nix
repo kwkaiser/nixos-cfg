@@ -10,6 +10,7 @@
     ./remote-unlock
     ./k3s
     ./nfs
+    ./keyring
   ];
 }
 
