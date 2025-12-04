@@ -6,6 +6,9 @@
 
   config = lib.mkIf config.mine.keyring.enable {
     services.gnome.gnome-keyring.enable = true;
+    
+    # Disable GCR SSH agent to avoid conflict with programs.ssh.startAgent
+    services.gnome.gcr-ssh-agent.enable = false;
 
     environment.systemPackages = with pkgs; [
       gnome-keyring
