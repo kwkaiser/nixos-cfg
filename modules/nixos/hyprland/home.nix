@@ -7,6 +7,7 @@
     xfce.tumbler
     imv
     sway-contrib.grimshot
+    hyprpolkitagent
   ];
 
   home.sessionVariables = {
@@ -60,7 +61,7 @@
 
     exec-once = [
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-
+      "systemctl --user start hyprpolkitagent"
       "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "waybar &"
       "swaync &"
