@@ -12,7 +12,8 @@
         rbx = "rebase -X ours";
         br = "branch";
       };
-      credential.helper = "secret-tool";
+      credential.helper =
+        "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
       push.default = "current";
       push.autoSetupRemote = true;
       branch.autoSetupMerge = "always";
