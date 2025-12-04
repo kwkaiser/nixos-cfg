@@ -12,9 +12,10 @@
         rbx = "rebase -X ours";
         br = "branch";
       };
-      push.default = "current";         
-      push.autoSetupRemote = true;      
-      branch.autoSetupMerge = "always"; 
+      credential.helper = "secret-tool";
+      push.default = "current";
+      push.autoSetupRemote = true;
+      branch.autoSetupMerge = "always";
       pull.rebase = true;
     } // (if bconfig.mine.git.signsCommits then {
       commit.gpgsign = true;
