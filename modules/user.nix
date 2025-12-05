@@ -43,7 +43,5 @@
       extraGroups = [ "wheel" "networkmanager" ];
       initialPassword = "bingus";
     };
-    users.users.root.openssh.authorizedKeys.keys =
-      [ config.mine.primarySshKey ];
   });
 }
