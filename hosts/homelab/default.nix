@@ -1,6 +1,15 @@
-{ inputs, lib, ... }: {
-  imports =
-    [ ./disks.nix ./boot.nix ./hardware.nix ./net.nix ./tz.nix ./vm.nix ];
+{ inputs, lib, config, ... }: {
+  options = {
+    inVM = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      example = true;
+      description = "Whether this is built for local testing in the VM";
+    };
+  };
+
+  imports = [ ./disks.nix ./hardware.nix ./net.nix ./tz.nix ./vm.nix ]
+    ++ lib.optionals (!config.inVM) [ ./boot.nix ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   system.stateVersion = "25.05";
