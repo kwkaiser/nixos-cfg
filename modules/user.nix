@@ -21,8 +21,6 @@
     };
   };
 
-  
-
   config = {
     security.sudo.extraConfig = ''
       ${config.mine.username} ALL=(ALL) NOPASSWD: ALL
@@ -35,7 +33,7 @@
       openssh.authorizedKeys.keys = [ config.mine.primarySshKey ];
       home = builtins.toPath "${config.mine.homeDir}";
     };
-  } else { 
+  } else {
     users.users.root.password = "bingus";
     users.users.${config.mine.username} = {
       isNormalUser = true;
@@ -45,5 +43,7 @@
       extraGroups = [ "wheel" "networkmanager" ];
       initialPassword = "bingus";
     };
+    users.users.root.openssh.authorizedKeys.keys =
+      [ config.mine.primarySshKey ];
   });
 }
