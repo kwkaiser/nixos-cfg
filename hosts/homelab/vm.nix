@@ -1,8 +1,16 @@
 { config, pkgs, ... }: {
   virtualisation.vmVariantWithDisko = {
-    hostForward = {
-      "8080" = 80;
-      "2222" = 22;
-    };
+    virtualisation.forwardPorts = [
+      {
+        from = "host";
+        host.port = 2222;
+        guest.port = 22;
+      }
+      {
+        from = "host";
+        host.port = 6443;
+        guest.port = 6443;
+      }
+    ];
   };
 }
