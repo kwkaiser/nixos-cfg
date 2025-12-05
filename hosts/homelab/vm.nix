@@ -1,7 +1,9 @@
 { config, pkgs, lib, ... }: {
   virtualisation.vmVariantWithDisko = {
-
+    # Use VM-specific disk configuration with imageSize attributes
+    disabledModules = [ ./disks.nix ];
     imports = [ ./vm-disks.nix ];
+
     virtualisation.forwardPorts = [
       {
         from = "host";
