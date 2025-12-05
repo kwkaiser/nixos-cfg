@@ -1,8 +1,7 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: {
   virtualisation.vmVariantWithDisko = {
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
 
+    imports = [ ./vm-disks.nix ];
     virtualisation.forwardPorts = [
       {
         from = "host";
@@ -22,7 +21,8 @@
         target = "/home/kwkaiser/Documents/nixos-cfg";
       };
     };
+
+    nix.settings.require-sigs = false;
   };
 
-  nix.settings.require-sigs = false;
 }
