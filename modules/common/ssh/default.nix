@@ -11,6 +11,12 @@
     programs.ssh = {
       extraConfig = ''
         AddKeysToAgent yes
+
+        Host homelab-vm
+        HostName localhost
+        User root
+        StrictHostKeyChecking no
+        Port 2222
       '';
     } // (if isDarwin then
       { }

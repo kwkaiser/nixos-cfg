@@ -11,6 +11,8 @@
       role = "server";
     };
 
+    networking.firewall.allowedTCPPorts = [ 6443 8080 ];
+
     # Add kubectl for convenience
     environment.systemPackages = with pkgs; [ kubectl ];
   };

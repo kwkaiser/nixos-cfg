@@ -1,5 +1,8 @@
 { config, pkgs, ... }: {
   virtualisation.vmVariantWithDisko = {
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+
     virtualisation.forwardPorts = [
       {
         from = "host";
@@ -12,5 +15,14 @@
         guest.port = 6443;
       }
     ];
+
+    virtualisation.sharedDirectories = {
+      nixos-cfg = {
+        source = "/home/kwkaiser/Documents/nixos-cfg";
+        target = "/home/kwkaiser/Documents/nixos-cfg";
+      };
+    };
   };
+
+  nix.settings.require-sigs = false;
 }
