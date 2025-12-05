@@ -8,13 +8,13 @@ vars:
 tasks:
   homelab-vm:
     cmds:
-      - QEMU_NET_OPTS="hostfwd=tcp::2222-:22" nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko > /dev/null 2>&1 &
-      - |
-        while true; do
-          ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -p 2222 kwkaiser@localhost && break
-          echo "Connection refused, retrying in 5 seconds..."
-          sleep 5
-        done
+      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko
+      # - |
+      #   while true; do
+      #     kitty +kitten ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no -p 2222 kwkaiser@localhost echo 'connected' && break
+      #     echo "Connection refused, retrying in 5 seconds..."
+      #     sleep 5
+      #   done
 
   clean:
     cmds:
