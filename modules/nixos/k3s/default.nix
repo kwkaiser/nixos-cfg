@@ -9,6 +9,9 @@
     services.k3s = {
       enable = true;
       role = "server";
+      extraFlags = ''
+        --kubelet-arg=allowed-unsafe-sysctls=net.ipv6.conf.all.forwarding,net.ipv4.conf.all.src_valid_mark,net.ipv6.conf.all.disable_ipv6,net.ipv4.ip_forward
+      '';
     };
 
     networking.firewall.allowedTCPPorts = [ 6443 8080 ];

@@ -6,7 +6,7 @@
       main = {
         type = "disk";
         device = "/dev/sdc";
-        imageSize = "15G"; # 500M boot + 1G swap + 10G root + overhead
+        imageSize = "25G"; # 500M boot + 1G swap + 10G root + overhead
         content = {
           type = "gpt";
           partitions = {
@@ -25,7 +25,7 @@
               content = { type = "swap"; };
             };
             root = {
-              size = "10G";
+              size = "23G";
               content = {
                 type = "filesystem";
                 format = "ext4";
@@ -47,7 +47,7 @@
               content = {
                 type = "filesystem";
                 format = "ext4";
-                mountpoint = "/cache";
+                mountpoint = "/cache-pool";
               };
             };
           };
@@ -135,7 +135,7 @@
         datasets = {
           "encrypted" = {
             type = "zfs_fs";
-            mountpoint = "/data";
+            mountpoint = "/bulk-pool";
           };
         };
       };
