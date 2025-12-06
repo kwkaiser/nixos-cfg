@@ -14,7 +14,7 @@
 
         Host homelab-vm
         HostName localhost
-        User root
+        User kwkaiser
         StrictHostKeyChecking no
         Port 2222
       '';

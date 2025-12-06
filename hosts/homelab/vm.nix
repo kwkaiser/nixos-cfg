@@ -22,6 +22,10 @@
         source = "/home/kwkaiser/Documents/nixos-cfg";
         target = "/home/kwkaiser/Documents/nixos-cfg";
       };
+      containers = {
+        source = "/home/kwkaiser/Documents/nixos-cfg/data/containers";
+        target = "/var/lib/rancher/k3s/agent/images";
+      };
     };
 
     nix.settings.require-sigs = false;
