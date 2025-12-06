@@ -8,16 +8,16 @@ vars:
 tasks:
   homelab-vm:
     cmds:
-      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko
-      # - |
-      #   while true; do
-      #     ssh homelab-vm echo 'connected' && break
-      #     echo "Connection refused, retrying in 5 seconds..."
-      #     sleep 5
-      #   done
-      # - sleep 10
-      # - ssh homelab-vm sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
-      # - kitty +kitten ssh homelab-vm
+      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko &> /dev/null &
+      - |
+        while true; do
+          ssh homelab-vm echo 'connected' && break
+          echo "Connection refused, retrying in 5 seconds..."
+          sleep 5
+        done
+      - sleep 10
+      - ssh homelab-vm sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
+      - kitty +kitten ssh homelab-vm
 
   clean:
     cmds:
