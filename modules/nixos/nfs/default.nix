@@ -5,7 +5,10 @@
 
     mine.nfs.exports = lib.mkOption {
       type = lib.types.str;
-      default = "/data *(rw,sync,no_subtree_check,no_root_squash)";
+      default = ''
+        /bulk-pool *(rw,sync,no_subtree_check,no_root_squash)
+        /cache-pool *(rw,sync,no_subtree_check,no_root_squash)
+      '';
       description = "NFS exports configuration";
     };
   };

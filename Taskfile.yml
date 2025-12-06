@@ -8,7 +8,7 @@ vars:
 tasks:
   homelab-vm:
     cmds:
-      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko &> /dev/null &
+      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko &
       - |
         while true; do
           ssh homelab-vm echo 'connected' && break
