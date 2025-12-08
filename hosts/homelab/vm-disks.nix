@@ -6,7 +6,7 @@
       main = {
         type = "disk";
         device = "/dev/sdc";
-        imageSize = "25G"; # 500M boot + 1G swap + 10G root + overhead
+        imageSize = "35G"; # 500M boot + 1G swap + 10G root + overhead
         content = {
           type = "gpt";
           partitions = {
@@ -25,7 +25,7 @@
               content = { type = "swap"; };
             };
             root = {
-              size = "23G";
+              size = "33G";
               content = {
                 type = "filesystem";
                 format = "ext4";
@@ -61,7 +61,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "1G";
+              size = "2G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -77,7 +77,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "1G";
+              size = "2G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -94,7 +94,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "1G";
+              size = "2G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -111,7 +111,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "1G";
+              size = "2G";
               content = {
                 type = "zfs";
                 pool = "data";

@@ -4,6 +4,7 @@
     disabledModules = [ ./disks.nix ];
     imports = [ ./vm-disks.nix ];
 
+    # Port forwarding for convenience
     virtualisation.forwardPorts = [
       {
         from = "host";
