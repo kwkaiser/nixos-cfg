@@ -61,7 +61,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "2G";
+              size = "1G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -77,7 +77,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "2G";
+              size = "1G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -94,7 +94,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "2G";
+              size = "1G";
               content = {
                 type = "zfs";
                 pool = "data";
@@ -111,7 +111,7 @@
           type = "gpt";
           partitions = {
             zfs = {
-              size = "2G";
+              size = "1G";
               content = {
                 type = "zfs";
                 pool = "data";
