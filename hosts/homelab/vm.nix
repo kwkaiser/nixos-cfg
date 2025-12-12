@@ -35,12 +35,6 @@
         source = "/home/kwkaiser/Documents/nixos-cfg";
         target = "/home/kwkaiser/Documents/nixos-cfg";
       };
-
-      # Allow for injection of pre-loaded container images to reduce 429 responses from docker hub when testing
-      k3s-images = {
-        source = "/home/kwkaiser/Documents/nixos-cfg/data/containers";
-        target = "/var/lib/rancher/k3s/agent/images";
-      };
     };
 
     nix.settings.require-sigs = false;

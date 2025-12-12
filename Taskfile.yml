@@ -8,7 +8,12 @@ vars:
 tasks:
   homelab-vm:
     cmds:
-      - nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko &
+      - | 
+        export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+        export WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-1}
+        export DISPLAY=${DISPLAY:-:0}
+        nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko &
+
       - |
         while true; do
           ssh homelab-vm echo 'connected' && break
@@ -17,7 +22,7 @@ tasks:
         done
       - sleep 10
       - ssh homelab-vm sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
-      - kitty +kitten ssh homelab-vm
+      - ssh homelab-vm
 
   clean:
     cmds:
