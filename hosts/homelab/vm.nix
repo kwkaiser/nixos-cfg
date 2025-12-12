@@ -18,13 +18,13 @@
       }
       {
         from = "host";
-        host.port = 30080;
-        guest.port = 30080;
+        host.port = 80;
+        guest.port = 80;
       }
       {
         from = "host";
-        host.port = 30443;
-        guest.port = 30443;
+        host.port = 443;
+        guest.port = 443;
       }
     ];
 
