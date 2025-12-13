@@ -23,6 +23,7 @@
       127.0.0.1 tv.kwkaiser-test.io
       127.0.0.1 users.kwkaiser-test.io
       127.0.0.1 watch.kwkaiser-test.io
+      127.0.0.1 authentik.kwkaiser-test.io
     '';
   };
 }
