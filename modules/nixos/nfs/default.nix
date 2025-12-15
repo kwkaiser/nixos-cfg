@@ -17,8 +17,8 @@
 
     # Create NFS directories after filesystems are mounted
     systemd.tmpfiles.rules = [
-      "d /cache-pool/nfs 0755 root root -"
-      "d /bulk-pool/nfs 0755 root root -"
+      "d /cache-pool/nfs 0777 root root -"
+      "d /bulk-pool/nfs 0777 root root -"
     ];
 
     services.nfs.server = {
