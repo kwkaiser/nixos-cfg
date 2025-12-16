@@ -12,18 +12,16 @@
   };
 
   config = lib.mkIf config.mine.docker.enable (
-    lib.mkMerge [
-      {
-        home-manager.users.${config.mine.username} = {
-          imports = [ ./home.nix ];
-        };
-      }
-      (lib.mkIf (!isDarwin) {
-        virtualisation.docker = {
-          enable = true;
-        };
-        users.users.${config.mine.username}.extraGroups = [ "docker" ];
-      })
-    ]
+    {
+      home-manager.users.${config.mine.username} = {
+        imports = [ ./home.nix ];
+      };
+    }
+    // lib.optionalAttrs (!isDarwin) {
+      virtualisation.docker = {
+        enable = true;
+      };
+      users.users.${config.mine.username}.extraGroups = [ "docker" ];
+    }
   );
 }
