@@ -17,6 +17,9 @@
         imports = [ ./home.nix ];
       };
     }
+    // lib.optionalAttrs isDarwin {
+      homebrew.casks = [ "docker" ];
+    }
     // lib.optionalAttrs (!isDarwin) {
       virtualisation.docker = {
         enable = true;
