@@ -15,11 +15,9 @@
   mine.email = "karl@kwkaiser.io";
 
   homebrew.enable = true;
-  # homebrew.brewPrefix = "/usr/local/bin";
-
   mine.aero.enable = true;
   mine.git.signsCommits = true;
-  mine.node.enable = false;
+  mine.node.enable = true;
   mine.neovim.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;

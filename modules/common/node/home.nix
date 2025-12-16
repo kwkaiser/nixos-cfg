@@ -1,3 +1,17 @@
-{ config, pkgs, bconfig, ... }: {
-  home.packages = with pkgs; [ nodejs_20 nodenv pango cairo pixman fontconfig ];
+{
+  config,
+  pkgs,
+  bconfig,
+  ...
+}:
+{
+  home.packages = with pkgs; [
+    nodejs_20
+    nodenv
+    pango
+    cairo
+    pixman
+    fontconfig
+    pnpm
+  ];
 }
