@@ -15,7 +15,7 @@
 
     }
     // lib.optionalAttrs isDarwin {
-      homebrew.casks = [ "syncthing" ];
+      homebrew.brews = [ "syncthing" ];
     }
     // lib.optionalAttrs (!isDarwin) {
       home-manager.users.${config.mine.username} = {
