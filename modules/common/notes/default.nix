@@ -18,7 +18,7 @@
     }
     // lib.optionalAttrs isDarwin {
       homebrew.casks = [
-        "veracrypt-fuse-t"
+        "veracrypt"
         "macfuse"
       ];
     }
