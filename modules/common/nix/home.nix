@@ -4,6 +4,10 @@
       cd ~/Documents/nixos-cfg && git pl && nix flake update && git commit --all --message "update flake" && git ps
     '')
 
+    (pkgs.writeShellScriptBin "cleanup" ''
+      nix-collect-garbage -d && sudo nix-collect-garbage -d
+    '')
+
     (pkgs.writeShellScriptBin "upgrade" ''
       cd ~/Documents/nixos-cfg
       if [ "$(hostname)" = "karls-MacBook-Pro" ]; then
