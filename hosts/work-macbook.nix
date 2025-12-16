@@ -24,10 +24,7 @@
   mine.syncthing.enable = true;
   mine.cursor.enable = true;
   mine.steam.enable = true;
-  mine.notes = {
-    enable = true;
-    untrusted = true;
-  };
+  mine.notes.enable = true;
   mine.messaging.enable = true;
   mine.ssh.enable = true;
   mine.virt.enable = true;
