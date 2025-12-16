@@ -31,4 +31,5 @@
   mine.messaging.enable = true;
   mine.ssh.enable = true;
   mine.virt.enable = true;
+  mine.docker.enable = true;
 }
