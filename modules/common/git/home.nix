@@ -2,7 +2,7 @@
   config,
   pkgs,
   bconfig,
-  isDarwin
+  isDarwin,
   ...
 }:
 {
@@ -33,11 +33,15 @@
         }
       else
         { }
-    ) // (
-      if isDarwin then {
-      } else {
-        credential.helper = "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
-      }
+    )
+    // (
+      if isDarwin then
+        {
+        }
+      else
+        {
+          credential.helper = "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
+        }
     );
   };
 }
