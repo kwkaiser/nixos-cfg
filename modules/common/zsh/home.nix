@@ -3,7 +3,7 @@
   pkgs,
   lib,
   bconfig,
-  isDarwin
+  isDarwin,
   ...
 }:
 {
