@@ -1,4 +1,12 @@
-{ config, pkgs, lib, bconfig, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  bconfig,
+  isDarwin
+  ...
+}:
+{
   programs.direnv.enable = true;
 
   programs.zsh = {
@@ -11,14 +19,27 @@
     };
 
     # TODO: find better home for this
-    shellAliases = { k = "kubectl"; };
+    shellAliases = {
+      k = "kubectl";
+    };
 
-    initContent = ''
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    '';
+  }
+  // (
+    if isDarwin then
+      {
+        initContent = ''
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        '';
+      }
+    else
+      {
 
-  };
+      }
+  );
 
-  home.sessionPath = [ "$HOME/.encore/bin" "$HOME/.local/bin" ];
+  home.sessionPath = [
+    "$HOME/.encore/bin"
+    "$HOME/.local/bin"
+  ];
 
 }

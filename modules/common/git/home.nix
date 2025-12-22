@@ -1,4 +1,11 @@
-{ config, pkgs, bconfig, ... }: {
+{
+  config,
+  pkgs,
+  bconfig,
+  isDarwin
+  ...
+}:
+{
   programs.git = {
     enable = true;
     settings = {
@@ -12,18 +19,25 @@
         rbx = "rebase -X ours";
         br = "branch";
       };
-      credential.helper =
-        "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
       push.default = "current";
       push.autoSetupRemote = true;
       branch.autoSetupMerge = "always";
       pull.rebase = true;
-    } // (if bconfig.mine.git.signsCommits then {
-      commit.gpgsign = true;
-      gpg.format = "ssh";
-      gpg.ssh.defaultKeyCommand =
-        "sh -c 'ssh-add -L | grep -i AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm'";
-    } else
-      { });
+    }
+    // (
+      if bconfig.mine.git.signsCommits then
+        {
+          commit.gpgsign = true;
+          gpg.format = "ssh";
+          gpg.ssh.defaultKeyCommand = "sh -c 'ssh-add -L | grep -i AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm'";
+        }
+      else
+        { }
+    ) // (
+      if isDarwin then {
+      } else {
+        credential.helper = "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
+      }
+    );
   };
 }
