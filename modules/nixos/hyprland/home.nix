@@ -23,7 +23,12 @@
 
   imports = [ ./scripts.nix ];
 
-  wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland = {
+    enable = true;
+    # Automatically import all environment variables for systemd services
+    # This fixes issues where programs don't work in systemd services but do in terminal
+    systemd.variables = [ "--all" ];
+  };
 
   services.gammastep = {
     enable = true;
@@ -60,9 +65,9 @@
     ];
 
     exec-once = [
+      # systemd.variables handles dbus-update-activation-environment automatically
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "systemctl --user start hyprpolkitagent"
-      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "waybar &"
       "swaync &"
       "sleep 1 && swww-daemon &"
