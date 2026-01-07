@@ -25,6 +25,7 @@
       127.0.0.1 watch.kwkaiser-test.io
       127.0.0.1 authentik.kwkaiser-test.io
       127.0.0.1 portal.kwkaiser-test.io
+      127.0.0.1 budget.kwkaiser-test.io
     '';
   };
 }
