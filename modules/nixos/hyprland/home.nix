@@ -70,7 +70,7 @@
       "systemctl --user start hyprpolkitagent"
       "waybar &"
       "swaync &"
-      "sleep 1 && swww-daemon &"
+      "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"
     ];
     "$mod" = "SUPER";
     "$terminal" = "kitty";
