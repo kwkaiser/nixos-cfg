@@ -9,10 +9,7 @@
     // lib.optionalAttrs (!isDarwin) {
       virtualisation.docker = {
         enable = true;
-        daemon.settings = {
-          log-driver = "journald";
-          log-opts = { max-file = "3"; };
-        };
+        daemon.settings = { log-driver = "json-file"; };
       };
       users.users.${config.mine.username}.extraGroups = [ "docker" ];
     });
