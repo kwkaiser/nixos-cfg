@@ -1,5 +1,5 @@
 { pkgs, config, isDarwin, lib, ... }: {
-  home.packages = lib.mkIf (!isDarwin) [ pkgs.code-cursor ];
+  home.packages = lib.mkIf (!isDarwin) [ pkgs.code-cursor pkgs.claude-code ];
 
   programs.zsh.initContent = ''
     ndc() {
