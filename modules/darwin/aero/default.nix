@@ -9,12 +9,37 @@
     system.defaults.dock.autohide = true;
     system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
 
+    # Disable macOS shortcuts that conflict with aerospace bindings
+    system.defaults.CustomUserPreferences = {
+      "com.apple.symbolichotkeys" = {
+        AppleSymbolicHotKeys = {
+          "28" = { enabled = false; };  # Cmd+Shift+3 (screenshot to file)
+          "29" = { enabled = false; };  # Cmd+Ctrl+Shift+3 (screenshot to clipboard)
+          "30" = { enabled = false; };  # Cmd+Shift+4 (selection to file)
+          "31" = { enabled = false; };  # Cmd+Ctrl+Shift+4 (selection to clipboard)
+          "184" = { enabled = false; }; # Cmd+Shift+5 (screenshot menu)
+        };
+      };
+      # Remap logout menu item to Ctrl+Opt+Cmd+Shift+Q to free up Cmd+Shift+Q
+      NSGlobalDomain = {
+        NSUserKeyEquivalents = {
+          "Log Out ${config.mine.username}\\U2026" = "@~^$q";  # Ctrl+Opt+Cmd+Shift+Q
+        };
+      };
+    };
+
+    # Apply keyboard shortcut changes immediately without requiring logout
+    system.activationScripts.postActivation.text = ''
+      sudo -u ${config.mine.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+    '';
+
     services.aerospace.settings = {
       mode.main.binding = {
         # cmd-h = "focus left";
         # cmd-j = "focus down";
         # cmd-k = "focus up";
         # cmd-l = "focus right";
+        cmd-shift-q = "close";  # Close window (like hyprland mod+shift+q)
         cmd-shift-h = "move left";
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
@@ -23,6 +48,13 @@
         cmd-shift-comma = "layout v_tiles";
         cmd-backslash = "layout tiling";
         cmd-shift-backslash = "layout floating tiling";
+
+        # Tabbing/accordion (consistent with hyprland groups)
+        cmd-s = "layout accordion tiles";  # Toggle tabbed/tiled (like hyprland togglegroup)
+        cmd-leftSquareBracket = "focus left";    # Focus prev tab (like hyprland changegroupactive b)
+        cmd-rightSquareBracket = "focus right";  # Focus next tab (like hyprland changegroupactive f)
+        cmd-shift-leftSquareBracket = "move left";   # Move tab left
+        cmd-shift-rightSquareBracket = "move right"; # Move tab right
         cmd-1 = "workspace 1";
         cmd-2 = "workspace 2";
         cmd-3 = "workspace 3";
