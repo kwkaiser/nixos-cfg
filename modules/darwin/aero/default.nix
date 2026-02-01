@@ -1,7 +1,13 @@
-{ pkgs, config, lib, inputs, ... }: {
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  ...
+}:
+{
   options = {
-    mine.aero.enable =
-      lib.mkEnableOption "Whether or not to use aerospace shell";
+    mine.aero.enable = lib.mkEnableOption "Whether or not to use aerospace shell";
   };
 
   config = lib.mkIf config.mine.aero.enable {
@@ -13,17 +19,27 @@
     system.defaults.CustomUserPreferences = {
       "com.apple.symbolichotkeys" = {
         AppleSymbolicHotKeys = {
-          "28" = { enabled = false; };  # Cmd+Shift+3 (screenshot to file)
-          "29" = { enabled = false; };  # Cmd+Ctrl+Shift+3 (screenshot to clipboard)
-          "30" = { enabled = false; };  # Cmd+Shift+4 (selection to file)
-          "31" = { enabled = false; };  # Cmd+Ctrl+Shift+4 (selection to clipboard)
-          "184" = { enabled = false; }; # Cmd+Shift+5 (screenshot menu)
+          "28" = {
+            enabled = false;
+          }; # Cmd+Shift+3 (screenshot to file)
+          "29" = {
+            enabled = false;
+          }; # Cmd+Ctrl+Shift+3 (screenshot to clipboard)
+          "30" = {
+            enabled = false;
+          }; # Cmd+Shift+4 (selection to file)
+          "31" = {
+            enabled = false;
+          }; # Cmd+Ctrl+Shift+4 (selection to clipboard)
+          "184" = {
+            enabled = false;
+          }; # Cmd+Shift+5 (screenshot menu)
         };
       };
       # Remap logout menu item to Ctrl+Opt+Cmd+Shift+Q to free up Cmd+Shift+Q
       NSGlobalDomain = {
         NSUserKeyEquivalents = {
-          "Log Out ${config.mine.username}\\U2026" = "@~^$q";  # Ctrl+Opt+Cmd+Shift+Q
+          "Log Out ${config.mine.username}\\U2026" = "@~^$q"; # Ctrl+Opt+Cmd+Shift+Q
         };
       };
     };
@@ -39,7 +55,7 @@
         # cmd-j = "focus down";
         # cmd-k = "focus up";
         # cmd-l = "focus right";
-        cmd-shift-q = "close";  # Close window (like hyprland mod+shift+q)
+        cmd-shift-q = "close"; # Close window (like hyprland mod+shift+q)
         cmd-shift-h = "move left";
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
@@ -50,10 +66,10 @@
         cmd-shift-backslash = "layout floating tiling";
 
         # Tabbing/accordion (consistent with hyprland groups)
-        cmd-s = "layout accordion tiles";  # Toggle tabbed/tiled (like hyprland togglegroup)
-        cmd-leftSquareBracket = "focus left";    # Focus prev tab (like hyprland changegroupactive b)
-        cmd-rightSquareBracket = "focus right";  # Focus next tab (like hyprland changegroupactive f)
-        cmd-shift-leftSquareBracket = "move left";   # Move tab left
+        cmd-ctrl-s = "layout accordion tiles"; # Toggle tabbed/tiled (like hyprland togglegroup)
+        cmd-leftSquareBracket = "focus left"; # Focus prev tab (like hyprland changegroupactive b)
+        cmd-rightSquareBracket = "focus right"; # Focus next tab (like hyprland changegroupactive f)
+        cmd-shift-leftSquareBracket = "move left"; # Move tab left
         cmd-shift-rightSquareBracket = "move right"; # Move tab right
         cmd-1 = "workspace 1";
         cmd-2 = "workspace 2";
