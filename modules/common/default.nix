@@ -1,4 +1,10 @@
-{ pkgs, lib, config, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
   imports = [
     ./kitty
     ./nix
@@ -21,5 +27,7 @@
     ./virt
     ./docker
     ./stylix.nix
+    ./claude
+    ./work
   ];
 }
