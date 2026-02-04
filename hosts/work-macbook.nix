@@ -19,6 +19,8 @@
   mine.git.signsCommits = true;
   mine.node.enable = true;
   mine.neovim.enable = true;
+  mine.kitty.enable = true;
+  mine.firefox.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;
   mine.syncthing.enable = true;
