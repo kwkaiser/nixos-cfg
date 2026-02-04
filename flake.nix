@@ -34,65 +34,62 @@
     stylix.url = "github:danth/stylix";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, hyprland, nix-darwin, stylix
-    , ... }@inputs: {
-      nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = false;
-        };
-
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.default
-          ./hosts/vm/full.nix
-          ./modules
-          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
-        ];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      disko,
+      home-manager,
+      nix-darwin,
+      stylix,
+      ...
+    }@inputs:
+    let
+      # Shared module for unfree packages
+      allowUnfree = {
+        nixpkgs.config.allowUnfree = true;
       };
 
-      nixosConfigurations.homelab = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = false;
+      # Helper to create NixOS configurations
+      mkNixosSystem =
+        hostModule:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs;
+            isDarwin = false;
+          };
+          modules = [
+            disko.nixosModules.disko
+            home-manager.nixosModules.default
+            ./modules
+            allowUnfree
+            hostModule
+          ];
         };
 
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.default
-          ./hosts/homelab/default.nix
-          ./modules
-          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
-        ];
-      };
-
-      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = false;
+      # Helper to create Darwin configurations
+      mkDarwinSystem =
+        hostModule:
+        nix-darwin.lib.darwinSystem {
+          specialArgs = {
+            inherit inputs;
+            isDarwin = true;
+          };
+          modules = [
+            home-manager.darwinModules.default
+            stylix.darwinModules.stylix
+            ./modules
+            allowUnfree
+            hostModule
+          ];
         };
-
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.default
-          ./hosts/desktop
-          ./modules
-          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
-        ];
+    in
+    {
+      nixosConfigurations = {
+        homelab = mkNixosSystem ./hosts/homelab;
+        desktop = mkNixosSystem ./hosts/desktop;
       };
 
-      darwinConfigurations."work-macbook" = nix-darwin.lib.darwinSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = true;
-        };
-        modules = [
-          home-manager.darwinModules.default
-          stylix.darwinModules.stylix
-          ./hosts/work-macbook.nix
-          ./modules
-          ({ pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
-        ];
-      };
+      darwinConfigurations."work-macbook" = mkDarwinSystem ./hosts/work-macbook.nix;
     };
 }
