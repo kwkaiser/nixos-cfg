@@ -18,7 +18,7 @@
       vim.vimAlias = true;
       vim.globals.mapleader = " ";
       vim.lsp.enable = true;
-      vim.filetree.nvimTree.enable = true;
+      vim.telescope.enable = true;
     };
   };
 }
