@@ -32,6 +32,11 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     stylix.url = "github:danth/stylix";
+
+    nvf = {
+      url = "github:NotAShelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -42,6 +47,7 @@
       home-manager,
       nix-darwin,
       stylix,
+      nvf,
       ...
     }@inputs:
     let
