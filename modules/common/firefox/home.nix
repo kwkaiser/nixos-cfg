@@ -1,8 +1,9 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, lib, inputs, ... }: {
   programs.firefox = {
     enable = true;
+    package = lib.mkIf pkgs.stdenv.isDarwin null; # Use Homebrew Firefox on macOS
     profiles = {
-      kwkaiser = {
+      kwkaiser  {
         extensions.force = true;
         extensions.packages =
           with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [

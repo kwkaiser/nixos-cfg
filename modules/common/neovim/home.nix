@@ -1,11 +1,4 @@
-{
-  config,
-  pkgs,
-  bconfig,
-  ...
-}:
-{
-
+{pkgs, ...}: {
   home.packages = with pkgs; [
     ripgrep
     fd
@@ -45,10 +38,10 @@
         lsp.enable = true;
         extraDiagnostics.enable = true;
         format.enable = true;
-        format.type = [ "prettier" ];
+        format.type = ["prettier"];
         treesitter.enable = true;
       };
-      vim.language.nix = {
+      vim.languages.nix = {
         enable = true;
         format.enable = true;
         lsp.enable = true;
