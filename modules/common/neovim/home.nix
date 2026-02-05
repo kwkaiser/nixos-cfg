@@ -50,6 +50,23 @@
       vim.autocomplete.nvim-cmp.enable = true;
       vim.autopairs.nvim-autopairs.enable = true;
       vim.statusline.lualine.enable = true;
+
+      vim.luaConfigRC.telescope-buffer-delete = ''
+        require('telescope').setup({
+          pickers = {
+            buffers = {
+              mappings = {
+                i = {
+                  ['<C-d>'] = require('telescope.actions').delete_buffer,
+                },
+                n = {
+                  ['d'] = require('telescope.actions').delete_buffer,
+                },
+              },
+            },
+          },
+        })
+      '';
       vim.keymaps = [
         {
           key = "<D-s>";
@@ -73,10 +90,16 @@
           desc = "Media files";
         }
         {
-          key = "<leader>tt";
+          key = "<leader>th";
           mode = "n";
           action = "<cmd>lcd %:p:h | split | terminal<CR>";
-          desc = "Terminal here";
+          desc = "Terminal horizontal";
+        }
+        {
+          key = "<leader>tv";
+          mode = "n";
+          action = "<cmd>lcd %:p:h | vsplit | terminal<CR>";
+          desc = "Terminal vertical";
         }
         {
           key = "<Esc><Esc>";
