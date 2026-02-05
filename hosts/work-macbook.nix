@@ -33,4 +33,5 @@
   mine.docker.enable = true;
   mine.work.enable = true;
   mine.claude.enable = true;
+  mine.misc-cli-util.enable = true;
 }
