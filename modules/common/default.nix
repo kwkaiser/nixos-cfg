@@ -29,5 +29,6 @@
     ./stylix.nix
     ./claude
     ./work
+    ./misc-cli-util
   ];
 }

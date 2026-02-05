@@ -19,6 +19,7 @@
       vim.globals.mapleader = " ";
       vim.lsp.enable = true;
       vim.telescope.enable = true;
+      vim.which-key.enable = true;
     };
   };
 }
