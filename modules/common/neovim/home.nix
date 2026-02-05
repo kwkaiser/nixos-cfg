@@ -48,6 +48,12 @@
         format.type = [ "prettier" ];
         treesitter.enable = true;
       };
+      vim.language.nix = {
+        enable = true;
+        format.enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
       vim.lsp.formatOnSave = true;
       vim.autocomplete.nvim-cmp.enable = true;
       vim.autopairs.nvim-autopairs.enable = true;
