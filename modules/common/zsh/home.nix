@@ -1,45 +1,34 @@
-{
-  config,
-  pkgs,
-  lib,
-  bconfig,
-  isDarwin,
-  ...
-}:
-{
+{isDarwin, ...}: {
   programs.direnv.enable = true;
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-
-    oh-my-zsh = {
+  programs.zsh =
+    {
       enable = true;
-      theme = "robbyrussell";
-    };
+      enableCompletion = true;
 
-    # TODO: find better home for this
-    shellAliases = {
-      k = "kubectl";
-    };
+      oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+      };
 
-  }
-  // (
-    if isDarwin then
-      {
+      # TODO: find better home for this
+      shellAliases = {
+        k = "kubectl";
+      };
+    }
+    // (
+      if isDarwin
+      then {
         initContent = ''
           eval "$(/opt/homebrew/bin/brew shellenv)"
         '';
       }
-    else
-      {
-
+      else {
       }
-  );
+    );
 
   home.sessionPath = [
     "$HOME/.encore/bin"
     "$HOME/.local/bin"
   ];
-
 }
