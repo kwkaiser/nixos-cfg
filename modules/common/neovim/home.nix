@@ -16,6 +16,8 @@
     poppler-utils
   ];
 
+  programs.neovim.defaultEditor = true;
+
   programs.nvf = {
     enable = true;
     settings = {
