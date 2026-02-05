@@ -1,17 +1,21 @@
-{ config, pkgs, lib, inputs, ... }: {
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   programs.firefox = {
     enable = true;
     package = lib.mkIf pkgs.stdenv.isDarwin null; # Use Homebrew Firefox on macOS
     profiles = {
-      kwkaiser  {
+      kwkaiser = {
         extensions.force = true;
-        extensions.packages =
-          with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [
-            ublock-origin
-            keepassxc-browser
-            i-dont-care-about-cookies
-            sponsorblock
-          ];
+        extensions.packages = with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [
+          ublock-origin
+          keepassxc-browser
+          i-dont-care-about-cookies
+          sponsorblock
+        ];
 
         # Smooth scrolling preferences
         settings = {
@@ -55,5 +59,4 @@
       };
     };
   };
-
 }
