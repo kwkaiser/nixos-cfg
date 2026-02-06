@@ -52,22 +52,8 @@
       vim.autopairs.nvim-autopairs.enable = true;
       vim.statusline.lualine.enable = true;
 
-      vim.luaConfigRC.telescope-buffer-delete = ''
-        require('telescope').setup({
-          pickers = {
-            buffers = {
-              mappings = {
-                i = {
-                  ['<C-d>'] = require('telescope.actions').delete_buffer,
-                },
-                n = {
-                  ['d'] = require('telescope.actions').delete_buffer,
-                },
-              },
-            },
-          },
-        })
-      '';
+      vim.luaConfigRC.telescope-buffer-delete = builtins.readFile ./telescope.lua;
+      vim.luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
       vim.keymaps = [
         {
           key = "<D-s>";
@@ -93,13 +79,13 @@
         {
           key = "<leader>th";
           mode = "n";
-          action = "<cmd>lcd %:p:h | split | terminal<CR>";
+          action = "<cmd>lua open_terminal_horizontal()<CR>";
           desc = "Terminal horizontal";
         }
         {
           key = "<leader>tv";
           mode = "n";
-          action = "<cmd>lcd %:p:h | vsplit | terminal<CR>";
+          action = "<cmd>lua open_terminal_vertical()<CR>";
           desc = "Terminal vertical";
         }
         {
