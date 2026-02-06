@@ -1,10 +1,4 @@
-{
-  inputs,
-  system,
-  lib,
-  ...
-}:
-{
+{lib, ...}: {
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-darwin";
   system.stateVersion = 5;
@@ -34,4 +28,5 @@
   mine.work.enable = true;
   mine.claude.enable = true;
   mine.misc-cli-util.enable = true;
+  mine.mc.enable = true;
 }
