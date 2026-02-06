@@ -1,10 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
-{
+{...}: {
   imports = [
     ./kitty
     ./nix
@@ -29,6 +23,7 @@
     ./stylix.nix
     ./claude
     ./work
+    ./mc
     ./misc-cli-util
   ];
 }
