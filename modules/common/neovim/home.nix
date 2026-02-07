@@ -1,7 +1,9 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   home.packages = with pkgs; [
     ripgrep
     fd
+    fzf
   ];
 
   programs.neovim.defaultEditor = true;
@@ -16,56 +18,22 @@
       vim.options.shiftwidth = 2;
       vim.options.expandtab = true;
       vim.lsp.enable = true;
-      vim.telescope.enable = true;
-      vim.telescope.mappings = {
-        # Disable git extensions
-        gitBranches = null;
-        gitCommits = null;
-        gitFiles = null;
-        gitStash = null;
-        gitStatus = null;
-        gitBufferCommits = null;
-        # Disable open
-        open = null;
-        # Disable lsp extensions
-        lspDocumentSymbols = null;
-        lspReferences = null;
-        lspWorkspaceSymbols = null;
-        lspDefinitions = null;
-        lspTypeDefinitions = null;
-        lspImplementations = null;
-        # Disable resume
-        resume = null;
-        # Disable treesitter
-        treesitter = null;
-        # Disable grep
-        liveGrep = null;
-        # Disable help tags
-        helpTags = null;
-        # Disable diagnostics
-        diagnostics = null;
-      };
+      vim.telescope.enable = false;
       # Disable cellular automaton
       vim.visuals.cellular-automaton.mappings.makeItRain = null;
       vim.extraPlugins = {
-        telescope-file-browser = {
-          package = pkgs.vimPlugins.telescope-file-browser-nvim;
-          setup = "require('telescope').load_extension('file_browser')";
+        fzf-lua = {
+          package = pkgs.vimPlugins.fzf-lua;
+          setup = builtins.readFile ./fzf-lua.lua;
         };
       };
       vim.binds.whichKey.enable = true;
-      vim.binds.whichKey.register = {
-        "<leader>fv" = null;
-        "<leader>fvc" = null;
-        "<leader>fl" = null;
-        "<leader>fm" = null;
-      };
       vim.languages.ts = {
         enable = true;
         lsp.enable = true;
         extraDiagnostics.enable = true;
         format.enable = true;
-        format.type = ["prettier"];
+        format.type = [ "prettier" ];
         treesitter.enable = true;
       };
       vim.languages.nix = {
@@ -79,7 +47,6 @@
       vim.autopairs.nvim-autopairs.enable = true;
       vim.statusline.lualine.enable = true;
 
-      vim.luaConfigRC.telescope-buffer-delete = builtins.readFile ./telescope.lua;
       vim.luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
       vim.keymaps = [
         {
@@ -92,10 +59,34 @@
           desc = "Save file";
         }
         {
-          key = "<leader>fc";
+          key = "<leader>ff";
           mode = "n";
-          action = "<cmd>Telescope file_browser<CR>";
-          desc = "File browser";
+          action = "<cmd>lua require('fzf-lua').files()<CR>";
+          desc = "Find files";
+        }
+        {
+          key = "<leader>fb";
+          mode = "n";
+          action = "<cmd>lua require('fzf-lua').buffers()<CR>";
+          desc = "Find buffers";
+        }
+        {
+          key = "<leader>fs";
+          mode = "n";
+          action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
+          desc = "Live grep";
+        }
+        {
+          key = "<leader>fr";
+          mode = "n";
+          action = "<cmd>lua require('fzf-lua').oldfiles()<CR>";
+          desc = "Recent files";
+        }
+        {
+          key = "<leader>fl";
+          mode = "n";
+          action = "<cmd>lua require('fzf-lua').resume()<CR>";
+          desc = "Resume last picker";
         }
         {
           key = "<leader>th";
