@@ -2,11 +2,6 @@
   home.packages = with pkgs; [
     ripgrep
     fd
-    # telescope-media-files dependencies
-    chafa
-    imagemagick
-    ffmpegthumbnailer
-    poppler-utils
   ];
 
   programs.neovim.defaultEditor = true;
@@ -22,17 +17,49 @@
       vim.options.expandtab = true;
       vim.lsp.enable = true;
       vim.telescope.enable = true;
+      vim.telescope.mappings = {
+        # Disable git extensions
+        gitBranches = null;
+        gitCommits = null;
+        gitFiles = null;
+        gitStash = null;
+        gitStatus = null;
+        gitBufferCommits = null;
+        # Disable open
+        open = null;
+        # Disable lsp extensions
+        lspDocumentSymbols = null;
+        lspReferences = null;
+        lspWorkspaceSymbols = null;
+        lspDefinitions = null;
+        lspTypeDefinitions = null;
+        lspImplementations = null;
+        # Disable resume
+        resume = null;
+        # Disable treesitter
+        treesitter = null;
+        # Disable grep
+        liveGrep = null;
+        # Disable help tags
+        helpTags = null;
+        # Disable diagnostics
+        diagnostics = null;
+      };
+      # Disable cellular automaton
+      vim.visuals.cellular-automaton.mappings.makeItRain = null;
       vim.extraPlugins = {
         telescope-file-browser = {
           package = pkgs.vimPlugins.telescope-file-browser-nvim;
           setup = "require('telescope').load_extension('file_browser')";
         };
-        telescope-media-files = {
-          package = pkgs.vimPlugins.telescope-media-files-nvim;
-          setup = "require('telescope').load_extension('media_files')";
-        };
       };
       vim.binds.whichKey.enable = true;
+      vim.binds.whichKey.register = {
+        "<leader>fv" = null;
+        "<leader>fvc" = null;
+        "<leader>fl" = null;
+        "<leader>fm" = null;
+      };
       vim.languages.ts = {
         enable = true;
         lsp.enable = true;
@@ -69,12 +96,6 @@
           mode = "n";
           action = "<cmd>Telescope file_browser<CR>";
           desc = "File browser";
-        }
-        {
-          key = "<leader>fm";
-          mode = "n";
-          action = "<cmd>Telescope media_files<CR>";
-          desc = "Media files";
         }
         {
           key = "<leader>th";
