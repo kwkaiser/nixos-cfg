@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     ripgrep
     fd
@@ -24,10 +23,10 @@
         };
         binds.whichKey = {
           enable = true;
-          keymaps = {
-            
+          register = {
+            "<leader>fg" = "Git browse";
           };
-        }
+        };
 
         autocomplete.nvim-cmp.enable = true;
         autopairs.nvim-autopairs.enable = true;
@@ -41,7 +40,7 @@
             lsp.enable = true;
             extraDiagnostics.enable = true;
             format.enable = true;
-            format.type = [ "prettier" ];
+            format.type = ["prettier"];
             treesitter.enable = true;
           };
 
