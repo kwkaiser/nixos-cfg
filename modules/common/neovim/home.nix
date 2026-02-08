@@ -21,11 +21,13 @@
         lsp.enable = true;
         fzf-lua = {
           enable = true;
-          setupOpts = {
-
-          };
         };
-        binds.whichKey.enable = true;
+        binds.whichKey = {
+          enable = true;
+          keymaps = {
+            
+          };
+        }
 
         autocomplete.nvim-cmp.enable = true;
         autopairs.nvim-autopairs.enable = true;
@@ -63,6 +65,8 @@
             action = "<cmd>w<CR>";
             desc = "Save file";
           }
+
+          # Files & buffers
           {
             key = "<leader>ff";
             mode = "n";
@@ -75,12 +79,43 @@
             action = "<cmd>lua require('fzf-lua').buffers()<CR>";
             desc = "Find buffers";
           }
+
+          # Search
           {
             key = "<leader>fs";
             mode = "n";
             action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
             desc = "Live grep";
           }
+
+          {
+            key = "<leader>fgs";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_status()<CR>";
+            desc = "Git status";
+          }
+
+          {
+            key = "<leader>fgc";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_commits()<CR>";
+            desc = "Git commits";
+          }
+
+          {
+            key = "<leader>fgb";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_branches()<CR>";
+            desc = "Git branches";
+          }
+
+          {
+            key = "<leader>fgl";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_blame()<CR>";
+            desc = "Git blame";
+          }
+
           {
             key = "<leader>th";
             mode = "n";
