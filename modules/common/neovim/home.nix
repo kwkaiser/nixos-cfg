@@ -75,30 +75,18 @@
             action = "<cmd>lua require('fzf-lua').buffers()<CR>";
             desc = "Find buffers";
           }
-          # {
-          #   key = "<leader>fs";
-          #   mode = "n";
-          #   action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
-          #   desc = "Live grep";
-          # }
-          # {
-          #   key = "<leader>fr";
-          #   mode = "n";
-          #   action = "<cmd>lua require('fzf-lua').oldfiles()<CR>";
-          #   desc = "Recent files";
-          # }
-          # {
-          #   key = "<leader>fl";
-          #   mode = "n";
-          #   action = "<cmd>lua require('fzf-lua').resume()<CR>";
-          #   desc = "Resume last picker";
-          # }
-          # {
-          #   key = "<leader>th";
-          #   mode = "n";
-          #   action = "<cmd>lua open_terminal_horizontal()<CR>";
-          #   desc = "Terminal horizontal";
-          # }
+          {
+            key = "<leader>fs";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
+            desc = "Live grep";
+          }
+          {
+            key = "<leader>th";
+            mode = "n";
+            action = "<cmd>lua open_terminal_horizontal()<CR>";
+            desc = "Terminal horizontal";
+          }
           {
             key = "<leader>tv";
             mode = "n";
