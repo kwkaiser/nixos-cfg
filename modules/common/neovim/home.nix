@@ -57,6 +57,8 @@
           neogit.enable = true;
         };
 
+        utility.diffview-nvim.enable = true;
+
         luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
 
         keymaps = [
