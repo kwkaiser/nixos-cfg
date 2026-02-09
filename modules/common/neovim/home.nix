@@ -11,16 +11,17 @@
     enable = true;
     settings = {
       vim = {
-        viAlias = false;
         vimAlias = true;
         globals.mapleader = " ";
-        options.tabstop = 2;
-        options.shiftwidth = 2;
-        options.expandtab = true;
-        lsp.enable = true;
-        fzf-lua = {
-          enable = true;
+        options = {
+          tabstop = 2;
+          shiftwidth = 2;
+          expandtab = true;
         };
+
+        lsp.enable = true;
+        fzf-lua.enable = true;
+
         binds.whichKey = {
           enable = true;
           register = {
@@ -50,6 +51,10 @@
             lsp.enable = true;
             treesitter.enable = true;
           };
+        };
+
+        git = {
+          neogit.enable = true;
         };
 
         luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
