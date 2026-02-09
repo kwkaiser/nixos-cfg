@@ -22,12 +22,7 @@
         lsp.enable = true;
         fzf-lua.enable = true;
 
-        binds.whichKey = {
-          enable = true;
-          register = {
-            "<leader>fg" = "Git browse";
-          };
-        };
+        binds.whichKey.enable = true;
 
         autocomplete.nvim-cmp.enable = true;
         autopairs.nvim-autopairs.enable = true;
@@ -58,6 +53,7 @@
         };
 
         utility.diffview-nvim.enable = true;
+        filetree.neo-tree.enable = true;
 
         luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
 
@@ -93,35 +89,18 @@
             action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
             desc = "Live grep";
           }
-
           {
-            key = "<leader>fgs";
+            key = "<leader>g";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_status()<CR>";
-            desc = "Git status";
+            action = "<cmd>:Neogit<CR>";
+            desc = "Open git";
           }
-
           {
-            key = "<leader>fgc";
+            key = "<leader>b";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_commits()<CR>";
-            desc = "Git commits";
+            action = "<cmd>:Neotree filesystem reveal float<CR>";
+            desc = "Open filetree";
           }
-
-          {
-            key = "<leader>fgb";
-            mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_branches()<CR>";
-            desc = "Git branches";
-          }
-
-          {
-            key = "<leader>fgl";
-            mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_blame()<CR>";
-            desc = "Git blame";
-          }
-
           {
             key = "<leader>th";
             mode = "n";
