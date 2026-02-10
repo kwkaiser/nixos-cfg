@@ -31,6 +31,13 @@
         lsp.formatOnSave = true;
 
         languages = {
+          markdown.enable = true;
+          python.enable = true;
+          yaml.enable = true;
+          sql.enable = true;
+          rust.enable = true;
+          bash.enable = true;
+          go.enable = true;
           ts = {
             enable = true;
             lsp.enable = true;
@@ -50,6 +57,11 @@
 
         git = {
           neogit.enable = true;
+          neogit.setupOpts = {
+            signing = {
+              enabled = true;
+            };
+          };
         };
 
         utility.diffview-nvim.enable = true;
