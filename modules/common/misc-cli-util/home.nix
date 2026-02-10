@@ -1,14 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  bconfig,
-  isDarwin,
-  ...
-}:
-{
+{...}: {
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;
+  };
+
+  programs.tmux = {
+    enable = true;
   };
 }
