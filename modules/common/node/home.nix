@@ -1,12 +1,6 @@
-{
-  config,
-  pkgs,
-  bconfig,
-  ...
-}:
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
-    nodejs_20
+    nodejs_24
     nodenv
     pango
     cairo

@@ -89,6 +89,15 @@
             action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
             desc = "Live grep";
           }
+
+          {
+            key = "<leader>lq";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').diagnostics_workspace()<CR>";
+            desc = "Dump LSP diagnostics into quickfix";
+          }
+
+          # Git
           {
             key = "<leader>g";
             mode = "n";
