@@ -10,7 +10,7 @@
 
   homebrew.enable = true;
   mine.aero.enable = true;
-  mine.git.signsCommits = true;
+  mine.git.signCommits = true;
   mine.node.enable = true;
   mine.neovim.enable = true;
   mine.kitty.enable = true;

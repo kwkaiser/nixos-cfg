@@ -1,10 +1,14 @@
-{ pkgs, config, lib, inputs, ... }: {
+{
+  config,
+  lib,
+  ...
+}: {
   options = {
-    mine.git.signsCommits =
+    mine.git.signCommits =
       lib.mkEnableOption "Whether or not to sign commits with usual key";
   };
 
   config = {
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
+    home-manager.users.${config.mine.username} = {imports = [./home.nix];};
   };
 }
