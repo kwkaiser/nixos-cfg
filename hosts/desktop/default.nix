@@ -42,4 +42,5 @@
   mine.remoteUnlock.ethDevice = "enp8s0";
   mine.keyring.enable = true;
   mine.homelab-dev.enable = true;
+  mine.misc-cli-util.enable = true;
 }
