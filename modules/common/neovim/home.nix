@@ -71,7 +71,7 @@
 
         keymaps = [
           {
-            key = "<D-s>";
+            key = "<C-s>";
             mode = [
               "n"
               "i"

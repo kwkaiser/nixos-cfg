@@ -12,6 +12,14 @@
     customPaneNavigationAndResize = true; # Ctrl+a + hjkl for pane navigation
 
     extraConfig = ''
+      # Enable extended keys for Shift+Enter and other modifier combinations
+      set -g extended-keys on
+      set -as terminal-features 'xterm*:extkeys'
+      set -as terminal-features 'xterm-kitty:extkeys'
+
+      # Pass through Shift+Enter (CSI u encoding) for apps like Claude Code
+      bind-key -n S-Enter send-keys Escape "[13;2u"
+
       # Map 0 to window 10
       bind-key 0 select-window -t :10
 
