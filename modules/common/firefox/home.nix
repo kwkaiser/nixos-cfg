@@ -15,6 +15,7 @@
           keepassxc-browser
           i-dont-care-about-cookies
           sponsorblock
+          zotero-connector
         ];
 
         # Smooth scrolling preferences
