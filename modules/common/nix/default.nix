@@ -22,7 +22,6 @@
       optimise.automatic = true;
       gc = {
         automatic = true;
-        dates = "daily";
         options = "--delete-older-than 3d";
       };
       linux-builder = {
@@ -70,7 +69,6 @@
     nix = {
       gc = {
         automatic = true;
-        dates = "daily";
         options = "--delete-older-than 3d";
       };
       optimise = {
