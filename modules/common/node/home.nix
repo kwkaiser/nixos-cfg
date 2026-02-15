@@ -6,6 +6,5 @@
     cairo
     pixman
     fontconfig
-    pnpm
   ];
 }
