@@ -1,7 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    notion-app
-
     (writeShellScriptBin "pccp" ''
       kitty --directory ~/Documents/pallet/copallet ccp &
       kitty --directory ~/Documents/pallet/copallet-wt-1 ccp &
