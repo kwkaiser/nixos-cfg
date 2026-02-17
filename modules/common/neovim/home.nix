@@ -5,7 +5,10 @@
     fzf
   ];
 
-  programs.neovim.defaultEditor = true;
+  programs.neovim = {
+    defaultEditor = true;
+    vimAlias = true;
+  };
 
   programs.nvf = {
     enable = true;

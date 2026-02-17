@@ -1,10 +1,17 @@
-{lib, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [./disks.nix ./boot.nix ./hardware.nix ./net.nix ./tz.nix];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   system.stateVersion = "25.05";
 
   programs.nix-ld.enable = true;
+  systemd.tmpfiles.rules = [
+    "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
+  ];
 
   mine.username = "kwkaiser";
   mine.homeDir = "/home/kwkaiser";
@@ -44,4 +51,5 @@
   mine.misc-cli-util.enable = true;
   mine.work.enable = true;
   mine.claude.enable = true;
+  mine.zotero.enable = true;
 }

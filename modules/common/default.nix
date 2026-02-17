@@ -25,5 +25,6 @@
     ./work
     ./mc
     ./misc-cli-util
+    ./zotero
   ];
 }
