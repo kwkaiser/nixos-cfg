@@ -71,6 +71,7 @@
         filetree.neo-tree.enable = true;
 
         luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
+        luaConfigRC.gf-helpers = builtins.readFile ./gf.lua;
 
         keymaps = [
           {
