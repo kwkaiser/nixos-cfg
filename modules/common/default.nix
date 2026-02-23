@@ -25,6 +25,7 @@
     ./work
     ./mc
     ./misc-cli-util
+    ./tmux
     ./zotero
   ];
 }

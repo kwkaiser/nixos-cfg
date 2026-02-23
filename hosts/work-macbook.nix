@@ -28,5 +28,6 @@
   mine.work.enable = true;
   mine.claude.enable = true;
   mine.misc-cli-util.enable = true;
+  mine.tmux.enable = true;
   mine.mc.enable = true;
 }
