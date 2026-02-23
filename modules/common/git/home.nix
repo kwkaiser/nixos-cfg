@@ -4,6 +4,9 @@
   isDarwin,
   ...
 }: {
+  home.packages = with pkgs; [
+    git-trim
+  ];
   programs.git = {
     enable = true;
     settings =
