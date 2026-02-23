@@ -49,6 +49,7 @@
   mine.keyring.enable = true;
   mine.homelab-dev.enable = true;
   mine.misc-cli-util.enable = true;
+  mine.tmux.enable = true;
   mine.work.enable = true;
   mine.claude.enable = true;
   mine.zotero.enable = true;
