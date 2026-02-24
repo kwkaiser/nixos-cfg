@@ -24,7 +24,17 @@
         };
 
         lsp.enable = true;
-        fzf-lua.enable = true;
+        fzf-lua = {
+          enable = true;
+          setupOpts = {
+            keymap = {
+              fzf = {
+                "ctrl-q" = "select-all+accept";
+                "ctrl-a" = "select-all";
+              };
+            };
+          };
+        };
 
         binds.whichKey.enable = true;
 
