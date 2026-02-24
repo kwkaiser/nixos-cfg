@@ -20,6 +20,7 @@
           tabstop = 2;
           shiftwidth = 2;
           expandtab = true;
+          timeoutlen = 10;
         };
 
         lsp.enable = true;
@@ -67,11 +68,22 @@
           };
         };
 
-        utility.diffview-nvim.enable = true;
+        utility.diffview-nvim = {
+          enable = true;
+          setupOpts = {
+            keymaps = {
+              view = [
+                ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+              ];
+              file_panel = [
+                ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+              ];
+            };
+          };
+        };
         filetree.neo-tree.enable = true;
 
         luaConfigRC.terminal-helpers = builtins.readFile ./terminal.lua;
-        luaConfigRC.gf-helpers = builtins.readFile ./gf.lua;
 
         keymaps = [
           {
@@ -117,7 +129,7 @@
           {
             key = "<leader>g";
             mode = "n";
-            action = "<cmd>:Neogit<CR>";
+            action = "<cmd>Neogit<CR>";
             desc = "Open git";
           }
           {

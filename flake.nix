@@ -39,63 +39,58 @@
     };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      disko,
-      home-manager,
-      nix-darwin,
-      stylix,
-      nvf,
-      ...
-    }@inputs:
-    let
-      # Shared module for unfree packages
-      allowUnfree = {
-        nixpkgs.config.allowUnfree = true;
-      };
-
-      # Helper to create NixOS configurations
-      mkNixosSystem =
-        hostModule:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs;
-            isDarwin = false;
-          };
-          modules = [
-            disko.nixosModules.disko
-            home-manager.nixosModules.default
-            ./modules
-            allowUnfree
-            hostModule
-          ];
-        };
-
-      # Helper to create Darwin configurations
-      mkDarwinSystem =
-        hostModule:
-        nix-darwin.lib.darwinSystem {
-          specialArgs = {
-            inherit inputs;
-            isDarwin = true;
-          };
-          modules = [
-            home-manager.darwinModules.default
-            stylix.darwinModules.stylix
-            ./modules
-            allowUnfree
-            hostModule
-          ];
-        };
-    in
-    {
-      nixosConfigurations = {
-        homelab = mkNixosSystem ./hosts/homelab;
-        desktop = mkNixosSystem ./hosts/desktop;
-      };
-
-      darwinConfigurations."work-macbook" = mkDarwinSystem ./hosts/work-macbook.nix;
+  outputs = {
+    self,
+    nixpkgs,
+    disko,
+    home-manager,
+    nix-darwin,
+    stylix,
+    nvf,
+    ...
+  } @ inputs: let
+    # Shared module for unfree packages
+    allowUnfree = {
+      nixpkgs.config.allowUnfree = true;
     };
+
+    # Helper to create NixOS configurations
+    mkNixosSystem = hostModule:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          isDarwin = false;
+        };
+        modules = [
+          disko.nixosModules.disko
+          home-manager.nixosModules.default
+          ./modules
+          allowUnfree
+          hostModule
+        ];
+      };
+
+    # Helper to create Darwin configurations
+    mkDarwinSystem = hostModule:
+      nix-darwin.lib.darwinSystem {
+        specialArgs = {
+          inherit inputs;
+          isDarwin = true;
+        };
+        modules = [
+          home-manager.darwinModules.default
+          stylix.darwinModules.stylix
+          ./modules
+          allowUnfree
+          hostModule
+        ];
+      };
+  in {
+    nixosConfigurations = {
+      homelab = mkNixosSystem ./hosts/homelab;
+      desktop = mkNixosSystem ./hosts/desktop;
+    };
+
+    darwinConfigurations."work-macbook" = mkDarwinSystem ./hosts/work-macbook.nix;
+  };
 }
