@@ -1,4 +1,4 @@
-{ config, pkgs, lib, bconfig, ... }: {
+{...}: {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -11,12 +11,22 @@
           TCPKeepAlive = "yes";
         };
       };
+      "homelab-vm" = {
+        hostname = "localhost";
+        port = 2222;
+        user = "kwkaiser";
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          AddKeysToAgent = "yes";
+        };
+      };
       "desktop" = {
         hostname = "192.168.4.110";
         user = "kwkaiser";
         proxyJump = "kwkaiser@box.kwkaiser.io";
         forwardAgent = true;
-        extraOptions = { StrictHostKeyChecking = "no"; };
+        extraOptions = {StrictHostKeyChecking = "no";};
       };
       "livingroom" = {
         hostname = "192.168.4.109";
