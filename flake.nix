@@ -58,7 +58,7 @@
     mkNixosSystem = hostModule:
       nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inherit inputs;
+          inherit inputs nixpkgs;
           isDarwin = false;
         };
         modules = [

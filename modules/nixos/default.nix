@@ -10,6 +10,5 @@
     ./k3s
     ./nfs
     ./keyring
-    ./sys
   ];
 }

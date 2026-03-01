@@ -25,7 +25,7 @@
         options = "--delete-older-than 3d";
       };
       linux-builder = {
-        enable = false;
+        enable = true;
         systems = [
           "x86_64-linux"
           "aarch64-linux"
