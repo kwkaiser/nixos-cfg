@@ -30,4 +30,5 @@
   mine.misc-cli-util.enable = true;
   mine.tmux.enable = true;
   mine.mc.enable = true;
+  mine.homelab-dev.enable = true;
 }

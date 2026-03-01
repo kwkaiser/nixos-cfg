@@ -32,7 +32,6 @@ in {
     if isDarwin then {
       # Darwin: environment.etc replaces the whole file, so include defaults
       environment.etc."hosts" = {
-        copy = true;
         text = ''
           127.0.0.1       localhost
           255.255.255.255 broadcasthost

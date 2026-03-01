@@ -13,8 +13,13 @@
           }
           {
             from = "host";
-            host.port = 6443;
-            guest.port = 6443;
+            host.port = 30443;
+            guest.port = 30443;
+          }
+          {
+            from = "host";
+            host.port = 30080;
+            guest.port = 30080;
           }
         ];
         memorySize = 8192;
