@@ -1,5 +1,10 @@
-{ pkgs, config, lib, isDarwin, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  isDarwin,
+  ...
+}: let
   homelabHosts = ''
     127.0.0.1 kwkaiser-test.io
     127.0.0.1 auth.kwkaiser-test.io
@@ -22,6 +27,17 @@ let
     127.0.0.1 portal.kwkaiser-test.io
     127.0.0.1 budget.kwkaiser-test.io
   '';
+
+  # Full hosts file content for Darwin (must be copied, not symlinked)
+  darwinHostsContent = ''
+    127.0.0.1       localhost
+    255.255.255.255 broadcasthost
+    ::1             localhost
+
+    ${homelabHosts}
+  '';
+
+  hostsFile = pkgs.writeText "hosts" darwinHostsContent;
 in {
   options = {
     mine.homelab-dev.enable =
@@ -29,18 +45,17 @@ in {
   };
 
   config = lib.mkIf config.mine.homelab-dev.enable (
-    if isDarwin then {
-      # Darwin: environment.etc replaces the whole file, so include defaults
-      environment.etc."hosts" = {
-        text = ''
-          127.0.0.1       localhost
-          255.255.255.255 broadcasthost
-          ::1             localhost
-
-          ${homelabHosts}
-        '';
-      };
-    } else {
+    if isDarwin
+    then {
+      # Darwin: macOS doesn't support symlinked /etc/hosts (Network framework ignores symlinks)
+      # Use an activation script to copy the file directly instead
+      system.activationScripts.extraActivation.text = ''
+        echo "Updating /etc/hosts with homelab entries..." >&2
+        cp ${hostsFile} /etc/hosts
+        chmod 644 /etc/hosts
+      '';
+    }
+    else {
       # NixOS: extraHosts appends to the existing file
       networking.extraHosts = homelabHosts;
     }
