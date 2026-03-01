@@ -12,7 +12,7 @@ tasks:
         export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
         export WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-1}
         export DISPLAY=${DISPLAY:-:0}
-        sudo -E nix run .#nixosConfigurations.homelab.config.system.build.vmWithDisko & # need sudo for port forwards
+        sudo -E nix run .#nixosConfigurations.homelab.config.system.build.vm & # need sudo for port forwards
 
       - |
         while true; do

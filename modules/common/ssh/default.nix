@@ -1,4 +1,9 @@
-{ pkgs, lib, config, isDarwin, ... }: {
+{
+  lib,
+  config,
+  isDarwin,
+  ...
+}: {
   options = {
     mine.ssh.enable = lib.mkEnableOption "Enables SSH and SSH agent";
   };
@@ -18,12 +23,10 @@
         StrictHostKeyChecking no
         Port 2222
       '';
-    } // (if isDarwin then
-      { }
-    else {
-      startAgent = true; # disabled because it conflicts with keyring
-    });
+    } // lib.optionalAttrs (!isDarwin) {
+      startAgent = true;
+    };
 
-    home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };
+    home-manager.users.${config.mine.username} = {imports = [./home.nix];};
   };
 }

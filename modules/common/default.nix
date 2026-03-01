@@ -27,5 +27,6 @@
     ./misc-cli-util
     ./tmux
     ./zotero
+    ./sys
   ];
 }

@@ -16,6 +16,7 @@
       vim = {
         vimAlias = true;
         globals.mapleader = " ";
+        clipboard.enable = true;
         options = {
           tabstop = 2;
           shiftwidth = 2;
