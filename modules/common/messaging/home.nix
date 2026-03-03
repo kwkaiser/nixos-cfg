@@ -10,7 +10,7 @@
   # Always install messaging packages through home-manager
   home.packages = with pkgs; [
     slack
-    signal-desktop-bin
+    signal-desktop
     caprine
     discord
   ];
