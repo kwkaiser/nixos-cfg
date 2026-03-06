@@ -14,6 +14,8 @@
       };
     }
     // lib.optionalAttrs isDarwin {
+      homebrew.taps = ["schpet/tap"];
+      homebrew.brews = ["schpet/tap/linear"];
       homebrew.casks = ["linear-linear"];
     });
 }
