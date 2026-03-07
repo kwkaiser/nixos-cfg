@@ -16,7 +16,10 @@
       vim = {
         vimAlias = true;
         globals.mapleader = " ";
-        clipboard.enable = true;
+        clipboard = {
+          enable = true;
+          registers = "unnamedplus";
+        };
         options = {
           tabstop = 2;
           shiftwidth = 2;
@@ -41,7 +44,27 @@
 
         autocomplete.nvim-cmp.enable = true;
         autopairs.nvim-autopairs.enable = true;
-        statusline.lualine.enable = true;
+        statusline.lualine = {
+          enable = true;
+          activeSection.b = [
+            ''
+              {
+                "filetype",
+                colored = true,
+                icon_only = true,
+                icon = { align = 'left' }
+              }
+            ''
+            ''
+              {
+                "filename",
+                path = 1,
+                symbols = {modified = ' ', readonly = ' '},
+                separator = {right = '''}
+              }
+            ''
+          ];
+        };
 
         lsp.formatOnSave = true;
 
