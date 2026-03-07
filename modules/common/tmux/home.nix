@@ -7,12 +7,22 @@
     customPaneNavigationAndResize = false;
 
     extraConfig = ''
-      # Enable extended keys for Shift+Enter and other modifier combinations
-      set -g extended-keys on
-      set -as terminal-features 'xterm*:extkeys'
-      set -as terminal-features 'xterm-kitty:extkeys'
+      # Terminal and keyboard settings for Kitty/modern terminals
+      set -g default-terminal "tmux-256color"
+      set -ga terminal-overrides ",xterm-kitty:Tc"
+      set -ga terminal-overrides ",*:RGB"
 
-      # Pass through Shift+Enter (CSI u encoding) for apps like Claude Code
+      # Extended keys for Shift+Enter etc.
+      set -s extended-keys on
+      set -as terminal-features 'xterm-kitty:extkeys:clipboard:RGB'
+
+      # Allow passthrough for escape sequences
+      set -g allow-passthrough on
+
+      # Immediate escape key (no delay for vi mode)
+      set -sg escape-time 0
+
+      # Manual Shift+Enter passthrough as fallback
       bind-key -n S-Enter send-keys Escape "[13;2u"
 
       # Select window 1-10, auto-create if doesn't exist
