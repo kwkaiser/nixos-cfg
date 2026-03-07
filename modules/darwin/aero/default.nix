@@ -34,6 +34,12 @@
           "184" = {
             enabled = false;
           }; # Cmd+Shift+5 (screenshot menu)
+          "73" = {
+            enabled = false;
+          }; # Cmd+H (hide current app)
+          "57" = {
+            enabled = false;
+          }; # Cmd+H (hide others)
         };
       };
       # Remap logout menu item to Ctrl+Opt+Cmd+Shift+Q to free up Cmd+Shift+Q
@@ -51,10 +57,10 @@
 
     services.aerospace.settings = {
       mode.main.binding = {
-        # cmd-h = "focus left";
-        # cmd-j = "focus down";
-        # cmd-k = "focus up";
-        # cmd-l = "focus right";
+        cmd-h = "focus left";
+        cmd-j = "focus down";
+        cmd-k = "focus up";
+        cmd-l = "focus right";
         cmd-shift-q = "close"; # Close window (like hyprland mod+shift+q)
         cmd-shift-h = "move left";
         cmd-shift-j = "move down";
