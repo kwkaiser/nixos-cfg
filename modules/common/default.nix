@@ -28,5 +28,6 @@
     ./tmux
     ./zotero
     ./sys
+    ./gh-dash
   ];
 }
