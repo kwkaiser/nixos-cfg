@@ -70,8 +70,8 @@
         cmd-shift-comma = "layout v_tiles";
 
         # Orientation toggles (like hyprland mod+v / mod+shift+v)
-        cmd-v = "layout v_tiles"; # Stacked (orientationbottom)
-        cmd-shift-v = "layout h_tiles"; # Side-by-side (orientationright)
+        cmd-m = "layout v_tiles"; # Stacked (orientationbottom)
+        cmd-shift-m = "layout h_tiles"; # Side-by-side (orientationright)
         cmd-backslash = "layout tiling";
         cmd-shift-backslash = "layout floating tiling";
 
