@@ -1,4 +1,8 @@
-{...}: {
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    tmuxinator
+  ];
+
   programs.tmux = {
     enable = true;
     shortcut = "a"; # Ctrl+a as leader key
@@ -11,6 +15,7 @@
       set -g default-terminal "tmux-256color"
       set -ga terminal-overrides ",xterm-kitty:Tc"
       set -ga terminal-overrides ",*:RGB"
+      set -g mouse on
 
       # Extended keys for Shift+Enter etc.
       set -s extended-keys on
@@ -24,6 +29,10 @@
 
       # Manual Shift+Enter passthrough as fallback
       bind-key -n S-Enter send-keys Escape "[13;2u"
+
+      # Window navigation with [ and ] (like Hyprland mod+[/])
+      bind-key '[' previous-window
+      bind-key ']' next-window
 
       # Select window 1-10, auto-create if doesn't exist
       bind-key 1 run-shell 'tmux select-window -t :1 2>/dev/null || tmux new-window -t :1'
@@ -48,6 +57,16 @@
       bind-key Enter if-shell '[ "$(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2)" = "v" ]' \
           'split-window -h' \
           'split-window -v'
+
+      # Create mode: prefix + c, then w/s for window/session
+      bind-key c switch-client -T create
+      bind-key -T create w new-window
+      bind-key -T create s new-session
+
+      # Rename: prefix + r, then w/s for window/session
+      bind-key r switch-client -T rename
+      bind-key -T rename w command-prompt -I "#W" "rename-window '%%'"
+      bind-key -T rename s command-prompt -I "#S" "rename-session '%%'"
 
       # Close pane with prefix + q
       bind-key q kill-pane
