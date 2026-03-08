@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Script to pipe build output to neovim quickfix list
 # Usage: pnpm run build:check 2>&1 | nvb
+# Watch: pnpm run build:check --watch 2>&1 | nvb
 set -euo pipefail
 
 # Derive socket path from git repo
@@ -18,61 +19,115 @@ if [[ ! -S "$socket_path" ]]; then
   exit 1
 fi
 
-# Create temp files
-rawfile=$(mktemp /tmp/nvb-raw.XXXXXX)
+# Temp file for Lua commands
 luafile=$(mktemp /tmp/nvb-lua.XXXXXX)
-trap "rm -f $rawfile $luafile" EXIT
+trap "rm -f $luafile" EXIT
 
-# Save all input and display
-cat > "$rawfile"
-cat "$rawfile"
+# Default package path: cwd relative to repo root
+cwd=$(pwd)
+if [[ "$cwd" == "$repo_root" ]]; then
+  pkg_rel_path=""
+elif [[ "$cwd" == "$repo_root"/* ]]; then
+  pkg_rel_path="${cwd#$repo_root/}"
+else
+  pkg_rel_path=""
+fi
 
-# Parse errors and generate Lua code to set quickfix list
-# Strip ANSI codes, track package context, extract error info
-sed 's/\x1b\[[0-9;]*m//g' "$rawfile" | \
-gawk -v repo_root="$repo_root" '
-  BEGIN {
-    print "vim.fn.setqflist({}, \"r\")"  # Clear existing quickfix list
-    print "local items = {}"
-  }
+errors=""
 
-  # pnpm header line - extract package directory
-  /^> .* build:check / {
-    pkg_abs_path = $NF
-    if (index(pkg_abs_path, repo_root) == 1) {
-      pkg_rel_path = substr(pkg_abs_path, length(repo_root) + 2)
-    } else {
-      pkg_rel_path = ""
-    }
-    next
-  }
+flush_errors() {
+  # Generate Lua to set quickfix
+  {
+    echo 'vim.fn.setqflist({}, "r")'
+    echo 'local items = {}'
+    echo -n "$errors"
+    echo 'vim.fn.setqflist(items, "a")'
+  } > "$luafile"
 
-  # TypeScript error: file.ts(21,7): error TS2322: message
-  match($0, /^([^(]+)\(([0-9]+),([0-9]+)\): (error|warning) (.*)$/, m) {
-    filename = m[1]
-    if (pkg_rel_path != "") {
-      filename = pkg_rel_path "/" filename
-    }
-    lnum = m[2]
-    col = m[3]
-    err_type = (m[4] == "error") ? "E" : "W"
-    msg = m[5]
-    # Escape quotes and backslashes for Lua string
-    gsub(/\\/, "\\\\", msg)
-    gsub(/"/, "\\\"", msg)
-    gsub(/\\/, "\\\\", filename)
-    gsub(/"/, "\\\"", filename)
-    printf "table.insert(items, {filename=\"%s\", lnum=%s, col=%s, text=\"%s\", type=\"%s\"})\n", filename, lnum, col, msg, err_type
-    next
-  }
+  nvim --server "$socket_path" --remote-send "<Cmd>luafile $luafile<CR>" 2>/dev/null || true
+  errors=""
+}
 
-  END {
-    print "vim.fn.setqflist(items, \"a\")"  # Append items to cleared list
-  }
-' > "$luafile"
+# Regex patterns stored in variables for bash compatibility
+re_watch_colon='^([^:]+):([0-9]+):([0-9]+) - (error|warning) (.*)$'
+re_batch_paren='^([^(]+)\(([0-9]+),([0-9]+)\): (error|warning) (.*)$'
+re_pnpm_header='^> .* build:check '
 
-# Execute the Lua file in neovim
-nvim --server "$socket_path" --remote-send "<Cmd>luafile $luafile<CR>"
+parse_error_line() {
+  local line="$1"
+  local filename lnum col err_type msg
 
-# Brief pause to let nvim read the file before cleanup
-sleep 0.1
+  # Try format 1: file.ts:21:7 - error TS2322: message (watch mode / pretty)
+  if [[ "$line" =~ $re_watch_colon ]]; then
+    filename="${BASH_REMATCH[1]}"
+    lnum="${BASH_REMATCH[2]}"
+    col="${BASH_REMATCH[3]}"
+    err_type="${BASH_REMATCH[4]}"
+    msg="${BASH_REMATCH[5]}"
+  # Try format 2: file.ts(21,7): error TS2322: message (batch mode)
+  elif [[ "$line" =~ $re_batch_paren ]]; then
+    filename="${BASH_REMATCH[1]}"
+    lnum="${BASH_REMATCH[2]}"
+    col="${BASH_REMATCH[3]}"
+    err_type="${BASH_REMATCH[4]}"
+    msg="${BASH_REMATCH[5]}"
+  else
+    return 1
+  fi
+
+  # Prepend package path if we have context
+  if [[ -n "$pkg_rel_path" ]]; then
+    filename="${pkg_rel_path}/${filename}"
+  fi
+
+  # Escape for Lua
+  msg="${msg//\\/\\\\}"
+  msg="${msg//\"/\\\"}"
+  filename="${filename//\\/\\\\}"
+  filename="${filename//\"/\\\"}"
+
+  local type_char="E"
+  [[ "$err_type" == "warning" ]] && type_char="W"
+
+  errors="${errors}table.insert(items, {filename=\"${filename}\", lnum=${lnum}, col=${col}, text=\"${msg}\", type=\"${type_char}\"})"$'\n'
+  return 0
+}
+
+# Process line by line for both batch and watch mode
+while IFS= read -r line || [[ -n "$line" ]]; do
+  # Strip ANSI codes for parsing
+  clean_line=$(echo "$line" | sed 's/\x1b\[[0-9;]*m//g')
+
+  # Always echo original line (preserves colors if any)
+  echo "$line"
+
+  # Watch mode: detect new compilation cycle - reset errors but keep cwd-based path
+  if [[ "$clean_line" == *"Starting compilation"* ]] || [[ "$clean_line" == *"File change detected"* ]]; then
+    errors=""
+    continue
+  fi
+
+  # Watch mode: end of cycle - flush errors
+  if [[ "$clean_line" == *"Watching for file changes"* ]]; then
+    flush_errors
+    continue
+  fi
+
+  # pnpm header - extract package directory
+  if [[ "$clean_line" =~ $re_pnpm_header ]]; then
+    pkg_abs_path="${clean_line##* }"
+    if [[ "$pkg_abs_path" == "$repo_root"* ]]; then
+      pkg_rel_path="${pkg_abs_path#$repo_root/}"
+    else
+      pkg_rel_path=""
+    fi
+    continue
+  fi
+
+  # Try to parse as error line
+  parse_error_line "$clean_line" || true
+
+done
+
+# Batch mode: flush any remaining errors at EOF
+flush_errors

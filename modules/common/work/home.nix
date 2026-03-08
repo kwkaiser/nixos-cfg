@@ -29,12 +29,14 @@
 
   # Script to pipe build output to neovim quickfix list
   nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./nvb.sh);
+  # Script to pipe eslint output to neovim quickfix list
+  nve = pkgs.writeShellScriptBin "nve" (builtins.readFile ./nve.sh);
 in {
   home.packages = with pkgs; [
     gh
     gh-dash
-    gawk # Required by nvb for match() with capture groups
     nvb
+    nve
     (writeShellScriptBin "work-init" ''
       tmuxinator start --no-attach primary
       tmuxinator start --no-attach wt-1
