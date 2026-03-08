@@ -26,10 +26,15 @@
         }
       ];
     };
+
+  # Script to pipe build output to neovim quickfix list
+  nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./nvb.sh);
 in {
   home.packages = with pkgs; [
     gh
     gh-dash
+    gawk # Required by nvb for match() with capture groups
+    nvb
     (writeShellScriptBin "work-init" ''
       tmuxinator start --no-attach primary
       tmuxinator start --no-attach wt-1
