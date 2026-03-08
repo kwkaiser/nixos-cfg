@@ -32,4 +32,5 @@
   mine.mc.enable = true;
   mine.homelab-dev.enable = true;
   mine.gh-dash.enable = true;
+  mine.rust.enable = true;
 }
