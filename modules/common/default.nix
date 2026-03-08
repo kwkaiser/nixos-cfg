@@ -29,5 +29,6 @@
     ./zotero
     ./sys
     ./gh-dash
+    ./rust
   ];
 }
