@@ -53,10 +53,10 @@
       bind-key v set-environment -g SPLIT_MODE "h" \; display-message "Split: horizontal (stacked)"
       bind-key V set-environment -g SPLIT_MODE "v" \; display-message "Split: vertical (side-by-side)"
 
-      # Create split based on current mode with prefix + Enter
+      # Create split based on current mode with prefix + Enter (inherits working directory)
       bind-key Enter if-shell '[ "$(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2)" = "v" ]' \
-          'split-window -h' \
-          'split-window -v'
+          'split-window -h -c "#{pane_current_path}"' \
+          'split-window -v -c "#{pane_current_path}"'
 
       # Create mode: prefix + c, then w/s for window/session
       bind-key c switch-client -T create
@@ -67,6 +67,9 @@
       bind-key r switch-client -T rename
       bind-key -T rename w command-prompt -I "#W" "rename-window '%%'"
       bind-key -T rename s command-prompt -I "#S" "rename-session '%%'"
+
+      # Reload config with prefix + Shift+r
+      bind-key R source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded"
 
       # Close pane with prefix + q
       bind-key q kill-pane
