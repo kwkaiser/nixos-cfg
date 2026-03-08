@@ -11,16 +11,16 @@
       inherit name;
       root = root;
       windows = [
-        {claude = "ccp";}
-        {editor = null;}
-        {driver = null;}
+        {claude = "clear && ccp";}
+        {editor = "clear";}
+        {driver = "clear";}
         {
           build = {
             layout = "even-horizontal";
             panes = [
-              "cd backend"
-              "cd frontend"
-              "cd packages/tasks"
+              "cd backend && clear"
+              "cd frontend && clear"
+              "cd packages/tasks && clear"
             ];
           };
         }

@@ -173,10 +173,10 @@
           }
 
           {
-            key = "<leader>lq";
+            key = "<leader>fq";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').diagnostics_workspace()<CR>";
-            desc = "Dump LSP diagnostics into quickfix";
+            action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
+            desc = "Open quickfix list";
           }
 
           # Git
