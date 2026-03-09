@@ -3,6 +3,7 @@
     ripgrep
     fd
     fzf
+    vscode-langservers-extracted # Provides vscode-eslint-language-server for nvim-eslint
   ];
 
   # Shell wrapper: opens neovim with git-based socket name for external RPC
@@ -47,7 +48,15 @@
           timeoutlen = 10;
         };
 
+        theme = {
+          enable = true;
+          name = "gruvbox";
+          style = "dark";
+        };
+
         lsp.enable = true;
+        lsp.mappings.codeAction = null; # Using fzf-lua for code actions instead
+
         fzf-lua = {
           enable = true;
           setupOpts = {
@@ -88,6 +97,34 @@
 
         lsp.formatOnSave = true;
 
+        # ESLint LSP via nvim-eslint (better monorepo support than eslint_d)
+        extraPlugins.nvim-eslint = {
+          package = pkgs.vimUtils.buildVimPlugin {
+            pname = "nvim-eslint";
+            version = "2024-03-09";
+            src = pkgs.fetchFromGitHub {
+              owner = "esmuellert";
+              repo = "nvim-eslint";
+              rev = "main";
+              hash = "sha256-e6uUyMKlY8o+xqcvISpT+TRX6MqOtCK4ShMs4qY1XFY=";
+            };
+          };
+          setup = ''
+            require('nvim-eslint').setup({
+              bin = 'vscode-eslint-language-server',
+              code_actions = {
+                enable = true,
+                apply_on_save = { enable = false }, -- Let conform handle formatting
+                disable_rule_comment = { enable = true },
+              },
+              diagnostics = {
+                enable = true,
+                run_on = 'type', -- Run on typing, not just save
+              },
+            })
+          '';
+        };
+
         languages = {
           markdown.enable = true;
           python.enable = true;
@@ -99,7 +136,7 @@
           ts = {
             enable = true;
             lsp.enable = true;
-            extraDiagnostics.enable = true;
+            extraDiagnostics.enable = false; # Using nvim-eslint LSP instead of nvim-lint
             format.enable = true;
             format.type = ["prettier"];
             treesitter.enable = true;
@@ -125,6 +162,11 @@
         utility.diffview-nvim = {
           enable = true;
           setupOpts = {
+            view = {
+              merge_tool = {
+                layout = "diff2_horizontal";
+              };
+            };
             keymaps = {
               view = [
                 ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
@@ -177,6 +219,14 @@
             mode = "n";
             action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
             desc = "Open quickfix list";
+          }
+
+          # LSP
+          {
+            key = "<leader>la";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').lsp_code_actions({ silent = true })<CR>";
+            desc = "Code actions";
           }
 
           # Git

@@ -33,4 +33,5 @@
   mine.homelab-dev.enable = true;
   mine.gh-dash.enable = true;
   mine.rust.enable = true;
+  mine.linear-tui.enable = true;
 }
