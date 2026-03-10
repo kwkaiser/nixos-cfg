@@ -30,6 +30,5 @@
     ./sys
     ./gh-dash
     ./rust
-    ./linear-tui
   ];
 }
