@@ -57,8 +57,35 @@
           style = "dark";
         };
 
-        lsp.enable = true;
-        lsp.mappings.codeAction = null; # Using fzf-lua for code actions instead
+        lsp = {
+          enable = true;
+
+          mappings = {
+            # Disabled - using fzf-lua alternatives
+            codeAction = null;
+            listReferences = null;
+
+            # Disabled: different bindings
+            openDiagnosticFloat = "<leader>ldf";
+
+            # Disabled - not used
+            listImplementations = null;
+            previousDiagnostic = null;
+            hover = null;
+            renameSymbol = null;
+            nextDiagnostic = null;
+            goToDeclaration = null;
+            signatureHelp = null;
+            addWorkspaceFolder = null;
+            removeWorkspaceFolder = null;
+            listWorkspaceFolders = null;
+            listWorkspaceSymbols = null;
+            documentHighlight = null;
+            listDocumentSymbols = null;
+            toggleFormatOnSave = null;
+            format = null; # Using formatOnSave instead
+          };
+        };
 
         fzf-lua = {
           enable = true;
@@ -79,7 +106,14 @@
 
         binds.whichKey.enable = true;
 
-        autocomplete.nvim-cmp.enable = true;
+        autocomplete.nvim-cmp = {
+          enable = true;
+          sources = {
+            nvim_lsp = "[LSP]";
+            buffer = "[Buffer]";
+            path = "[Path]";
+          };
+        };
         autopairs.nvim-autopairs.enable = true;
         statusline.lualine = {
           enable = true;
@@ -197,6 +231,36 @@
             mode = "n";
             action = "<cmd>lua require('fzf-lua').lsp_code_actions({ silent = true })<CR>";
             desc = "Code actions";
+          }
+          {
+            key = "<leader>lr";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').lsp_references()<CR>";
+            desc = "Code references";
+          }
+          {
+            key = "<leader>ldd";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').diagnostics_document()<CR>";
+            desc = "Diagnostics (file)";
+          }
+          {
+            key = "<leader>ldw";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').diagnostics_workspace()<CR>";
+            desc = "Diagnostics (workspace)";
+          }
+          {
+            key = "<leader>ldc";
+            mode = "n";
+            action = "<cmd>lua vim.fn.setreg('+', vim.diagnostic.get(0, {lnum = vim.fn.line('.') - 1})[1].message)<CR>";
+            desc = "Copy diagnostic";
+          }
+          {
+            key = "<leader>lt";
+            mode = "n";
+            action = "<cmd>lua vim.lsp.buf.hover()<CR>";
+            desc = "Type description";
           }
 
           # Git
