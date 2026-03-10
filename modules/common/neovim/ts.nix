@@ -42,6 +42,9 @@
       format.enable = true;
       format.type = ["prettier"];
       treesitter.enable = true;
+      extensions = {
+        ts-error-translator.enable = true;
+      };
     };
 
     luaConfigRC.eslint-fix-all = ''
