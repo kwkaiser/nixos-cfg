@@ -76,11 +76,16 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     continue
   fi
 
-  # Error location line
+  # Error location line (must have :line:col at end, not test summary)
   if [[ "$clean_line" =~ $re_location ]]; then
     filename="${BASH_REMATCH[1]}"
     lnum="${BASH_REMATCH[2]}"
     col="${BASH_REMATCH[3]}"
+
+    # Skip test summary lines like "❯ src/file.test.ts (4 tests | 1 failed)"
+    if [[ "$clean_line" == *"tests"* ]]; then
+      continue
+    fi
 
     # Prepend package path if we have context
     if [[ -n "$pkg_rel_path" ]]; then
@@ -101,5 +106,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   fi
 done
 
-# Batch mode: flush any remaining errors at EOF
-flush_errors
+# Batch mode: flush any remaining errors at EOF (only if we have errors)
+if [[ -n "$errors" ]]; then
+  flush_errors
+fi
