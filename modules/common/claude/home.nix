@@ -8,7 +8,6 @@
     "ssh-add"
     "keepassxc-cli"
     "kpcli"
-    "op"
   ];
 
   forbiddenPattern = lib.concatStringsSep "|" forbiddenCommands;
