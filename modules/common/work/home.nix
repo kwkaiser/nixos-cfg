@@ -31,12 +31,15 @@
   nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./nvb.sh);
   # Script to pipe eslint output to neovim quickfix list
   nve = pkgs.writeShellScriptBin "nve" (builtins.readFile ./nve.sh);
+  # Script to pipe vitest output to neovim quickfix list
+  nvt = pkgs.writeShellScriptBin "nvt" (builtins.readFile ./nvt.sh);
 in {
   home.packages = with pkgs; [
     gh
     gh-dash
     nvb
     nve
+    nvt
     (writeShellScriptBin "work-init" ''
       tmuxinator start --no-attach primary
       tmuxinator start --no-attach wt-1
