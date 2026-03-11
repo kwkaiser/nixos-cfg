@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
   imports = [
     ./ts.nix
   ];
@@ -110,8 +110,9 @@
           enable = true;
           sources = {
             nvim_lsp = "[LSP]";
-            buffer = "[Buffer]";
             path = "[Path]";
+            buffer = lib.mkForce null;
+            treesitter = lib.mkForce null;
           };
         };
         autopairs.nvim-autopairs.enable = true;
