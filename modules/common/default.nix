@@ -30,5 +30,6 @@
     ./sys
     ./gh-dash
     ./rust
+    ./flyio
   ];
 }
