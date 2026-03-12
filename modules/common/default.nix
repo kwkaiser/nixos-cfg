@@ -31,5 +31,6 @@
     ./gh-dash
     ./rust
     ./flyio
+    ./codex
   ];
 }
