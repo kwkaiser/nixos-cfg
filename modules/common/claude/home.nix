@@ -16,6 +16,7 @@
     enabledPlugins = {
       "context-mode@claude-context-mode" = true;
     };
+
     hooks = {
       PreToolUse = [
         {
