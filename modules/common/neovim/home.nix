@@ -1,4 +1,8 @@
-{pkgs, lib, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./ts.nix
   ];
@@ -74,7 +78,7 @@
             listImplementations = null;
             previousDiagnostic = null;
             hover = null;
-            renameSymbol = null;
+            renameSymbol = "<leader>lsr";
             nextDiagnostic = null;
             goToDeclaration = null;
             signatureHelp = null;
@@ -84,7 +88,7 @@
             listWorkspaceSymbols = null;
             documentHighlight = null;
             listDocumentSymbols = null;
-            toggleFormatOnSave = null;
+            toggleFormatOnSave = "<leader>lf";
             format = null; # Using formatOnSave instead
           };
         };
