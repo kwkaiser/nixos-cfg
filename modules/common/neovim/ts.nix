@@ -40,7 +40,6 @@
       lsp.enable = true;
       extraDiagnostics.enable = false; # Using nvim-eslint LSP instead of nvim-lint
       format.enable = true;
-      format.type = ["prettier"];
       treesitter.enable = true;
       extensions = {
         ts-error-translator.enable = true;
