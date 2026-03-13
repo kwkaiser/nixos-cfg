@@ -35,4 +35,5 @@
   mine.rust.enable = true;
   mine.flyio.enable = true;
   mine.codex.enable = true;
+  mine.firebase.enable = true;
 }
