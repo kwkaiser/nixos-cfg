@@ -32,5 +32,6 @@
     ./rust
     ./flyio
     ./codex
+    ./firebase
   ];
 }
