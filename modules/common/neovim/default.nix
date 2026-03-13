@@ -9,6 +9,7 @@
   };
 
   config = lib.mkIf config.mine.neovim.enable {
+    environment.variables.EDITOR = "nvim";
     home-manager.users.${config.mine.username} = {imports = [./home.nix];};
   };
 }

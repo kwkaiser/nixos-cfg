@@ -34,4 +34,5 @@
   mine.gh-dash.enable = true;
   mine.rust.enable = true;
   mine.flyio.enable = true;
+  mine.codex.enable = true;
 }
