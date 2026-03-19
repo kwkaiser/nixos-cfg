@@ -186,11 +186,15 @@
             };
             keymaps = {
               view = [
-                ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+                ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
+                ["n" "q" "<Cmd>ReviewThemAbort<CR>" {desc = "Close and discard review";}]
+                ["n" "Q" "<Cmd>ReviewThemSubmit<CR><Cmd>DiffviewClose<CR>" {desc = "Close and copy review to clipboard";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
               file_panel = [
-                ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+                ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
+                ["n" "q" "<Cmd>ReviewThemAbort<CR>" {desc = "Close and discard review";}]
+                ["n" "Q" "<Cmd>ReviewThemSubmit<CR><Cmd>DiffviewClose<CR>" {desc = "Close and copy review to clipboard";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
             };
@@ -286,14 +290,14 @@
           {
             key = "<leader>gdc";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Base branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local base = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') require('fzf-lua').git_branches({ prompt = 'Compare branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected2) local compare = selected2[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('DiffviewOpen ' .. base .. '...' .. compare) end } }) end } })<CR>";
-            desc = "Diff compare branches";
+            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Base branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local base = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') require('fzf-lua').git_branches({ prompt = 'Compare branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected2) local compare = selected2[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('ReviewThemStart ' .. base .. ' ' .. compare) end } }) end } })<CR>";
+            desc = "Review compare branches";
           }
           {
             key = "<leader>gdm";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Compare to main> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local branch = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('DiffviewOpen main...' .. branch) end } })<CR>";
-            desc = "Diff branch against main";
+            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Review against main> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local branch = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('ReviewThemStart main ' .. branch) end } })<CR>";
+            desc = "Review branch against main";
           }
           {
             key = "<leader>b";
