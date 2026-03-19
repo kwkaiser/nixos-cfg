@@ -15,6 +15,7 @@
   claudeSettings = {
     enabledPlugins = {
       "context-mode@claude-context-mode" = true;
+      "superpowers@claude-plugins-official" = true;
     };
 
     hooks = {
@@ -42,7 +43,7 @@ in {
     claude-monitor
 
     (writeShellScriptBin "ccp" ''
-      claude --dangerously-skip-permissions
+      ${claude-code}/bin/claude --dangerously-skip-permissions
     '')
   ];
 

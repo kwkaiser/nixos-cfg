@@ -54,6 +54,13 @@
       nixpkgs.config.allowUnfree = true;
     };
 
+    # Custom overlays
+    overlays = {
+      nixpkgs.overlays = [
+        (import ./overlays/claude-code.nix)
+      ];
+    };
+
     # Helper to create NixOS configurations
     mkNixosSystem = hostModule:
       nixpkgs.lib.nixosSystem {
@@ -66,6 +73,7 @@
           home-manager.nixosModules.default
           ./modules
           allowUnfree
+          overlays
           hostModule
         ];
       };
@@ -82,6 +90,7 @@
           stylix.darwinModules.stylix
           ./modules
           allowUnfree
+          overlays
           hostModule
         ];
       };

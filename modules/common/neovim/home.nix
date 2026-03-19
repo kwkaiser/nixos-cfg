@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./ts.nix
+    ./review.nix
   ];
 
   home.sessionVariables.EDITOR = "nvim";
@@ -169,6 +170,9 @@
             signing = {
               enabled = true;
             };
+            integrations = {
+              diffview = true;
+            };
           };
         };
 
@@ -183,9 +187,11 @@
             keymaps = {
               view = [
                 ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+                ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
               file_panel = [
                 ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close diffview";}]
+                ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
             };
           };
@@ -276,6 +282,18 @@
             mode = "n";
             action = "<cmd>Neogit<CR>";
             desc = "Open git";
+          }
+          {
+            key = "<leader>gdc";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Base branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local base = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') require('fzf-lua').git_branches({ prompt = 'Compare branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected2) local compare = selected2[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('DiffviewOpen ' .. base .. '...' .. compare) end } }) end } })<CR>";
+            desc = "Diff compare branches";
+          }
+          {
+            key = "<leader>gdm";
+            mode = "n";
+            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Compare to main> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local branch = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('DiffviewOpen main...' .. branch) end } })<CR>";
+            desc = "Diff branch against main";
           }
           {
             key = "<leader>b";
