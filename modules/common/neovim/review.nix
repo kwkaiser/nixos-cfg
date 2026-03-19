@@ -12,6 +12,16 @@
         };
       };
       setup = ''
+        -- Patch: single-ref mode should diff merge-base against HEAD, not working tree
+        local rt_git = require("reviewthem.git")
+        local orig_get_diff_files = rt_git.get_diff_files
+        rt_git.get_diff_files = function(base_ref, compare_ref)
+          if (compare_ref == nil or compare_ref == "") and base_ref and base_ref ~= "" then
+            return orig_get_diff_files(base_ref, "HEAD")
+          end
+          return orig_get_diff_files(base_ref, compare_ref)
+        end
+
         require("reviewthem").setup({
           diff_tool = "diffview",
           submit_format = "json",
