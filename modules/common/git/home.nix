@@ -20,7 +20,7 @@
           rb = "rebase";
           rbx = "rebase -X ours";
           br = "branch";
-          cleanup = "!f() { git worktree list --porcelain | awk '/^worktree /{wt=$2} /^branch refs\\/heads\\//{b=substr($2,17); if(b!=\"main\"){print wt,b}}' | while read wt b; do if git merge-base --is-ancestor \"$b\" main 2>/dev/null; then git worktree remove \"$wt\"; fi; done; wt_branches=$(git worktree list --porcelain | awk -F/ '/^branch refs\\/heads\\//{print $NF}'); git branch --merged main | sed 's/^[* +]*//' | while read b; do echo \"$wt_branches\" | grep -qx \"$b\" || git branch -d \"$b\"; done; }; f";
+          cleanup = "!git trim --no-update --no-confirm && git worktree prune";
         };
         push.default = "current";
         push.autoSetupRemote = true;
