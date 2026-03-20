@@ -316,6 +316,12 @@
             desc = "File history";
           }
           {
+            key = "<leader>go";
+            mode = "n";
+            action = "<cmd>lua copy_github_url()<CR>";
+            desc = "Copy GitHub URL to clipboard";
+          }
+          {
             key = "<leader>gdc";
             mode = "n";
             action = "<cmd>lua review_compare_branches()<CR>";
@@ -365,6 +371,7 @@
         luaConfigRC.review-main = builtins.readFile ./review-main.lua;
         luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
         luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
+        luaConfigRC.github-url = builtins.readFile ./github-url.lua;
       };
     };
   };

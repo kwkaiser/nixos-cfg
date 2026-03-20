@@ -10,7 +10,8 @@ function open_file_history()
       end
     end
   elseif vim.api.nvim_buf_get_name(0):match('^diffview://') then
-    path = vim.api.nvim_buf_get_name(0):match('%.git/[^/]+/(.+)$')
+    local bufname = vim.api.nvim_buf_get_name(0)
+    path = bufname:match('%.git/:[^:]*:/(.+)$') or bufname:match('%.git/[^/]+/(.+)$')
   end
 
   if path then
