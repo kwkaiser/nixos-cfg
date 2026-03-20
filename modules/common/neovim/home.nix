@@ -148,7 +148,10 @@
         lsp.formatOnSave = true;
 
         languages = {
-          markdown.enable = true;
+          markdown = {
+            enable = true;
+            lsp.enable = false; # marksman requires building dotnet from source
+          };
           python.enable = true;
           yaml.enable = true;
           sql.enable = true;
@@ -187,14 +190,16 @@
             keymaps = {
               view = [
                 ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
-                ["n" "q" "<Cmd>ReviewThemAbort<CR>" {desc = "Close and discard review";}]
-                ["n" "Q" "<Cmd>ReviewThemSubmit<CR><Cmd>DiffviewClose<CR>" {desc = "Close and copy review to clipboard";}]
+                ["n" "<leader>rC" "<Cmd>ReviewThemFlush<CR>" {desc = "Copy comments to clipboard and clear";}]
+                ["n" "q" "<Cmd>lua local ok, _ = pcall(vim.cmd, 'ReviewThemAbort'); if not ok then vim.cmd('DiffviewClose') end<CR>" {desc = "Close and discard review";}]
+                ["n" "Q" "<Cmd>lua pcall(vim.cmd, 'ReviewThemSubmit'); vim.cmd('DiffviewClose')<CR>" {desc = "Close and copy review to clipboard";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
               file_panel = [
                 ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
-                ["n" "q" "<Cmd>ReviewThemAbort<CR>" {desc = "Close and discard review";}]
-                ["n" "Q" "<Cmd>ReviewThemSubmit<CR><Cmd>DiffviewClose<CR>" {desc = "Close and copy review to clipboard";}]
+                ["n" "<leader>rC" "<Cmd>ReviewThemFlush<CR>" {desc = "Copy comments to clipboard and clear";}]
+                ["n" "q" "<Cmd>lua local ok, _ = pcall(vim.cmd, 'ReviewThemAbort'); if not ok then vim.cmd('DiffviewClose') end<CR>" {desc = "Close and discard review";}]
+                ["n" "Q" "<Cmd>lua pcall(vim.cmd, 'ReviewThemSubmit'); vim.cmd('DiffviewClose')<CR>" {desc = "Close and copy review to clipboard";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
             };
@@ -282,10 +287,16 @@
 
           # Git
           {
-            key = "<leader>g";
+            key = "<leader>gs";
             mode = "n";
             action = "<cmd>Neogit<CR>";
-            desc = "Open git";
+            desc = "Git status";
+          }
+          {
+            key = "<leader>gh";
+            mode = "n";
+            action = "<cmd>lua local bufname = vim.api.nvim_buf_get_name(0); local path; if bufname:match('^diffview://') then path = bufname:match('%.git/[^/]+/(.+)$') end; if path then vim.cmd('DiffviewFileHistory ' .. path .. ' --follow') else vim.cmd('DiffviewFileHistory % --follow') end<CR>";
+            desc = "File history";
           }
           {
             key = "<leader>gdc";

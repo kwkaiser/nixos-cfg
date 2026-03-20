@@ -54,7 +54,7 @@
       nixpkgs.config.allowUnfree = true;
     };
 
-    # Custom overlays
+    # Fix stale claude-code src hash in nixpkgs
     overlays = {
       nixpkgs.overlays = [
         (import ./overlays/claude-code.nix)

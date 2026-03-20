@@ -29,6 +29,24 @@
           },
         })
 
+        -- Custom command: copy comments to clipboard and clear them, keep session open
+        vim.api.nvim_create_user_command("ReviewThemFlush", function()
+          local state = require("reviewthem.state")
+          local config = require("reviewthem.config")
+          if not state.ensure_review_active() then return end
+          local structured = state.get_all_comments_structured()
+          if #structured.review.comments == 0 then
+            vim.notify("No comments to flush", vim.log.levels.INFO)
+            return
+          end
+          local opts = config.get()
+          local output = opts.submit_format == "json" and vim.fn.json_encode(structured) or require("reviewthem.commands.review").format_as_markdown(structured)
+          vim.fn.setreg("+", output)
+          state.clear_comments()
+          vim.fn.sign_unplace("reviewthem")
+          vim.notify(string.format("Flushed %d comments to clipboard", #structured.review.comments), vim.log.levels.INFO)
+        end, {})
+
         -- Monkeypatch: fix builtin UI bugs and add q to close modals
         local builtin = require("reviewthem.ui.builtin")
 
