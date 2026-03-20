@@ -216,6 +216,9 @@
                 ["n" "Q" "<Cmd>lua pcall(vim.cmd, 'ReviewThemSubmit'); vim.cmd('DiffviewClose')<CR>" {desc = "Close and copy review to clipboard";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
+              file_history_panel = [
+                ["n" "<leader>gc" "<Cmd>lua diff_commit_at_cursor()<CR>" {desc = "View full commit diff";}]
+              ];
             };
           };
         };
@@ -361,6 +364,7 @@
         luaConfigRC.review-compare = builtins.readFile ./review-compare.lua;
         luaConfigRC.review-main = builtins.readFile ./review-main.lua;
         luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
+        luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
       };
     };
   };
