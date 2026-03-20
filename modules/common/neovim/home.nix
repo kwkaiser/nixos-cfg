@@ -125,6 +125,19 @@
         autopairs.nvim-autopairs.enable = true;
         statusline.lualine = {
           enable = true;
+          setupOpts.tabline = {
+            lualine_a = [
+              (lib.generators.mkLuaInline ''
+                {
+                  'tabs',
+                  mode = 1,
+                  fmt = function(name, context)
+                    return tab_format(name, context)
+                  end,
+                }
+              '')
+            ];
+          };
           activeSection.b = [
             ''
               {
@@ -182,6 +195,7 @@
         utility.diffview-nvim = {
           enable = true;
           setupOpts = {
+            show_untracked = true;
             view = {
               merge_tool = {
                 layout = "diff3_mixed";
@@ -295,20 +309,26 @@
           {
             key = "<leader>gh";
             mode = "n";
-            action = "<cmd>lua local bufname = vim.api.nvim_buf_get_name(0); local path; if bufname:match('^diffview://') then path = bufname:match('%.git/[^/]+/(.+)$') end; if path then vim.cmd('DiffviewFileHistory ' .. path .. ' --follow') else vim.cmd('DiffviewFileHistory % --follow') end<CR>";
+            action = "<cmd>lua open_file_history()<CR>";
             desc = "File history";
           }
           {
             key = "<leader>gdc";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Base branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local base = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') require('fzf-lua').git_branches({ prompt = 'Compare branch> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected2) local compare = selected2[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('ReviewThemStart ' .. base .. ' ' .. compare) end } }) end } })<CR>";
+            action = "<cmd>lua review_compare_branches()<CR>";
             desc = "Review compare branches";
           }
           {
             key = "<leader>gdm";
             mode = "n";
-            action = "<cmd>lua require('fzf-lua').git_branches({ prompt = 'Review against main> ', cmd = 'git branch --sort=-committerdate --no-color', actions = { ['default'] = function(selected) local branch = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)') vim.cmd('ReviewThemStart main ' .. branch) end } })<CR>";
+            action = "<cmd>lua review_branch_against_main()<CR>";
             desc = "Review branch against main";
+          }
+          {
+            key = "<leader>gdd";
+            mode = "n";
+            action = "<cmd>lua diff_working_changes()<CR>";
+            desc = "Diff working changes against branch";
           }
           {
             key = "<leader>b";
@@ -335,6 +355,12 @@
             desc = "Exit terminal mode";
           }
         ];
+
+        luaConfigRC.tab-format = builtins.readFile ./tab-format.lua;
+        luaConfigRC.file-history = builtins.readFile ./file-history.lua;
+        luaConfigRC.review-compare = builtins.readFile ./review-compare.lua;
+        luaConfigRC.review-main = builtins.readFile ./review-main.lua;
+        luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
       };
     };
   };
