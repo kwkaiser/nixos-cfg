@@ -22,8 +22,7 @@ function copy_github_url()
       path = bufname:match('%.git/:[^:]*:/(.+)$')
     end
   else
-    local dir = vim.fn.fnamemodify(bufname, ':h')
-    local root = vim.fn.systemlist('git -C ' .. vim.fn.shellescape(dir) .. ' rev-parse --show-toplevel')[1]
+    local root = git_root_for_buf()
     if root and bufname:find(root, 1, true) then
       path = bufname:sub(#root + 2)
     end
@@ -51,7 +50,7 @@ function copy_github_url()
     end
   end
   if not git_root then
-    git_root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+    git_root = git_root_for_buf()
   end
 
   local cmd = 'cd ' .. vim.fn.shellescape(git_root) .. ' && gh browse ' .. vim.fn.shellescape(target) .. ' --no-browser'

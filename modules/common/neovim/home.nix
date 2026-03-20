@@ -28,7 +28,7 @@
           rm -f "$socket_path"
         fi
 
-        command nvim --listen "$socket_path" "$@"
+        command nvim --listen "$socket_path" --cmd "cd $(git rev-parse --show-toplevel)" "$@"
       else
         command nvim "$@"
       fi
@@ -365,6 +365,7 @@
           }
         ];
 
+        luaConfigRC.gitRoot = builtins.readFile ./git-root.lua;
         luaConfigRC.tab-format = builtins.readFile ./tab-format.lua;
         luaConfigRC.file-history = builtins.readFile ./file-history.lua;
         luaConfigRC.review-compare = builtins.readFile ./review-compare.lua;
