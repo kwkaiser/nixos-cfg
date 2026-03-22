@@ -316,10 +316,16 @@
             desc = "File history";
           }
           {
-            key = "<leader>go";
+            key = "<leader>gL";
             mode = "n";
             action = "<cmd>lua copy_github_url()<CR>";
             desc = "Copy GitHub URL to clipboard";
+          }
+          {
+            key = "<leader>gl";
+            mode = "n";
+            action = "<cmd>lua copy_file_location()<CR>";
+            desc = "Copy file:line to clipboard";
           }
           {
             key = "<leader>gdc";
@@ -373,6 +379,7 @@
         luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
         luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
         luaConfigRC.github-url = builtins.readFile ./github-url.lua;
+        luaConfigRC.file-location = builtins.readFile ./file-location.lua;
       };
     };
   };
