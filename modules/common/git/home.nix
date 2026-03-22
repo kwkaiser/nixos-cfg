@@ -6,6 +6,7 @@
 }: {
   home.packages = with pkgs; [
     git-trim
+    git-delete-merged-branches
   ];
   programs.git = {
     enable = true;
@@ -20,6 +21,8 @@
           rb = "rebase";
           rbx = "rebase -X ours";
           br = "branch";
+          cof = "!git co \$(git branch --format='%(refname:short)' | fzf)";
+          df = "!git br -D \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
           cleanup = "!git trim --no-update --no-confirm && git worktree prune";
         };
         push.default = "current";
