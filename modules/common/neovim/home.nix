@@ -323,7 +323,7 @@
           }
           {
             key = "<leader>gl";
-            mode = "n";
+            mode = ["n" "v"];
             action = "<cmd>lua copy_file_location()<CR>";
             desc = "Copy file:line to clipboard";
           }
