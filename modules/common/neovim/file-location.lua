@@ -8,8 +8,21 @@ function copy_file_location()
     path = bufname
   end
 
-  local line = vim.fn.line('.')
-  local location = path .. ':' .. line
+  local mode = vim.fn.mode()
+  local location
+  if mode == 'v' or mode == 'V' then
+    local l1 = vim.fn.line("v")
+    local l2 = vim.fn.line(".")
+    if l1 > l2 then l1, l2 = l2, l1 end
+    if l1 == l2 then
+      location = path .. ':' .. l1
+    else
+      location = path .. ':' .. l1 .. '-' .. l2
+    end
+  else
+    location = path .. ':' .. vim.fn.line('.')
+  end
+
   vim.fn.setreg('+', location)
   vim.notify(location, vim.log.levels.INFO)
 end
