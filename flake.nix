@@ -61,13 +61,6 @@
       nixpkgs.config.allowUnfree = true;
     };
 
-    # Fix stale claude-code src hash in nixpkgs
-    overlays = {
-      nixpkgs.overlays = [
-        (import ./overlays/claude-code.nix)
-      ];
-    };
-
     # Helper to create NixOS configurations
     mkNixosSystem = hostModule:
       nixpkgs.lib.nixosSystem {
@@ -80,7 +73,6 @@
           home-manager.nixosModules.default
           ./modules
           allowUnfree
-          overlays
           hostModule
         ];
       };
@@ -97,7 +89,6 @@
           stylix.darwinModules.stylix
           ./modules
           allowUnfree
-          overlays
           hostModule
         ];
       };
