@@ -222,7 +222,20 @@
             };
           };
         };
-        filetree.neo-tree.enable = true;
+        filetree.neo-tree = {
+          enable = true;
+          setupOpts = {
+            filesystem = {
+              use_libuv_file_watcher = false;
+              scan_mode = "shallow";
+              find_by_full_path_words = false;
+              async_directory_scan = "always";
+            };
+            git_status_async = true;
+            enable_git_status = true;
+            enable_diagnostics = false;
+          };
+        };
 
         keymaps = [
           {
