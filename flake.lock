@@ -704,6 +704,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-claude-code": {
+      "locked": {
+        "lastModified": 1774938578,
+        "narHash": "sha256-WWs4EZ0HFK2BiMui+VhjDIyNCJdnXeWcLjZnOVvj9uM=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "55f3084e5d0eb14522f5be012562f80681f50886",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "55f3084e5d0eb14522f5be012562f80681f50886",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": [
@@ -808,6 +824,7 @@
         "hyprland": "hyprland",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-claude-code": "nixpkgs-claude-code",
         "nvf": "nvf",
         "plasma-manager": "plasma-manager",
         "stylix": "stylix"
