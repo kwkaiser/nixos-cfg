@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Pinned nixpkgs for claude-code (2.1.88 was yanked from npm)
+    nixpkgs-claude-code.url = "github:nixos/nixpkgs/55f3084e5d0eb14522f5be012562f80681f50886";
+
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";

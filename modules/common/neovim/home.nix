@@ -14,6 +14,7 @@
     ripgrep
     fd
     fzf
+    tree-sitter
   ];
 
   # Shell wrapper: opens neovim with git-based socket name for external RPC

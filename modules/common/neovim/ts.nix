@@ -41,9 +41,6 @@
       extraDiagnostics.enable = false; # Using nvim-eslint LSP instead of nvim-lint
       format.enable = true;
       treesitter.enable = true;
-      extensions = {
-        ts-error-translator.enable = true;
-      };
     };
 
     luaConfigRC.eslint-fix-all = ''

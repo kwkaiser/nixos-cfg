@@ -75,8 +75,8 @@ parse_error_line() {
     return 1
   fi
 
-  # Prepend package path if we have context
-  if [[ -n "$pkg_rel_path" ]]; then
+  # Prepend package path only if filename is not already repo-root-relative
+  if [[ -n "$pkg_rel_path" ]] && [[ "$filename" != packages/* ]]; then
     filename="${pkg_rel_path}/${filename}"
   fi
 
