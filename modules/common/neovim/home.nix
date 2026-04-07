@@ -272,10 +272,17 @@
           }
 
           {
-            key = "<leader>fq";
+            key = "<leader>fqq";
             mode = "n";
             action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
             desc = "Open quickfix list";
+          }
+
+          {
+            key = "<leader>fqc";
+            mode = "n";
+            action = "<cmd>lua vim.fn.setreg('+', table.concat(vim.tbl_map(function(e) return vim.fn.bufname(e.bufnr) .. ':' .. e.lnum .. ':' .. e.col .. ' ' .. e.text end, vim.fn.getqflist()), '\\n'))<CR>";
+            desc = "Copy quickfix to clipboard";
           }
 
           # LSP
