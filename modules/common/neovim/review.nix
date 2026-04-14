@@ -136,6 +136,12 @@
         float_input.open = function(opts)
           local buf, win = orig_open(opts)
           if buf and vim.api.nvim_buf_is_valid(buf) then
+            -- Disable autocomplete in the review comment float
+            local cmp_ok, cmp = pcall(require, "cmp")
+            if cmp_ok then
+              cmp.setup.buffer({ enabled = false })
+            end
+
             local function safe_close()
               if win and vim.api.nvim_win_is_valid(win) then
                 pcall(vim.api.nvim_win_close, win, true)

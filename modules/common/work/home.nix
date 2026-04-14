@@ -37,6 +37,8 @@ in {
   home.packages = with pkgs; [
     gh
     gh-dash
+    awscli2
+    ssm-session-manager-plugin
     nvb
     nve
     nvt
