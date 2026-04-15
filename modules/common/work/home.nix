@@ -6,6 +6,21 @@
 }: let
   yaml = pkgs.formats.yaml {};
 
+  genai-toolbox = pkgs.stdenv.mkDerivation rec {
+    pname = "genai-toolbox";
+    version = "1.1.0";
+    src = pkgs.fetchurl {
+      url = "https://storage.googleapis.com/genai-toolbox/v${version}/darwin/arm64/toolbox";
+      sha256 = "sha256-esBNRWPGM7tEosGz7Jxaq18eWIViWv0/FZxz45lphJU=";
+    };
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/bigquery-toolbox
+      chmod +x $out/bin/bigquery-toolbox
+    '';
+  };
+
   mkTmuxinatorProject = name: root:
     yaml.generate "${name}.yml" {
       inherit name;
@@ -52,6 +67,8 @@ in {
       kitty --directory ~/Documents/pallet/copallet-wt-1 ccp &
       kitty --directory ~/Documents/pallet/copallet-wt-2 ccp &
     '')
+
+    genai-toolbox
 
     (writeShellScriptBin "pcursor" ''
       cursor ~/Documents/pallet/copallet &

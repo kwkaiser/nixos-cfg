@@ -33,5 +33,6 @@
     ./flyio
     ./codex
     ./firebase
+    ./typst
   ];
 }
