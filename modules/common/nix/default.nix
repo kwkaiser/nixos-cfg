@@ -9,7 +9,7 @@
   # Global nixpkgs configuration for all systems
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnfreePredicate = _: true;
-  environment.systemPackages = with pkgs; [nixfmt-rfc-style];
+  environment.systemPackages = with pkgs; [nixfmt];
   home-manager.users.${config.mine.username} = {
     imports = [./home.nix];
   };
