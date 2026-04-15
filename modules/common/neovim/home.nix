@@ -162,6 +162,15 @@
         lsp.formatOnSave = true;
 
         languages = {
+          typst = {
+            enable = true;
+            format.enable = true;
+            lsp.enable = true;
+            treesitter.enable = true;
+            extensions = {
+              typst-preview-nvim.enable = true;
+            };
+          };
           markdown = {
             enable = true;
             lsp.enable = false; # marksman requires building dotnet from source

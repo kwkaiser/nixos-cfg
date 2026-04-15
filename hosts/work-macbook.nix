@@ -36,4 +36,5 @@
   mine.flyio.enable = true;
   mine.codex.enable = true;
   mine.firebase.enable = true;
+  mine.typst.enable = true;
 }
