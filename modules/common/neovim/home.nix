@@ -358,6 +358,12 @@
             desc = "Copy file:line to clipboard";
           }
           {
+            key = "<leader>go";
+            mode = "n";
+            action = "<cmd>lua open_commit_pr()<CR>";
+            desc = "Open PR for commit";
+          }
+          {
             key = "<leader>gdc";
             mode = "n";
             action = "<cmd>lua review_compare_branches()<CR>";
@@ -410,6 +416,7 @@
         luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
         luaConfigRC.github-url = builtins.readFile ./github-url.lua;
         luaConfigRC.file-location = builtins.readFile ./file-location.lua;
+        luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
       };
     };
   };

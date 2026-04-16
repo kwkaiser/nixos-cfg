@@ -51,7 +51,13 @@ in {
     (writeShellScriptBin "ccp" ''
       ${claude-code-pkgs.claude-code}/bin/claude --dangerously-skip-permissions
     '')
+
+    (writeShellScriptBin "ccpm" ''
+      export CLAUDE_CONFIG_DIR="$HOME/.claude-personal"
+      exec ${claude-code-pkgs.claude-code}/bin/claude --dangerously-skip-permissions "$@"
+    '')
   ];
 
   home.file.".claude/settings.json".text = builtins.toJSON claudeSettings;
+  home.file.".claude-personal/settings.json".text = builtins.toJSON claudeSettings;
 }
