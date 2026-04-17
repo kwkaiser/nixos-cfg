@@ -5,7 +5,6 @@
 }: {
   imports = [
     ./ts.nix
-    ./review.nix
   ];
 
   home.sessionVariables.EDITOR = "nvim";
@@ -57,6 +56,15 @@
           shiftwidth = 2;
           expandtab = true;
           timeoutlen = 10;
+        };
+
+        extraPlugins.review-comments = {
+          package = pkgs.vimUtils.buildVimPlugin {
+            pname = "review-comments";
+            version = "0.1.0";
+            src = ./plugins/review-comments;
+          };
+          setup = "require('review-comments').setup()";
         };
 
         theme = {
