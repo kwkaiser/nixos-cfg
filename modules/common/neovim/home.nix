@@ -213,17 +213,17 @@
             };
             keymaps = {
               view = [
-                ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
-                ["n" "<leader>rC" "<Cmd>ReviewThemFlush<CR>" {desc = "Copy comments to clipboard and clear";}]
-                ["n" "q" "<Cmd>lua local ok, _ = pcall(vim.cmd, 'ReviewThemAbort'); if not ok then vim.cmd('DiffviewClose') end<CR>" {desc = "Close and discard review";}]
-                ["n" "Q" "<Cmd>lua pcall(vim.cmd, 'ReviewThemSubmit'); vim.cmd('DiffviewClose')<CR>" {desc = "Close and copy review to clipboard";}]
+                ["n" "<leader>rc" "<Cmd>lua require('review-comments').add_comment()<CR>" {desc = "Add review comment";}]
+                ["v" "<leader>rc" "<Cmd>lua require('review-comments').add_comment()<CR>" {desc = "Add review comment (range)";}]
+                ["n" "<leader>rC" "<Cmd>lua require('review-comments').flush()<CR>" {desc = "Flush comments to clipboard";}]
+                ["n" "q" "<Cmd>lua require('review-comments').abort()<CR>" {desc = "Discard comments and close";}]
+                ["n" "Q" "<Cmd>lua require('review-comments').submit()<CR>" {desc = "Flush comments and close";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
               file_panel = [
-                ["n" "<leader>rc" "<Cmd>ReviewThemAddComment<CR>" {desc = "Add review comment";}]
-                ["n" "<leader>rC" "<Cmd>ReviewThemFlush<CR>" {desc = "Copy comments to clipboard and clear";}]
-                ["n" "q" "<Cmd>lua local ok, _ = pcall(vim.cmd, 'ReviewThemAbort'); if not ok then vim.cmd('DiffviewClose') end<CR>" {desc = "Close and discard review";}]
-                ["n" "Q" "<Cmd>lua pcall(vim.cmd, 'ReviewThemSubmit'); vim.cmd('DiffviewClose')<CR>" {desc = "Close and copy review to clipboard";}]
+                ["n" "<leader>rC" "<Cmd>lua require('review-comments').flush()<CR>" {desc = "Flush comments to clipboard";}]
+                ["n" "q" "<Cmd>lua require('review-comments').abort()<CR>" {desc = "Discard comments and close";}]
+                ["n" "Q" "<Cmd>lua require('review-comments').submit()<CR>" {desc = "Flush comments and close";}]
                 ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
               ];
               file_history_panel = [

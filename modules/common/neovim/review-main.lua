@@ -7,7 +7,7 @@ function review_branch_against_main()
     actions = {
       ['default'] = function(selected)
         local branch = selected[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)')
-        vim.cmd('ReviewThemStart main ' .. branch)
+        vim.cmd('DiffviewOpen main..' .. branch)
       end,
     },
   })
