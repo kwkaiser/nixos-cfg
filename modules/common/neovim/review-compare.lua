@@ -14,7 +14,7 @@ function review_compare_branches()
           actions = {
             ['default'] = function(selected2)
               local compare = selected2[1]:gsub('^[%s%*%+]+', ''):match('([^%s]+)')
-              vim.cmd('ReviewThemStart ' .. base .. ' ' .. compare)
+              vim.cmd('DiffviewOpen ' .. base .. '..' .. compare)
             end,
           },
         })
