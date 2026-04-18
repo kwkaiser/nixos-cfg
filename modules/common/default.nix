@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./kitty
+    ./ghostty
     ./nix
     ./git
     ./neovim
