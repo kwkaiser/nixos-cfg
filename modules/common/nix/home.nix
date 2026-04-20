@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  bconfig,
-  ...
-}:
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     fzf
     nix-search-tv
@@ -30,4 +24,9 @@
       fi
     '')
   ];
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 }

@@ -7,15 +7,41 @@
   programs.firefox = {
     enable = true;
     package = lib.mkIf pkgs.stdenv.isDarwin null; # Use Homebrew Firefox on macOS
+    policies = {
+      "3rdparty".Extensions."uBlock0@raymondhill.net" = {
+        toAdd = {
+          filterLists = [
+            # Cookie notices
+            "fanboy-cookiemonster"
+            "ublock-cookies-easylist"
+            "adguard-cookies"
+            "ublock-cookies-adguard"
+
+            # Social widgets
+            "fanboy-social"
+            "adguard-social"
+            "fanboy-thirdparty_social"
+
+            # Annoyances
+            "easylist-annoyances"
+            "easylist-chat"
+            "easylist-newsletters"
+            "easylist-notifications"
+            "fanboy-ai-suggestions"
+            "ublock-annoyances"
+          ];
+        };
+      };
+    };
     profiles = {
       kwkaiser = {
         extensions.force = true;
         extensions.packages = with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [
           ublock-origin
           keepassxc-browser
-          i-dont-care-about-cookies
           sponsorblock
           zotero-connector
+          consent-o-matic
         ];
 
         # Smooth scrolling preferences
