@@ -183,7 +183,11 @@
             enable = true;
             lsp.enable = false; # marksman requires building dotnet from source
           };
-          python.enable = true;
+          python = {
+            enable = true;
+            format.enable = true;
+            lsp.enable = true;
+          };
           yaml.enable = true;
           sql.enable = true;
           rust.enable = true;
