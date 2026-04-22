@@ -241,6 +241,9 @@
               ];
               file_history_panel = [
                 ["n" "<leader>gc" "<Cmd>lua diff_commit_at_cursor()<CR>" {desc = "View full commit diff";}]
+                ["n" "p" "<Cmd>lua copy_commit_pr_url()<CR>" {desc = "Copy PR URL for commit";}]
+                ["n" "P" "<Cmd>lua open_commit_pr()<CR>" {desc = "Open PR for commit";}]
+                ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close history view";}]
               ];
             };
           };

@@ -1,7 +1,7 @@
-function open_commit_pr()
+-- Shared: resolve commit hash and git root from diffview context
+local function resolve_commit_context()
   local hash
 
-  -- Try to get commit hash from diffview panel item under cursor
   local ok, lib = pcall(require, 'diffview.lib')
   if ok then
     local view = lib.get_current_view()
@@ -13,18 +13,15 @@ function open_commit_pr()
     end
   end
 
-  -- Fallback: try to extract hash from a diffview buffer name
   if not hash then
     local bufname = vim.api.nvim_buf_get_name(0)
     hash = bufname:match('%.git/(%x+)/')
   end
 
   if not hash then
-    vim.notify('No commit found under cursor', vim.log.levels.WARN)
-    return
+    return nil, nil, 'No commit found under cursor'
   end
 
-  -- Resolve git root for running gh
   local git_root
   if ok then
     local view = lib.get_current_view()
@@ -36,23 +33,62 @@ function open_commit_pr()
     git_root = git_root_for_buf()
   end
 
+  return hash, git_root, nil
+end
+
+-- Shared: find PR URL for a commit hash
+local function find_pr_url(hash, git_root)
   local cd_prefix = 'cd ' .. vim.fn.shellescape(git_root) .. ' && '
 
-  -- Find the PR that contains this commit
-  local result = vim.fn.systemlist(cd_prefix .. 'gh pr list --search ' .. vim.fn.shellescape(hash) .. ' --state merged --json number --jq ".[0].number" 2>&1')
-  local pr_number = result[1]
+  local result = vim.fn.systemlist(cd_prefix .. 'gh pr list --search ' .. vim.fn.shellescape(hash) .. ' --state merged --json number,url --jq ".[0]" 2>&1')
+  local json = result[1]
 
-  -- If not found in merged, try open PRs
-  if not pr_number or pr_number == '' or pr_number == 'null' then
-    result = vim.fn.systemlist(cd_prefix .. 'gh pr list --search ' .. vim.fn.shellescape(hash) .. ' --state open --json number --jq ".[0].number" 2>&1')
-    pr_number = result[1]
+  if not json or json == '' or json == 'null' then
+    result = vim.fn.systemlist(cd_prefix .. 'gh pr list --search ' .. vim.fn.shellescape(hash) .. ' --state open --json number,url --jq ".[0]" 2>&1')
+    json = result[1]
   end
 
-  if not pr_number or pr_number == '' or pr_number == 'null' then
+  if not json or json == '' or json == 'null' then
+    return nil, nil
+  end
+
+  local decoded = vim.fn.json_decode(json)
+  if decoded then
+    return decoded.number, decoded.url
+  end
+  return nil, nil
+end
+
+function copy_commit_pr_url()
+  local hash, git_root, err = resolve_commit_context()
+  if err then
+    vim.notify(err, vim.log.levels.WARN)
+    return
+  end
+
+  local pr_number, pr_url = find_pr_url(hash, git_root)
+  if not pr_url then
     vim.notify('No PR found for commit ' .. hash:sub(1, 8), vim.log.levels.WARN)
     return
   end
 
-  vim.fn.system(cd_prefix .. 'gh pr view ' .. pr_number .. ' --web')
+  vim.fn.setreg('+', pr_url)
+  vim.notify('Copied PR #' .. pr_number .. ' URL', vim.log.levels.INFO)
+end
+
+function open_commit_pr()
+  local hash, git_root, err = resolve_commit_context()
+  if err then
+    vim.notify(err, vim.log.levels.WARN)
+    return
+  end
+
+  local pr_number, pr_url = find_pr_url(hash, git_root)
+  if not pr_url then
+    vim.notify('No PR found for commit ' .. hash:sub(1, 8), vim.log.levels.WARN)
+    return
+  end
+
+  vim.ui.open(pr_url)
   vim.notify('Opened PR #' .. pr_number, vim.log.levels.INFO)
 end
