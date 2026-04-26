@@ -30,6 +30,7 @@
         push.autoSetupRemote = true;
         branch.autoSetupMerge = "always";
         pull.rebase = true;
+        init.defaultBranch = "main";
       }
       // (
         if bconfig.mine.git.signCommits
