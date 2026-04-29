@@ -38,5 +38,5 @@
   home-manager.users.${config.mine.username} = {
     imports = [ ./hm.nix ];
   };
-  home-manager.backupFileExtension = "backup";
+  home-manager.backupFileExtension = "backup-before-nix";
 }
