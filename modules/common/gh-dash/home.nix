@@ -6,6 +6,7 @@
   ];
 
   # gh-dash config with diffnav as diff pager
+  xdg.configFile."gh-dash/config.yml".force = true;
   xdg.configFile."gh-dash/config.yml".text = ''
     prSections:
       - title: My Pull Requests

@@ -19,9 +19,14 @@
   forbiddenPattern = lib.concatStringsSep "|" forbiddenCommands;
 
   claudeSettings = {
+    env = {
+      ENABLE_LSP_TOOL = "1";
+    };
+
     enabledPlugins = {
       "context-mode@claude-context-mode" = true;
       "superpowers@claude-plugins-official" = true;
+      "vtsls@claude-code-lsps" = true;
     };
 
     hooks = {
@@ -59,5 +64,7 @@ in {
   ];
 
   home.file.".claude/settings.json".text = builtins.toJSON claudeSettings;
+  home.file.".claude/settings.json".force = true;
   home.file.".claude-personal/settings.json".text = builtins.toJSON claudeSettings;
+  home.file.".claude-personal/settings.json".force = true;
 }

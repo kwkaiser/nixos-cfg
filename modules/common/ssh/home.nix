@@ -1,4 +1,5 @@
 {...}: {
+  home.file.".ssh/config".force = true;
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
