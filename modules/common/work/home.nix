@@ -53,6 +53,8 @@ in {
     gh
     gh-dash
     awscli2
+    typescript-go
+    vtsls
     ssm-session-manager-plugin
     nvb
     nve
