@@ -47,6 +47,12 @@
         NSUserKeyEquivalents = {
           "Log Out ${config.mine.username}\\U2026" = "@~^$q"; # Ctrl+Opt+Cmd+Shift+Q
         };
+        # Prevent apps from restoring their windows on reopen
+        NSQuitAlwaysKeepsWindows = false;
+      };
+      # Prevent macOS from saving and relaunching open apps after restart/logout
+      "com.apple.loginwindow" = {
+        TALLogoutSavesState = false;
       };
     };
 

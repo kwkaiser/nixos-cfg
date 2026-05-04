@@ -55,7 +55,8 @@
           tabstop = 2;
           shiftwidth = 2;
           expandtab = true;
-          timeoutlen = 10;
+          timeoutlen = 300;
+          ttimeoutlen = 10;
         };
 
         extraPlugins.review-comments = {
