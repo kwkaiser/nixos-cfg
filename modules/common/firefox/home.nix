@@ -42,6 +42,7 @@
           sponsorblock
           zotero-connector
           consent-o-matic
+          old-reddit-redirect
         ];
 
         # Smooth scrolling preferences
