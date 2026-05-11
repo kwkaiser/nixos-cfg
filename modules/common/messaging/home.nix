@@ -8,12 +8,12 @@
 }:
 {
   # Always install messaging packages through home-manager
+  # signal-desktop is excluded on Darwin — installed via Homebrew cask to stay current
   home.packages = with pkgs; [
     slack
-    signal-desktop
     caprine
     discord
-  ];
+  ] ++ lib.optionals (!isDarwin) [ signal-desktop ];
 }
 // lib.optionalAttrs (!isDarwin) {
   # Only enable KDE Connect on non-Darwin systems
