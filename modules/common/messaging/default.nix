@@ -18,6 +18,11 @@
         imports = [ ./home.nix ];
       };
     }
+    // lib.optionalAttrs isDarwin {
+      # Use Homebrew cask on Darwin to stay on the latest Signal release;
+      # nixpkgs signal-desktop lags and causes database version mismatch errors
+      homebrew.casks = [ "signal" ];
+    }
     // lib.optionalAttrs (!isDarwin) {
       # Firewall rules for KDE Connect (non-Darwin only)
       networking.firewall = rec {
