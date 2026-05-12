@@ -47,15 +47,17 @@ flush_errors() {
   errors=""
 }
 
-# Regex: " ❯ filepath:line:col" (vitest error location)
-re_location='❯ ([^:]+):([0-9]+):([0-9]+)'
+# Regex: "filepath.ext:line:col" at end of line (vitest error location)
+# Avoids depending on the ❯ arrow character which can vary by terminal/vitest version
+re_location='([^[:space:]]+\.[a-z]+):([0-9]+):([0-9]+)[[:space:]]*$'
 # Regex: "Error: message" or "AssertionError: message"
-re_error_msg='^(Error|AssertionError|TypeError|ReferenceError):[[:space:]]*(.*)$'
+re_error_msg='(Error|AssertionError|TypeError|ReferenceError):[[:space:]]*(.*)$'
 
 while IFS= read -r line || [[ -n "$line" ]]; do
   echo "$line"
 
-  clean_line=$(echo "$line" | sed 's/\x1b\[[0-9;]*m//g')
+  # Strip all ANSI/VT escape sequences (SGR, cursor movement, erase, mode changes, etc.)
+  clean_line=$(echo "$line" | sed 's/\x1b\[[0-9;?]*[A-Za-z]//g; s/\x1b[()]//g')
 
   # Watch mode: detect new test cycle - reset errors
   if [[ "$clean_line" == *"RERUN"* ]] || [[ "$clean_line" == *"RUN"* && "$clean_line" == *"v"*"/"* ]]; then
@@ -76,16 +78,11 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     continue
   fi
 
-  # Error location line (must have :line:col at end, not test summary)
+  # Error location line: "filepath.ext:line:col" at end of line
   if [[ "$clean_line" =~ $re_location ]]; then
     filename="${BASH_REMATCH[1]}"
     lnum="${BASH_REMATCH[2]}"
     col="${BASH_REMATCH[3]}"
-
-    # Skip test summary lines like "❯ src/file.test.ts (4 tests | 1 failed)"
-    if [[ "$clean_line" == *"tests"* ]]; then
-      continue
-    fi
 
     # Prepend package path if we have context
     if [[ -n "$pkg_rel_path" ]]; then
