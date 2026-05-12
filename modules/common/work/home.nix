@@ -59,6 +59,15 @@ in {
     nvb
     nve
     nvt
+    (writeShellScriptBin "pnvb" ''
+      pnpm run build:check --watch | nvb
+    '')
+    (writeShellScriptBin "pnvt" ''
+      pnpm run test --watch | nvt
+    '')
+    (writeShellScriptBin "pnve" ''
+      pnpm run lint --fix | nve
+    '')
     (writeShellScriptBin "work-init" ''
       tmuxinator start --no-attach primary
       tmuxinator start --no-attach wt-1
