@@ -1,3 +1,5 @@
-{ config, pkgs, ... }: {
-  home.packages = with pkgs; [ keepassxc _1password-cli _1password-gui ];
+{ config, pkgs, lib, isDarwin, ... }: {
+  home.packages = with pkgs;
+    lib.optionals (!isDarwin) [ keepassxc ]
+    ++ [ _1password-cli _1password-gui ];
 }
