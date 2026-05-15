@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+{pkgs, lib, isDarwin, ...}: {
+  home.packages = lib.optionals (!isDarwin) (with pkgs; [
     prismlauncher
-  ];
+  ]);
 }
