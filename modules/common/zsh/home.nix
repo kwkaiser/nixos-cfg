@@ -1,6 +1,8 @@
-{isDarwin, pkgs, ...}: {
-  programs.direnv.enable = true;
-
+{
+  isDarwin,
+  pkgs,
+  ...
+}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
