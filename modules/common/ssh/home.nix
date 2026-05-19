@@ -3,57 +3,49 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "*" = {
-        forwardAgent = true;
-        extraOptions = {
-          ServerAliveInterval = "300";
-          ServerAliveCountMax = "2";
-          TCPKeepAlive = "yes";
-        };
+        ForwardAgent = true;
+        ServerAliveInterval = 300;
+        ServerAliveCountMax = 2;
+        TCPKeepAlive = "yes";
       };
       "homelab-vm" = {
-        hostname = "localhost";
-        port = 2222;
-        user = "kwkaiser";
-        extraOptions = {
-          StrictHostKeyChecking = "no";
-          UserKnownHostsFile = "/dev/null";
-          AddKeysToAgent = "yes";
-        };
+        Hostname = "localhost";
+        Port = 2222;
+        User = "kwkaiser";
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+        AddKeysToAgent = "yes";
       };
       "desktop" = {
-        hostname = "192.168.4.110";
-        user = "kwkaiser";
-        proxyJump = "kwkaiser@box.kwkaiser.io";
-        forwardAgent = true;
-        extraOptions = {StrictHostKeyChecking = "no";};
+        Hostname = "192.168.4.110";
+        User = "kwkaiser";
+        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        ForwardAgent = true;
+        StrictHostKeyChecking = "no";
       };
       "livingroom" = {
-        hostname = "192.168.4.109";
-        user = "bingus";
-        proxyJump = "kwkaiser@box.kwkaiser.io";
-        forwardAgent = true;
+        Hostname = "192.168.4.109";
+        User = "bingus";
+        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        ForwardAgent = true;
       };
       "desktop-unlock" = {
-        hostname = "192.168.4.110";
-        user = "root";
-        proxyJump = "kwkaiser@box.kwkaiser.io";
-        forwardAgent = true;
-        extraOptions = {
-          StrictHostKeyChecking = "no";
-          RemoteCommand = "cryptsetup-askpass";
-        };
+        Hostname = "192.168.4.110";
+        User = "root";
+        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        ForwardAgent = true;
+        StrictHostKeyChecking = "no";
+        RemoteCommand = "cryptsetup-askpass";
       };
       "desktop-wakeup" = {
-        hostname = "192.168.4.109";
-        proxyJump = "kwkaiser@box.kwkaiser.io";
-        user = "bingus";
-        forwardAgent = true;
-        extraOptions = {
-          StrictHostKeyChecking = "no";
-          RemoteCommand = "wakeonlan 70:85:c2:dc:da:23";
-        };
+        Hostname = "192.168.4.109";
+        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        User = "bingus";
+        ForwardAgent = true;
+        StrictHostKeyChecking = "no";
+        RemoteCommand = "wakeonlan 70:85:c2:dc:da:23";
       };
     };
   };
