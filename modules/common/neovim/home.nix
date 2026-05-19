@@ -242,8 +242,10 @@
               ];
               file_history_panel = [
                 ["n" "<leader>gc" "<Cmd>lua diff_commit_at_cursor()<CR>" {desc = "View full commit diff";}]
-                ["n" "p" "<Cmd>lua copy_commit_pr_url()<CR>" {desc = "Copy PR URL for commit";}]
-                ["n" "P" "<Cmd>lua open_commit_pr()<CR>" {desc = "Open PR for commit";}]
+                ["n" "<leader>gp" "<Cmd>lua copy_commit_pr_url()<CR>" {desc = "Copy PR URL for commit";}]
+                ["n" "<leader>gP" "<Cmd>lua open_commit_pr()<CR>" {desc = "Open PR for commit";}]
+                ["n" "<leader>gr" "<Cmd>lua copy_commit_release_url()<CR>" {desc = "Copy release URL for commit";}]
+                ["n" "<leader>gR" "<Cmd>lua open_commit_release()<CR>" {desc = "Open release for commit";}]
                 ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close history view";}]
               ];
             };
@@ -424,6 +426,7 @@
           }
         ];
 
+        luaConfigRC.release-commit = builtins.readFile ./release-commit.lua;
         luaConfigRC.gitRoot = builtins.readFile ./git-root.lua;
         luaConfigRC.tab-format = builtins.readFile ./tab-format.lua;
         luaConfigRC.file-history = builtins.readFile ./file-history.lua;
