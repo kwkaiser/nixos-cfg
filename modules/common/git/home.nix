@@ -17,6 +17,7 @@
         user.email = bconfig.mine.email;
         alias = {
           co = "checkout";
+          cf = "!git checkout \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
           pl = "pull";
           ps = "push";
           rb = "rebase";
