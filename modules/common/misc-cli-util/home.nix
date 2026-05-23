@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    whisky
   ];
 
   programs.zoxide = {
