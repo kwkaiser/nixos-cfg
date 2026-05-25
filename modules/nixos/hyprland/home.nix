@@ -1,4 +1,12 @@
-{ pkgs, lib, config, inputs, home, bconfig, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  home,
+  bconfig,
+  ...
+}: {
   home.packages = with pkgs; [
     swww
     jq
@@ -21,13 +29,13 @@
     WLR_NO_HARDWARE_CURSORS = "1";
   };
 
-  imports = [ ./scripts.nix ];
+  imports = [./scripts.nix];
 
   wayland.windowManager.hyprland = {
     enable = true;
     # Automatically import all environment variables for systemd services
     # This fixes issues where programs don't work in systemd services but do in terminal
-    systemd.variables = [ "--all" ];
+    systemd.variables = ["--all"];
   };
 
   services.gammastep = {
@@ -45,8 +53,12 @@
   };
 
   wayland.windowManager.hyprland.settings = {
-    monitor =
-      [ "DP-2,1920x1080@144,0x0,1,transform,1" "DP-1,1920x1080@144,1080x0,1" ];
+    input = {
+      accel_profile = "flat";
+      force_no_accel = true;
+    };
+
+    monitor = ["DP-2,1920x1080@144,0x0,1,transform,1" "DP-1,1920x1080@144,1080x0,1"];
 
     # Workspace assignments
     workspace = [
@@ -75,67 +87,71 @@
     "$mod" = "SUPER";
     "$terminal" = "kitty";
 
-    bind = [
-      "$mod, Return, exec, $terminal"
-      "$mod SHIFT, Q, killactive"
-      "$mod SHIFT, E, exit"
-      "$mod SHIFT, X, exec, hyprlock"
-      "$mod, f, fullscreen"
-      "$mod SHIFT, R, exec, hyprctl reload"
-      "$mod, m, exec, shiftTabLeft"
+    bind =
+      [
+        "$mod, Return, exec, $terminal"
+        "$mod SHIFT, Q, killactive"
+        "$mod SHIFT, E, exit"
+        "$mod SHIFT, X, exec, hyprlock"
+        "$mod, f, fullscreen"
+        "$mod SHIFT, R, exec, hyprctl reload"
+        "$mod, m, exec, shiftTabLeft"
 
-      # Screenshots
-      "$mod SHIFT, C, exec, grimshot save area ~/Documents/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"
-      "$mod, c, exec, grimshot copy area"
+        # Screenshots
+        "$mod SHIFT, C, exec, grimshot save area ~/Documents/screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"
+        "$mod, c, exec, grimshot copy area"
 
-      # Navigation
-      "$mod, h, movefocus, l"
-      "$mod, l, movefocus, r"
-      "$mod, j, movefocus, d"
-      "$mod, k, movefocus, u"
-      "$mod SHIFT, h, movewindow, l"
-      "$mod SHIFT, l, movewindow, r"
-      "$mod SHIFT, j, movewindow, d"
-      "$mod SHIFT, k, movewindow, u"
+        # Navigation
+        "$mod, h, movefocus, l"
+        "$mod, l, movefocus, r"
+        "$mod, j, movefocus, d"
+        "$mod, k, movefocus, u"
+        "$mod SHIFT, h, movewindow, l"
+        "$mod SHIFT, l, movewindow, r"
+        "$mod SHIFT, j, movewindow, d"
+        "$mod SHIFT, k, movewindow, u"
 
-      # Layout management (similar to sway)
-      "$mod, w, exec, hyprctl dispatch layoutmsg orientationtop"
-      "$mod, s, togglegroup"
-      "$mod, e, moveoutofgroup"
-      "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom"
-      "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright"
+        # Layout management (similar to sway)
+        "$mod, w, exec, hyprctl dispatch layoutmsg orientationtop"
+        "$mod, s, togglegroup"
+        "$mod, e, moveoutofgroup"
+        "$mod, v, exec, hyprctl dispatch layoutmsg orientationbottom"
+        "$mod SHIFT, v, exec, hyprctl dispatch layoutmsg orientationright"
 
-      # Tabbing
-      "$mod, bracketleft, changegroupactive, b"
-      "$mod, bracketright, changegroupactive, f"
-      "$mod SHIFT, bracketleft, exec, shiftTabLeft"
-      "$mod SHIFT, bracketright, exec, shiftTabRight"
+        # Tabbing
+        "$mod, bracketleft, changegroupactive, b"
+        "$mod, bracketright, changegroupactive, f"
+        "$mod SHIFT, bracketleft, exec, shiftTabLeft"
+        "$mod SHIFT, bracketright, exec, shiftTabRight"
 
-      # Misc programs
-      "$mod SHIFT, f, exec, thunar"
-      "$mod, b, exec, obsidian"
+        # Misc programs
+        "$mod SHIFT, f, exec, thunar"
+        "$mod, b, exec, obsidian"
 
-      # Notifications
-      "$mod SHIFT, b, exec, swaync-client -C"
-      "$mod SHIFT, n, exec, swaync-client -t"
-      "$mod, n, exec, swaync-client --close-latest"
+        # Notifications
+        "$mod SHIFT, b, exec, swaync-client -C"
+        "$mod SHIFT, n, exec, swaync-client -t"
+        "$mod, n, exec, swaync-client --close-latest"
 
-      # Audio
-      "$mod, code:96, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-      "$mod, code:95, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-      "$mod, code:76, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        # Audio
+        "$mod, code:96, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        "$mod, code:95, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        "$mod, code:76, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
 
-      "$mod SHIFT, code:96, exec, playerctl next"
-      "$mod SHIFT, code:95, exec, playerctl play-pause"
-      "$mod SHIFT, code:76, exec, playerctl previous"
+        "$mod SHIFT, code:96, exec, playerctl next"
+        "$mod SHIFT, code:95, exec, playerctl play-pause"
+        "$mod SHIFT, code:76, exec, playerctl previous"
 
-      # Workspaces
-    ] ++ (builtins.concatLists (builtins.genList (i:
-      let ws = i + 1;
-      in [
-        "$mod, ${toString ws}, workspace, ${toString ws}"
-        "$mod SHIFT, ${toString ws}, movetoworkspace, ${toString ws}"
-      ]) 9)) ++ [
+        # Workspaces
+      ]
+      ++ (builtins.concatLists (builtins.genList (i: let
+          ws = i + 1;
+        in [
+          "$mod, ${toString ws}, workspace, ${toString ws}"
+          "$mod SHIFT, ${toString ws}, movetoworkspace, ${toString ws}"
+        ])
+        9))
+      ++ [
         "$mod, 0, workspace, 10"
       ]
       # Application launch keybinds
@@ -175,7 +191,6 @@
         "workspaces, 1, 3, wind"
       ];
     };
-
   };
 
   programs.hyprlock.enable = true;
