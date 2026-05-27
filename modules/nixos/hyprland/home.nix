@@ -1,13 +1,6 @@
-{
-  pkgs,
-  lib,
-  config,
-  inputs,
-  home,
-  bconfig,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
+    wl-clipboard
     swww
     jq
     bibata-cursors
