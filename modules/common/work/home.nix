@@ -68,6 +68,7 @@ in {
     (writeShellScriptBin "pnve" ''
       pnpm run lint --fix | nve
     '')
+
     (writeShellScriptBin "work-init" ''
       tmuxinator start --no-attach primary
       tmuxinator start --no-attach wt-1
