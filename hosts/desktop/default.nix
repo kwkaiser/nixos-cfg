@@ -25,6 +25,7 @@
   mine.waybar.primaryMonitor = "DP-1";
   mine.waybar.secondaryMonitor = "DP-2";
   mine.swaync.enable = true;
+  mine.gthumb.enable = true;
   mine.hyprland.enable = true;
   mine.kitty.enable = true;
   mine.syncthing.enable = true;
