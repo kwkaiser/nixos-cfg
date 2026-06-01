@@ -1,14 +1,8 @@
 {
   pkgs,
   lib,
-  inputs,
   ...
 }: let
-  # Pinned nixpkgs for claude-code until nixos-unstable fixes the yanked 2.1.88 version
-  claude-code-pkgs = import inputs.nixpkgs-claude-code {
-    inherit (pkgs) system;
-    config.allowUnfree = true;
-  };
   forbiddenCommands = [
     "ssh-agent"
     "ssh-add"
@@ -50,16 +44,15 @@
   };
 in {
   home.packages = with pkgs; [
-    claude-code-pkgs.claude-code
     claude-monitor
 
     (writeShellScriptBin "ccp" ''
-      ${claude-code-pkgs.claude-code}/bin/claude --dangerously-skip-permissions
+      ${claude-code}/bin/claude --dangerously-skip-permissions
     '')
 
     (writeShellScriptBin "ccpm" ''
       export CLAUDE_CONFIG_DIR="$HOME/.claude-personal"
-      exec ${claude-code-pkgs.claude-code}/bin/claude --dangerously-skip-permissions "$@"
+      exec ${claude-code}/bin/claude --dangerously-skip-permissions "$@"
     '')
   ];
 
