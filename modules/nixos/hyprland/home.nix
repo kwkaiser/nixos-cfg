@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     wl-clipboard
+    wf-recorder
     swww
     jq
     bibata-cursors
@@ -85,7 +86,7 @@
         "$mod, Return, exec, $terminal"
         "$mod SHIFT, Q, killactive"
         "$mod SHIFT, E, exit"
-        "$mod SHIFT, X, exec, hyprlock"
+        "$mod SHIFT, X, exec, rain-lock"
         "$mod, f, fullscreen"
         "$mod SHIFT, R, exec, hyprctl reload"
         "$mod, m, exec, shiftTabLeft"
