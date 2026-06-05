@@ -22,6 +22,7 @@
     };
 
     security.pam.services.hyprlock = { };
+    security.pam.services.swaylock = { };
 
     # Home manager config
     home-manager.users.${config.mine.username} = { imports = [ ./home.nix ]; };

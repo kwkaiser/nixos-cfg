@@ -42,6 +42,8 @@
       ];
     };
   };
+
+  claudeSettingsFile = pkgs.writeText "claude-settings.json" (builtins.toJSON claudeSettings);
 in {
   home.packages = with pkgs; [
     claude-monitor
@@ -56,8 +58,10 @@ in {
     '')
   ];
 
-  home.file.".claude/settings.json".text = builtins.toJSON claudeSettings;
-  home.file.".claude/settings.json".force = true;
-  home.file.".claude-personal/settings.json".text = builtins.toJSON claudeSettings;
-  home.file.".claude-personal/settings.json".force = true;
+  home.activation.claudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
+    $DRY_RUN_CMD rm -f $HOME/.claude/settings.json $HOME/.claude-personal/settings.json
+    $DRY_RUN_CMD install -m 644 ${claudeSettingsFile} $HOME/.claude/settings.json
+    $DRY_RUN_CMD install -m 644 ${claudeSettingsFile} $HOME/.claude-personal/settings.json
+  '';
 }

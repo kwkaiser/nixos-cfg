@@ -37,5 +37,11 @@
       fi
     '')
 
+    (pkgs.writeShellScriptBin "rain-lock" ''
+      ${pkgs.swaylock-plugin}/bin/swaylock-plugin \
+        --color 000000 \
+        --command-each '${pkgs.windowtolayer}/bin/windowtolayer -- ${pkgs.kitty}/bin/kitty -e ${pkgs.terminal-rain-lightning}/bin/terminal-rain'
+    '')
+
   ];
 }
