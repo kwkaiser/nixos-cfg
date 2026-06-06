@@ -35,6 +35,6 @@
     ./codex
     ./firebase
     ./typst
-    ./rayshud
+    ./tf2
   ];
 }
