@@ -10,6 +10,7 @@
     imv
     sway-contrib.grimshot
     hyprpolkitagent
+    pavucontrol
   ];
 
   home.sessionVariables = {

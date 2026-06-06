@@ -54,4 +54,6 @@
   mine.work.enable = true;
   mine.claude.enable = true;
   mine.zotero.enable = true;
+  mine.rayshud.enable = true;
+  mine.rayshud.customPath = "/home/kwkaiser/data/steam/steamapps/common/Team Fortress 2/tf/custom";
 }
