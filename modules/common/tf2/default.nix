@@ -22,7 +22,7 @@
   } ''
     unar -o "$TMPDIR" "$src"
     mkdir -p "$out/sound/ui"
-    cp "$TMPDIR/sound/ui/hitsound.wav" "$out/sound/ui/hitsound.wav"
+    cp "$TMPDIR"/*/sound/ui/hitsound.wav "$out/sound/ui/hitsound.wav"
   '';
 in {
   options.mine.tf2 = {
