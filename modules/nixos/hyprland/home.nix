@@ -16,7 +16,7 @@
   home.sessionVariables = {
     GDK_BACKEND = "wayland,x11";
     QT_QPA_PLATFORM = "wayland;xcb";
-    #SDL_VIDEODRIVER = "x11";
+    #SDL_VIDEODRIVER = "x11"; # set via hyprland env instead so it applies to non-shell-spawned processes
     CLUTTER_BACKEND = "wayland";
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
@@ -31,6 +31,9 @@
     # Automatically import all environment variables for systemd services
     # This fixes issues where programs don't work in systemd services but do in terminal
     systemd.variables = ["--all"];
+    settings.env = [
+      "SDL_VIDEODRIVER,x11"
+    ];
   };
 
   services.gammastep = {
@@ -89,7 +92,7 @@
         "$mod SHIFT, E, exit"
         "$mod SHIFT, X, exec, rain-lock"
         "$mod, f, fullscreen"
-        "$mod SHIFT, R, exec, hyprctl reload"
+        "$mod SHIFT, R, exec, hyprctl reload && notify-send 'Hyprland' 'Config reloaded'"
         "$mod, m, exec, shiftTabLeft"
 
         # Screenshots

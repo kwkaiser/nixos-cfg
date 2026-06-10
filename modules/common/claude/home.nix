@@ -17,6 +17,8 @@
       ENABLE_LSP_TOOL = "1";
     };
 
+    editorMode = "vim";
+
     enabledPlugins = {
       "context-mode@claude-context-mode" = true;
       "superpowers@claude-plugins-official" = true;
