@@ -5,8 +5,11 @@
 
   programs.tmux = {
     enable = true;
-    shortcut = "a"; # Ctrl+a as leader key
-    baseIndex = 1; # Windows start at 1
+    shortcut = "a";
+    plugins = with pkgs.tmuxPlugins; [
+      resurrect
+    ];
+    baseIndex = 1;
     keyMode = "vi";
     customPaneNavigationAndResize = false;
 

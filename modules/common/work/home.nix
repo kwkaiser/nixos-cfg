@@ -6,20 +6,35 @@
 }: let
   yaml = pkgs.formats.yaml {};
 
-  genai-toolbox = pkgs.stdenv.mkDerivation rec {
-    pname = "genai-toolbox";
-    version = "1.1.0";
-    src = pkgs.fetchurl {
-      url = "https://storage.googleapis.com/genai-toolbox/v${version}/darwin/arm64/toolbox";
-      sha256 = "sha256-esBNRWPGM7tEosGz7Jxaq18eWIViWv0/FZxz45lphJU=";
+  genai-toolbox = let
+    platforms = {
+      "x86_64-linux" = {
+        os = "linux";
+        arch = "amd64";
+        sha256 = "sha256-F5SOdTiRQyDEFB0VW88oPJqMFoxqvOCa6Hg3BXiZuik=";
+      };
+      "aarch64-darwin" = {
+        os = "darwin";
+        arch = "arm64";
+        sha256 = "sha256-esBNRWPGM7tEosGz7Jxaq18eWIViWv0/FZxz45lphJU=";
+      };
     };
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/bigquery-toolbox
-      chmod +x $out/bin/bigquery-toolbox
-    '';
-  };
+    platform = platforms.${pkgs.stdenv.hostPlatform.system};
+  in
+    pkgs.stdenv.mkDerivation rec {
+      pname = "genai-toolbox";
+      version = "1.1.0";
+      src = pkgs.fetchurl {
+        url = "https://storage.googleapis.com/genai-toolbox/v${version}/${platform.os}/${platform.arch}/toolbox";
+        sha256 = platform.sha256;
+      };
+      dontUnpack = true;
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/bigquery-toolbox
+        chmod +x $out/bin/bigquery-toolbox
+      '';
+    };
 
   mkTmuxinatorProject = name: root:
     yaml.generate "${name}.yml" {
