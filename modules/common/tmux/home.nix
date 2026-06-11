@@ -76,7 +76,7 @@
 
       # Session viewer: highlight sessions/windows with unacknowledged bells
       # #{window_index} is empty on session lines, non-empty on window lines
-      bind-key s choose-tree -s -F "#{?#{window_index},#{?window_bell_flag,#[fg=colour1 bold]● #[default],  }#I: #W,#{?#{W:#{?window_bell_flag,1,}},#[fg=colour1 bold]● #[default],  }#{session_name}#{?session_attached, (attached),}}"
+      bind-key s choose-tree -s -F "#{?#{window_index},#{?#{@notified},#[fg=colour1 bold]● #[default],  }#I: #W,#{?#{W:#{?#{@notified},1,}},#[fg=colour1 bold]● #[default],  }#{session_name}#{?session_attached, (attached),}}"
 
       # Close pane with prefix + q
       bind-key q kill-pane
@@ -108,11 +108,10 @@
       bind-key '(' run-shell 'tmux join-pane -t :9 || (tmux new-window -d -t :9 && tmux join-pane -t :9) || :'
       bind-key ')' run-shell 'tmux join-pane -t :10 || (tmux new-window -d -t :10 && tmux join-pane -t :10) || :'
 
-      # Bell: highlight window tab on bell, no audible sound
-      set -g bell-action other
-      set -g monitor-bell on
-      set -g visual-bell off
-      set -g window-status-bell-style "fg=colour1,bold"
+      # Notification: use custom @notified window option instead of bells
+      # Set via Stop hook: tmux set-window-option -t $TMUX_PANE @notified 1
+      # Cleared automatically when window is focused via after-select-window hook
+      set-hook -g after-select-window 'set-window-option @notified 0'
 
       # Status bar styling
       set -g status-position top
@@ -123,12 +122,11 @@
       # Clean left side: session name
       set -g status-left "#[bold] #S  "
 
-      # Clean right side: bell indicator + split mode + zoom + time
-      # #{W:...} iterates all windows; if any has window_bell_flag=1, show dot
-      set -g status-right "#{?#{W:#{?window_bell_flag,1,}},#[fg=colour1 bold] ● #[default],} #{?window_zoomed_flag,(zoomed) ,}#(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2 | tr 'vh' '│─')  %H:%M "
+      # Clean right side: notif indicator + split mode + zoom + time
+      set -g status-right "#{?#{W:#{?#{@notified},1,}},#[fg=colour1 bold] ● #[default],} #{?window_zoomed_flag,(zoomed) ,}#(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2 | tr 'vh' '│─')  %H:%M "
 
-      # Window status: show ! prefix on bell, cleared on window focus
-      set -g window-status-format " #{?window_bell_flag,#[fg=colour1 bold]! ,}#I:#W "
+      # Window status: show ! prefix on notification, cleared on focus
+      set -g window-status-format " #{?#{@notified},#[fg=colour1 bold]! ,}#I:#W "
       set -g window-status-current-format " #I:#W "
       set -g window-status-separator "│"
     '';
