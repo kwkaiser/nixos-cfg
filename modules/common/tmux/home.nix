@@ -104,6 +104,11 @@
       bind-key '(' run-shell 'tmux join-pane -t :9 || (tmux new-window -d -t :9 && tmux join-pane -t :9) || :'
       bind-key ')' run-shell 'tmux join-pane -t :10 || (tmux new-window -d -t :10 && tmux join-pane -t :10) || :'
 
+      # Bell: highlight window tab on bell, no audible sound
+      set -g bell-action other
+      set -g visual-bell off
+      set -g window-status-bell-style "fg=colour1,bold"
+
       # Status bar styling
       set -g status-position top
       set -g status-justify left
