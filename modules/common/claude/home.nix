@@ -3,6 +3,18 @@
   lib,
   ...
 }: let
+  tmux-mcp = pkgs.buildNpmPackage {
+    pname = "tmux-mcp";
+    version = "0.2.2";
+    src = pkgs.fetchFromGitHub {
+      owner = "nickgnd";
+      repo = "tmux-mcp";
+      rev = "ec68b1061cf3b0d1faa9c5ef5e3f703918e07ba8";
+      hash = "sha256-rZhVjuWRlVSjLthgSKbfuPpQQKP9YC2Pjun/6JQYUo0=";
+    };
+    npmDepsHash = "sha256-N1j8yBC1zQiUTnpfVw2ppY2kh4kJvT88kpTlB1kCBKY=";
+  };
+
   claude-mermaid = pkgs.buildNpmPackage {
     pname = "claude-mermaid";
     version = "1.6.4";
@@ -87,6 +99,7 @@ in {
   home.packages = with pkgs; [
     claude-monitor
     claude-mermaid
+    tmux-mcp
     nodejs
 
     (writeShellScriptBin "ccp" ''

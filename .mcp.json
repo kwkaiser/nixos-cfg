@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "tmux": {
+      "command": "tmux-mcp",
+      "args": ["--shell-type=zsh"]
+    },
     "mermaid": {
       "command": "claude-mermaid"
     },
