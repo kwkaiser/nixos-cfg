@@ -24,6 +24,7 @@
         ProxyJump = "kwkaiser@box.kwkaiser.io";
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
+        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
       };
       "livingroom" = {
         Hostname = "192.168.4.109";
@@ -38,6 +39,7 @@
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
         RemoteCommand = "cryptsetup-askpass";
+        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
       };
       "desktop-wakeup" = {
         Hostname = "192.168.4.109";
