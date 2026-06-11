@@ -1,5 +1,8 @@
 {
   "mcpServers": {
+    "mermaid": {
+      "command": "claude-mermaid"
+    },
     "MCP Neovim Server": {
       "command": "npx",
       "args": [
