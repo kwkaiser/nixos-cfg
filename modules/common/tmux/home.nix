@@ -74,6 +74,10 @@
       # Reload config with prefix + Shift+r
       bind-key R source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded"
 
+      # Session viewer: highlight sessions/windows with unacknowledged bells
+      # #{window_index} is empty on session lines, non-empty on window lines
+      bind-key s choose-tree -s -F "#{?#{window_index},#{?window_bell_flag,#[fg=colour1 bold]● #[default],  }#I: #W,#{?#{W:#{?window_bell_flag,1,}},#[fg=colour1 bold]● #[default],  }#{session_name}#{?session_attached, (attached),}}"
+
       # Close pane with prefix + q
       bind-key q kill-pane
 
