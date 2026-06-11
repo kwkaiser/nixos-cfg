@@ -106,6 +106,7 @@
 
       # Bell: highlight window tab on bell, no audible sound
       set -g bell-action other
+      set -g monitor-bell on
       set -g visual-bell off
       set -g window-status-bell-style "fg=colour1,bold"
 
@@ -113,16 +114,17 @@
       set -g status-position top
       set -g status-justify left
       set -g status-left-length 20
-      set -g status-right-length 50
+      set -g status-right-length 60
 
       # Clean left side: session name
       set -g status-left "#[bold] #S  "
 
-      # Clean right side: split mode indicator + zoom status + date/time
-      set -g status-right " #{?window_zoomed_flag,(zoomed) ,}#(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2 | tr 'vh' '│─')  %H:%M "
+      # Clean right side: bell indicator + split mode + zoom + time
+      # #{W:...} iterates all windows; if any has window_bell_flag=1, show dot
+      set -g status-right "#{?#{W:#{?window_bell_flag,1,}},#[fg=colour1 bold] ● #[default],} #{?window_zoomed_flag,(zoomed) ,}#(tmux show-environment -g SPLIT_MODE 2>/dev/null | cut -d= -f2 | tr 'vh' '│─')  %H:%M "
 
-      # Window status: cleaner format
-      set -g window-status-format " #I:#W "
+      # Window status: show ! prefix on bell, cleared on window focus
+      set -g window-status-format " #{?window_bell_flag,#[fg=colour1 bold]! ,}#I:#W "
       set -g window-status-current-format " #I:#W "
       set -g window-status-separator "│"
     '';
