@@ -2,6 +2,9 @@
 
 {
   home.packages = [
+    (pkgs.writeShellScriptBin "gparted" ''
+      sudo WAYLAND_DISPLAY="$WAYLAND_DISPLAY" XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" ${pkgs.gparted}/bin/gparted "$@"
+    '')
     (pkgs.writeShellScriptBin "moonlight" ''
       export WAYLAND_DISPLAY=wayland-1 
       export HYPRLAND_INSTANCE_SIGNATURE=$(cat $XDG_RUNTIME_DIR/hypr/$(ls -t $XDG_RUNTIME_DIR/hypr/ | head -n 1)/hyprland.log | grep "Instance Signature" | cut -d' ' -f 4 | head -n1)

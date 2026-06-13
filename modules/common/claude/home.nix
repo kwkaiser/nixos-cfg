@@ -86,6 +86,16 @@
           ];
         }
       ];
+      Notification = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "active=$(tmux display -t \"$TMUX_PANE\" -p '#{window_active}'); attached=$(tmux display -t \"$TMUX_PANE\" -p '#{session_attached}'); if [ \"$active\" = \"0\" ] || [ \"$attached\" = \"0\" ]; then tmux set-window-option -t \"$TMUX_PANE\" @notified 1; fi";
+            }
+          ];
+        }
+      ];
     };
   };
 
