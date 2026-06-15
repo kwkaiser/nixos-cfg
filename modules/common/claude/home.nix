@@ -28,7 +28,7 @@
     npmBuildScript = "build";
     PUPPETEER_SKIP_DOWNLOAD = "true";
     nativeBuildInputs = [pkgs.makeWrapper];
-    postInstall = ''
+    postInstall = lib.optionalString pkgs.stdenv.isLinux ''
       wrapProgram $out/bin/claude-mermaid \
         --set PUPPETEER_EXECUTABLE_PATH "${pkgs.chromium}/bin/chromium"
     '';
