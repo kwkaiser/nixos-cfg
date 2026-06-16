@@ -73,6 +73,10 @@
           "mousewheel.default.delta_multiplier_y" = 100;
           "mousewheel.default.delta_multiplier_z" = 100;
 
+          # Always show bookmarks bar, including in fullscreen
+          "browser.toolbars.bookmarks.visibility" = "always";
+          "browser.fullscreen.autohide" = false;
+
           # Privacy settings - preserve cookies and site data when Firefox closes
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.clearOnShutdown.cache" = false;
