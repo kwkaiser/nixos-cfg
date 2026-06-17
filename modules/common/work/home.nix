@@ -40,6 +40,7 @@
     yaml.generate "${name}.yml" {
       inherit name;
       root = root;
+      pre_window = "export DEVBOX_USE_VERSION=0.17.3";
       windows = [
         {claude = "clear && ccp";}
         {editor = "clear";}

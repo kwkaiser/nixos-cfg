@@ -132,6 +132,9 @@ in {
     '')
   ];
 
+  home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+  home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
+
   home.activation.claudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
     $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
     $DRY_RUN_CMD rm -f $HOME/.claude/settings.json $HOME/.claude-personal/settings.json
