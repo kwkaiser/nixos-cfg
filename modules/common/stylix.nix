@@ -12,5 +12,9 @@
     stylix.targets.firefox.profileNames = ["kwkaiser"];
     stylix.targets.firefox.colorTheme.enable = true;
     stylix.targets.nvf.enable = false; # Managed by nvf theme instead
+    stylix.fonts.monospace = {
+      package = pkgs.nerd-fonts.jetbrains-mono;
+      name = "JetBrainsMono Nerd Font Mono";
+    };
   };
 }
