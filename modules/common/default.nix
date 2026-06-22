@@ -35,6 +35,7 @@
     ./codex
     ./firebase
     ./typst
+    ./anki
     ./tf2
   ];
 }

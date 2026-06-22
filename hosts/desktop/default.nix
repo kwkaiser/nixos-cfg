@@ -53,6 +53,7 @@
   mine.tmux.enable = true;
   mine.work.enable = true;
   mine.claude.enable = true;
+  mine.anki.enable = true;
   mine.zotero.enable = true;
   mine.tf2.enable = true;
   mine.tf2.customPath = "/home/kwkaiser/data/steam/steamapps/common/Team Fortress 2/tf/custom";
