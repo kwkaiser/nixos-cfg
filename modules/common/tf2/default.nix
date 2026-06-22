@@ -44,13 +44,17 @@ in {
         data = ''
           ${lib.optionalString cfg.rayshud.enable ''
             dst="${cfg.customPath}/rayshud"
-            [ -L "$dst" ] && $DRY_RUN_CMD rm "$dst"
-            $DRY_RUN_CMD ln -sf "${rayshud}" "$dst"
+            if [ -d "${cfg.customPath}" ]; then
+              [ -L "$dst" ] && $DRY_RUN_CMD rm "$dst"
+              $DRY_RUN_CMD ln -sf "${rayshud}" "$dst"
+            fi
           ''}
           ${lib.optionalString cfg.hitsound.enable ''
             dst="${cfg.customPath}/nix-hitsound"
-            [ -L "$dst" ] && $DRY_RUN_CMD rm "$dst"
-            $DRY_RUN_CMD ln -sf "${bubbleHitsound}" "$dst"
+            if [ -d "${cfg.customPath}" ]; then
+              [ -L "$dst" ] && $DRY_RUN_CMD rm "$dst"
+              $DRY_RUN_CMD ln -sf "${bubbleHitsound}" "$dst"
+            fi
           ''}
         '';
       };
