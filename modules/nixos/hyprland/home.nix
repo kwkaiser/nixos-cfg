@@ -2,11 +2,11 @@
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
-    swww
+    awww
     jq
     bibata-cursors
-    xfce.thunar
-    xfce.tumbler
+    thunar
+    tumbler
     imv
     sway-contrib.grimshot
     hyprpolkitagent
@@ -28,6 +28,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang";
     # Automatically import all environment variables for systemd services
     # This fixes issues where programs don't work in systemd services but do in terminal
     systemd.variables = ["--all"];

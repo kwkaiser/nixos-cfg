@@ -35,7 +35,7 @@
       '';
     };
 
-    languages.ts = {
+    languages.typescript = {
       enable = true;
       lsp.enable = true;
       extraDiagnostics.enable = false; # Using nvim-eslint LSP instead of nvim-lint
