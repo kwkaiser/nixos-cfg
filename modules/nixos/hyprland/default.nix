@@ -13,10 +13,8 @@
       enable = true;
       settings = {
         default_session = {
-          # Use start-hyprland wrapper script as recommended by Hyprland
-          # This sets up proper environment variables and configurations
-          command = "${pkgs.hyprland}/bin/start-hyprland";
-          user = config.mine.username;
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/start-hyprland";
+          user = "greeter";
         };
       };
     };
