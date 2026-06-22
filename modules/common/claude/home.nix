@@ -46,6 +46,7 @@
   claudeSettings = {
     env = {
       ENABLE_LSP_TOOL = "1";
+      CLAUDE_CODE_NO_FLICKER = "1";
     };
 
     preferredNotifChannel = "terminal_bell";

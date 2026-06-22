@@ -22,13 +22,16 @@
 
       # Extended keys for Shift+Enter etc.
       set -s extended-keys on
-      set -as terminal-features 'xterm-kitty:extkeys:clipboard:RGB'
+      set -as terminal-features 'xterm-kitty:extkeys:clipboard:RGB:sync'
 
       # Allow passthrough for escape sequences
       set -g allow-passthrough on
 
       # Immediate escape key (no delay for vi mode)
       set -sg escape-time 0
+
+      # Focus events for proper TUI redraw on pane focus changes
+      set -g focus-events on
 
       # Manual Shift+Enter passthrough as fallback
       bind-key -n S-Enter send-keys Escape "[13;2u"
