@@ -16,3 +16,7 @@
 
 - When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes
 - Reference other pull requests this pull request may have up / downstream for stacked PRs / base branches
+
+## Pull request feedback
+
+Never ever respond to pull request feedback from humans on my behalf. 
