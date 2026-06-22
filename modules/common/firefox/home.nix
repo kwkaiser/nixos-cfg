@@ -6,6 +6,7 @@
 }: {
   programs.firefox = {
     enable = true;
+    configPath = ".mozilla/firefox";
     package = lib.mkIf pkgs.stdenv.isDarwin null; # Use Homebrew Firefox on macOS
     policies = {
       "3rdparty".Extensions."uBlock0@raymondhill.net" = {
