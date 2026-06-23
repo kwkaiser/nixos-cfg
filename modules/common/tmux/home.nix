@@ -114,7 +114,8 @@
       # Notification: use custom @notified window option instead of bells
       # Set via Stop hook: tmux set-window-option -t $TMUX_PANE @notified 1
       # Cleared automatically when window is focused via after-select-window hook
-      set-hook -g after-select-window 'set-window-option @notified 0'
+      set-hook -g after-select-window 'set-window-option -u @notified'
+      set-hook -g client-session-changed 'set-window-option -u @notified'
 
       # Status bar styling
       set -g status-position top

@@ -303,14 +303,14 @@
           }
 
           {
-            key = "<leader>fqq";
+            key = "<leader>qf";
             mode = "n";
             action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
             desc = "Open quickfix list";
           }
 
           {
-            key = "<leader>fqc";
+            key = "<leader>qc";
             mode = "n";
             action = "<cmd>lua vim.fn.setreg('+', table.concat(vim.tbl_map(function(e) return vim.fn.bufname(e.bufnr) .. ':' .. e.lnum .. ':' .. e.col .. ' ' .. e.text end, vim.fn.getqflist()), '\\n'))<CR>";
             desc = "Copy quickfix to clipboard";
@@ -324,10 +324,16 @@
             desc = "Code actions";
           }
           {
-            key = "<leader>lr";
+            key = "<leader>lrf";
             mode = "n";
             action = "<cmd>lua require('fzf-lua').lsp_references()<CR>";
             desc = "Code references";
+          }
+          {
+            key = "<leader>lrc";
+            mode = "n";
+            action = "<cmd>lua vim.lsp.buf.references(nil, { on_list = function(opts) local root = vim.fn.system('git rev-parse --show-toplevel 2>/dev/null'):gsub('\\n', ''); local lines = vim.tbl_map(function(i) local f = i.filename; if root ~= '' and f:sub(1, #root) == root then f = f:sub(#root + 2) end; return f .. ':' .. i.lnum .. ':' .. i.col .. ' ' .. i.text end, opts.items); vim.fn.setreg('+', table.concat(lines, '\\n')); print('Copied ' .. #opts.items .. ' references') end })<CR>";
+            desc = "Copy references to clipboard";
           }
           {
             key = "<leader>ldd";
@@ -408,18 +414,6 @@
             mode = "n";
             action = "<cmd>:Neotree filesystem reveal float<CR>";
             desc = "Open filetree";
-          }
-          {
-            key = "<leader>th";
-            mode = "n";
-            action = "<cmd>lua open_terminal_horizontal()<CR>";
-            desc = "Terminal horizontal";
-          }
-          {
-            key = "<leader>tv";
-            mode = "n";
-            action = "<cmd>lua open_terminal_vertical()<CR>";
-            desc = "Terminal vertical";
           }
           {
             key = "<Esc><Esc>";
