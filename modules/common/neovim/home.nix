@@ -107,6 +107,9 @@
         fzf-lua = {
           enable = true;
           setupOpts = {
+            lsp = {
+              async_or_timeout = true;
+            };
             keymap = {
               fzf = {
                 "ctrl-q" = "select-all+accept";
