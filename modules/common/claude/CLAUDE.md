@@ -1,3 +1,5 @@
+# Code
+
 ## Code comments
 
 - Include code comments only if they offer insight meaningfully distinct from the information provided by the type-system; i.e. no docblock links -- this functionality is better served by a good LSP
@@ -5,6 +7,12 @@
 - Include code comments only for functionality that is complicated or requires explanation
 
 - If uncertain about whether you should add a comment, propose it and wait for confirmation
+
+# Git & Pull requests
+
+## Pull requests
+
+- Never create one for me unless explicitly asked
 
 ## Branch conventions:
 
