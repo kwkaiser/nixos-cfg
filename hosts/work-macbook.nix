@@ -1,6 +1,7 @@
 {lib, ...}: {
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-darwin";
+  nixpkgs.config.joypixels.acceptLicense = true;
   system.stateVersion = 5;
 
   mine.username = "karl";
