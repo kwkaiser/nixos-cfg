@@ -2,11 +2,9 @@
 
 ## Code comments
 
-- Include code comments only if they offer insight meaningfully distinct from the information provided by the type-system; i.e. no docblock links -- this functionality is better served by a good LSP
+- Do not include comments in code unless explicitly asked. I will generally review code and annotate areas that I think need further explanation
 
-- Include code comments only for functionality that is complicated or requires explanation
-
-- If uncertain about whether you should add a comment, propose it and wait for confirmation
+- Never write comments that are duplicative with the typesystem (i.e. JSDoc @link tags & such)
 
 # Git & Pull requests
 
