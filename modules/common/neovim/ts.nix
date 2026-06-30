@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, lib, isDarwin, ...}: {
   home.packages = with pkgs; [
     vscode-langservers-extracted # Provides vscode-eslint-language-server for nvim-eslint
   ];
@@ -43,6 +43,28 @@
       format.enable = true;
       treesitter.enable = true;
     };
+
+    luaConfigRC.tsgo-bundled-glob-workaround = lib.mkIf isDarwin ''
+      local _orig_register_cap = vim.lsp.handlers['client/registerCapability']
+      vim.lsp.handlers['client/registerCapability'] = function(err, result, ctx, config)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        if client and client.name == 'typescript-go' and result and result.registrations then
+          for _, reg in ipairs(result.registrations) do
+            if reg.method == 'workspace/didChangeWatchedFiles'
+              and reg.registerOptions
+              and reg.registerOptions.watchers
+            then
+              reg.registerOptions.watchers = vim.tbl_filter(function(w)
+                local pat = type(w.globPattern) == 'string' and w.globPattern
+                  or (type(w.globPattern) == 'table' and w.globPattern.pattern or '')
+                return not vim.startswith(pat, 'bundled://')
+              end, reg.registerOptions.watchers)
+            end
+          end
+        end
+        return _orig_register_cap(err, result, ctx, config)
+      end
+    '';
 
     luaConfigRC.eslint-fix-all = ''
       function eslint_fix_all_sync()
