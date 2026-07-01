@@ -2,9 +2,13 @@
 
 ## Code comments
 
-- Do not include comments in code unless explicitly asked. I will generally review code and annotate areas that I think need further explanation
+I never ever ever want you to write comments in my code unless explicitly asked. If you violate this requirement, you are going against my express wishes and I will probably end up deleting them. It does not matter how complex the code you are writing is -- do not write comments in the code unless I request it.
 
-- Never write comments that are duplicative with the typesystem (i.e. JSDoc @link tags & such)
+If I ask for comments or explanations in an area:
+
+- keep them terse and explain only subjects I wanted explanation on
+- do not use syntax or details that are duplicative with the languages type system
+    - this means no JSDoc @links!
 
 # Git & Pull requests
 
