@@ -56,7 +56,7 @@
             then
               reg.registerOptions.watchers = vim.tbl_filter(function(w)
                 local pat = type(w.globPattern) == 'string' and w.globPattern
-                  or (type(w.globPattern) == 'table' and w.globPattern.pattern or '')
+                  or (type(w.globPattern) == 'table' and w.globPattern.pattern or "")
                 return not vim.startswith(pat, 'bundled://')
               end, reg.registerOptions.watchers)
             end
