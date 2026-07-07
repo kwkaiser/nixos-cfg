@@ -1,7 +1,7 @@
 function git_root_for_buf()
   local bufname = vim.api.nvim_buf_get_name(0)
   local dir
-  if bufname ~= '' and not bufname:match('^diffview://') then
+  if bufname ~= '' and not bufname:match('^diffview://') and not bufname:match('^term://') then
     dir = vim.fn.fnamemodify(bufname, ':h')
   end
   if dir and dir ~= '' then

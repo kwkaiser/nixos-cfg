@@ -119,6 +119,7 @@
             git = {
               branches = {
                 cmd = "git branch --color";
+                preview = "git log --max-count=16 --graph --pretty=oneline --abbrev-commit --color {1}";
               };
             };
           };
