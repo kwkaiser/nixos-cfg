@@ -102,6 +102,14 @@
 
   claudeSettingsFile = pkgs.writeText "claude-settings.json" (builtins.toJSON claudeSettings);
 
+  claudeMcpServers = {
+    mermaid = {
+      command = "${claude-mermaid}/bin/claude-mermaid";
+    };
+  };
+
+  claudeMcpServersFile = pkgs.writeText "claude-mcp-servers.json" (builtins.toJSON claudeMcpServers);
+
   claudeKeybindings = {
     "$schema" = "https://www.schemastore.org/claude-code-keybindings.json";
     "$docs" = "https://code.claude.com/docs/en/keybindings";
@@ -144,5 +152,18 @@ in {
     $DRY_RUN_CMD rm -f $HOME/.claude/keybindings.json $HOME/.claude-personal/keybindings.json
     $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude/keybindings.json
     $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude-personal/keybindings.json
+
+    for f in $HOME/.claude.json $HOME/.claude-personal/.claude.json; do
+      if [ -f "$f" ]; then
+        $DRY_RUN_CMD ${pkgs.jq}/bin/jq \
+          --argjson servers "$(cat ${claudeMcpServersFile})" \
+          '.mcpServers = ((.mcpServers // {}) + $servers)' \
+          "$f" > "$f.tmp" && $DRY_RUN_CMD mv "$f.tmp" "$f"
+      else
+        $DRY_RUN_CMD ${pkgs.jq}/bin/jq -n \
+          --argjson servers "$(cat ${claudeMcpServersFile})" \
+          '{mcpServers: $servers}' > "$f"
+      fi
+    done
   '';
 }
