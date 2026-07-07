@@ -223,7 +223,14 @@
           enable = true;
           setupOpts = {
             show_untracked = true;
+            watch_index = false;
             view = {
+              default = {
+                disable_diagnostics = true;
+              };
+              file_history = {
+                disable_diagnostics = true;
+              };
               merge_tool = {
                 layout = "diff3_mixed";
               };
