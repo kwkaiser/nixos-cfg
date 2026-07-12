@@ -3,6 +3,7 @@
     terminal-rain-lightning
     pipes
     gnumake
+    go-task
   ];
 
   programs.zoxide = {
