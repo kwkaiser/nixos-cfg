@@ -1,6 +1,5 @@
 {nixpkgs, ...}: let
   sharedVmConfig = {
-    host.pkgs = nixpkgs.legacyPackages.${builtins.currentSystem};
     memorySize = 8192;
     cores = 6;
     forwardPorts = [
