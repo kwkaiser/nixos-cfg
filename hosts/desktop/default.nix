@@ -35,7 +35,6 @@
   mine.keepass.enable = true;
   mine.firefox.enable = true;
   mine.messaging.enable = true;
-  mine.cursor.enable = true;
   mine.gtk.enable = true;
   mine.steam.enable = true;
   mine.notes.enable = true;
