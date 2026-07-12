@@ -6,8 +6,9 @@
 }: {
   programs.firefox = {
     enable = true;
-    configPath = ".mozilla/firefox";
-    package = lib.mkIf pkgs.stdenv.isDarwin null; # Use Homebrew Firefox on macOS
+    # Firefox has no cached aarch64-darwin build in nixpkgs right now, so use
+    # the official .dmg build on Darwin instead of building from source.
+    package = lib.mkIf pkgs.stdenv.isDarwin pkgs.firefox-bin;
     policies = {
       "3rdparty".Extensions."uBlock0@raymondhill.net" = {
         toAdd = {
