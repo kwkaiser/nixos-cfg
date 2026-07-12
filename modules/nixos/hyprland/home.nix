@@ -34,6 +34,8 @@
     systemd.variables = ["--all"];
     settings.env = [
       "SDL_VIDEODRIVER,x11"
+      "XCURSOR_THEME,Bibata-Modern-Classic"
+      "XCURSOR_SIZE,24"
     ];
   };
 
