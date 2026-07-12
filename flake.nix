@@ -11,6 +11,16 @@
     # (devbox-version: 0.17.3) so devbox.lock's nodejs plugin_version stops churning.
     nixpkgs-devbox.url = "github:nixos/nixpkgs/3e41b24abd260e8f71dbe2f5737d24122f972158";
 
+    # Pinned nixpkgs for Darwin packages that crash the linker on current
+    # nixos-unstable: its ld64/libclang_rt combo crashes (Trace/BPT trap: 5)
+    # linking large natively-built binaries (kitty, livekit-libwebrtc/codex).
+    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+
+    # Firefox has no cached aarch64-darwin build in nixpkgs right now (Hydra's
+    # darwin firefox job has been failing since 2026-06-22), so use official
+    # .dmg builds repackaged as a nix derivation instead of building from source.
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin";
+
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -96,6 +106,7 @@
           stylix.darwinModules.stylix
           ./modules
           allowUnfree
+          { nixpkgs.overlays = [ inputs.nixpkgs-firefox-darwin.overlay ]; }
           hostModule
         ];
       };
