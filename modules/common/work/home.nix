@@ -2,9 +2,12 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
 }: let
   yaml = pkgs.formats.yaml {};
+
+  devbox = inputs.nixpkgs-devbox.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devbox;
 
   genai-toolbox = let
     platforms = {
@@ -69,6 +72,7 @@ in {
     gh
     gh-dash
     awscli2
+    google-cloud-sdk
     typescript-go
     vtsls
     ssm-session-manager-plugin
