@@ -6,7 +6,6 @@
   imports = [./disks.nix ./boot.nix ./hardware.nix ./net.nix ./tz.nix ./vm.nix];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  nixpkgs.config.joypixels.acceptLicense = true;
   system.stateVersion = "25.05";
 
   programs.nix-ld.enable = true;
