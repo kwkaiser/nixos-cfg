@@ -117,5 +117,23 @@
     };
 
     darwinConfigurations."work-macbook" = mkDarwinSystem ./hosts/work-macbook.nix;
+
+    # Per-system builds/apps so `nix run .#homelab-vm` picks the qemu host
+    # pkgs matching whatever machine you're actually running it from (Linux
+    # or the Mac), without needing `--impure` for builtins.currentSystem.
+    packages = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
+      homelab-vm = (self.nixosConfigurations.homelab.extendModules {
+        modules = [
+          {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
+        ];
+      }).config.system.build.vm;
+    });
+
+    apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
+      homelab-vm = {
+        type = "app";
+        program = nixpkgs.lib.getExe self.packages.${system}.homelab-vm;
+      };
+    });
   };
 }
