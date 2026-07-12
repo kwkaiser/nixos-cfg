@@ -3,6 +3,9 @@
   config,
   ...
 }: {
+  # joypixels (used below as the stylix emoji font) is unfree.
+  nixpkgs.config.joypixels.acceptLicense = true;
+
   # Configure stylix in home-manager context to avoid conflicts
   home-manager.users.${config.mine.username} = {
     stylix.enable = true;
