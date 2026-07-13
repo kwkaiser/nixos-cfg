@@ -42,6 +42,8 @@
       };
       availableKernelModules = config.mine.remoteUnlock.requiredKernelModules;
     };
+    boot.kernelParams =
+      [ "ip=:::::${config.mine.remoteUnlock.ethDevice}:dhcp" ];
     networking.useDHCP = false;
     networking.interfaces.${config.mine.remoteUnlock.ethDevice}.useDHCP = true;
   };
