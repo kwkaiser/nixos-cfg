@@ -41,9 +41,12 @@
 
       };
       availableKernelModules = config.mine.remoteUnlock.requiredKernelModules;
+      systemd.network.networks."40-${config.mine.remoteUnlock.ethDevice}" = {
+        DHCP = lib.mkOverride 10 "no";
+        address = [ "192.168.4.110/24" ];
+        routes = [ { Gateway = "192.168.4.1"; } ];
+      };
     };
-    boot.kernelParams =
-      [ "ip=:::::${config.mine.remoteUnlock.ethDevice}:dhcp" ];
     networking.useDHCP = false;
     networking.interfaces.${config.mine.remoteUnlock.ethDevice}.useDHCP = true;
   };
