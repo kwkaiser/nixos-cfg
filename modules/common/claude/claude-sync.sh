@@ -56,7 +56,21 @@ done
 
 sync_dir() {
   echo "==> $1 -> $2"
-  rsync -avz --ignore-existing "${dry_run[@]}" "$1/" "$2/"
+  rsync -avz --ignore-existing --exclude=sessions-index.json "${dry_run[@]}" "$1/" "$2/"
+}
+
+seed_local_index() {
+  local idx="$1" path="$2"
+  if [ -z "${dry_run[*]:-}" ] && [ ! -f "$idx" ]; then
+    jq -n --arg p "$path" '{version: 1, entries: [], originalPath: $p}' > "$idx"
+  fi
+}
+
+seed_peer_index() {
+  local host="$1" idx="$2" path="$3"
+  if [ -z "${dry_run[*]:-}" ]; then
+    ssh -n "$host" "[ -f '$idx' ] || jq -n --arg p '$path' '{version: 1, entries: [], originalPath: \$p}' > '$idx'"
+  fi
 }
 
 for cfg in "${config_dirs[@]}"; do
@@ -69,6 +83,7 @@ for cfg in "${config_dirs[@]}"; do
           peer_name="$(mangle "$peer_home/$rel")"
           ssh -n "$peer" "mkdir -p ~/$cfg/projects/$peer_name"
           sync_dir "$local_home/$cfg/projects/$name" "$peer:$cfg/projects/$peer_name"
+          seed_peer_index "$peer" "$peer_home/$cfg/projects/$peer_name/sessions-index.json" "$peer_home/$rel"
           ;;
         *)
           echo "skip $name (path not under \$HOME: ${orig:-unknown})" >&2
@@ -83,6 +98,7 @@ for cfg in "${config_dirs[@]}"; do
           local_name="$(mangle "$local_home/$rel")"
           mkdir -p "$local_home/$cfg/projects/$local_name"
           sync_dir "$peer:$cfg/projects/$name" "$local_home/$cfg/projects/$local_name"
+          seed_local_index "$local_home/$cfg/projects/$local_name/sessions-index.json" "$local_home/$rel"
           ;;
         *)
           echo "skip $name (path not under peer \$HOME: ${orig:-unknown})" >&2
