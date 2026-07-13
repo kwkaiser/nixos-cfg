@@ -29,6 +29,10 @@
       ''
         stty -ixon  # Allow Ctrl+S/Ctrl+Q to pass through to applications
 
+        if [ -n "$SSH_CONNECTION" ] && [ -S "$HOME/.ssh/ssh_auth_sock_link" ]; then
+          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link"
+        fi
+
         # Unbind Ctrl+a from zsh-vi-mode so tmux prefix works
         zvm_after_init() {
           bindkey -r '^a'

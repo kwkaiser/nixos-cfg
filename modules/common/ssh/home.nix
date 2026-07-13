@@ -1,5 +1,14 @@
 {...}: {
   home.file.".ssh/config".force = true;
+  home.file.".ssh/rc" = {
+    executable = true;
+    text = ''
+      #!/bin/sh
+      if [ -n "$SSH_AUTH_SOCK" ]; then
+        ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock_link"
+      fi
+    '';
+  };
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
