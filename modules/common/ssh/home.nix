@@ -33,22 +33,19 @@
         ForwardAgent = true;
       };
       "desktop-unlock" = {
-        Hostname = "192.168.4.110";
-        User = "root";
-        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        Hostname = "box.kwkaiser.io";
+        User = "kwkaiser";
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
         RequestTTY = "force";
-        RemoteCommand = "cryptsetup-askpass";
-        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
+        RemoteCommand = "ssh -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o MACs=hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com root@192.168.4.110 cryptsetup-askpass";
       };
       "desktop-wakeup" = {
-        Hostname = "192.168.4.109";
-        ProxyJump = "kwkaiser@box.kwkaiser.io";
-        User = "bingus";
+        Hostname = "box.kwkaiser.io";
+        User = "kwkaiser";
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
-        RemoteCommand = "wakeonlan 70:85:c2:dc:da:23";
+        RemoteCommand = "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null bingus@192.168.4.109 wakeonlan 70:85:c2:dc:da:23";
       };
     };
   };
