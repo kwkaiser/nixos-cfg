@@ -34,6 +34,13 @@
     '';
   };
 
+  claude-sync = pkgs.writeShellApplication {
+    name = "claude-sync";
+    runtimeInputs = [pkgs.jq pkgs.rsync pkgs.openssh];
+    excludeShellChecks = ["SC2016"];
+    text = builtins.readFile ./claude-sync.sh;
+  };
+
   forbiddenCommands = [
     "ssh-agent"
     "ssh-add"
@@ -128,6 +135,7 @@ in {
   home.packages = with pkgs; [
     claude-monitor
     claude-mermaid
+    claude-sync
     tmux-mcp
     nodejs
 
