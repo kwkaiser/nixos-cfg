@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   home.file.".ssh/config".force = true;
   home.file.".ssh/rc" = {
     executable = true;
@@ -28,7 +32,7 @@
         AddKeysToAgent = "yes";
       };
       "desktop-lan-check" = lib.hm.dag.entryBefore ["desktop"] {
-        header = ''Match originalhost desktop exec "timeout 1 bash -c '</dev/tcp/192.168.4.110/22'"'';
+        header = ''Match originalhost desktop exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.110/22'"'';
         ProxyJump = "none";
       };
       "desktop" = {
@@ -40,7 +44,7 @@
         MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
       };
       "livingroom-lan-check" = lib.hm.dag.entryBefore ["livingroom"] {
-        header = ''Match originalhost livingroom exec "timeout 1 bash -c '</dev/tcp/192.168.4.109/22'"'';
+        header = ''Match originalhost livingroom exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.109/22'"'';
         ProxyJump = "none";
       };
       "livingroom" = {
