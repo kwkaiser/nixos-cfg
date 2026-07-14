@@ -29,16 +29,8 @@
       ''
         stty -ixon  # Allow Ctrl+S/Ctrl+Q to pass through to applications
 
-        # `-S` only checks the path is a socket *file* - OpenSSH leaves dead
-        # agent-forwarding sockets (from a dropped connection) on disk for up
-        # to an hour before sweeping them, so that alone can point a fresh
-        # shell at a dead agent instead of its own live one. `ssh-add -l`
-        # actually connects; exit code 2 means unreachable/dead.
-        if [ -n "$SSH_CONNECTION" ] && [ -S "$HOME/.ssh/ssh_auth_sock_link" ]; then
-          SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link" timeout 2 ssh-add -l >/dev/null 2>&1
-          if [ "$?" != 2 ]; then
-            export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link"
-          fi
+        if [ -L "$HOME/.ssh/ssh_auth_sock_link" ]; then
+          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link"
         fi
 
         # Unbind Ctrl+a from zsh-vi-mode so tmux prefix works
