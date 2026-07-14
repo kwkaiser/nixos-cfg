@@ -27,6 +27,14 @@
       # Allow passthrough for escape sequences
       set -g allow-passthrough on
 
+      # Forward OSC 52 clipboard escape sequences to the outer terminal
+      # (lets nvim yanks reach the terminal's clipboard through SSH)
+      set -s set-clipboard on
+
+      # Refresh SSH_TTY on attach so new panes know whether this client is
+      # remote (SSH_CONNECTION is refreshed by default; SSH_TTY isn't)
+      set -ga update-environment ' SSH_TTY'
+
       # Immediate escape key (no delay for vi mode)
       set -sg escape-time 0
 

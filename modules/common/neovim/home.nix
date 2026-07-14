@@ -442,6 +442,7 @@
         luaConfigRC.github-url = builtins.readFile ./github-url.lua;
         luaConfigRC.file-location = builtins.readFile ./file-location.lua;
         luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
+        luaConfigRC.osc52-clipboard = builtins.readFile ./osc52-clipboard.lua;
       };
     };
   };
