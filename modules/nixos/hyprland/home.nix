@@ -80,17 +80,7 @@
     exec-once = [
       # systemd.variables handles dbus-update-activation-environment automatically
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-      # hyprland-session.target BindsTo=graphical-session.target, which
-      # gates sunshine.service (and anything else WantedBy that target).
-      # Hyprland doesn't always trigger this itself - notably not when the
-      # session is started via greetd-remote-login instead of the normal
-      # tuigreet console flow - so start it explicitly.
-      # sleep 1: hyprctl/systemctl calls in exec-once can race Hyprland's own
-      # IPC socket coming up, silently no-op-ing if it isn't ready yet -
-      # matches the guard the swww line below already uses.
-      "sleep 1 && systemctl --user start hyprland-session.target"
-      "sleep 1 && systemctl --user start hyprpolkitagent"
-      "sleep 1 && hyprctl output create headless moonlight && hyprctl keyword monitor \"moonlight,1920x1080@60,5000x0,1\""
+      "hypr-session-init"
       "sleep 1 && waybar &"
       "swaync &"
       "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"
