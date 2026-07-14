@@ -107,6 +107,11 @@ in {
       cursor ~/Documents/pallet/copallet-wt-1 &
       cursor ~/Documents/pallet/copallet-wt-2 &
     '')
+
+    (writeShellScriptBin "bind-mermaid" ''
+      host="''${1:?usage: bind-mermaid <ssh-host>}"
+      exec ssh -N -L 3737:localhost:3737 -L 3738:localhost:3738 -L 3739:localhost:3739 "$host"
+    '')
   ];
 
   # Tmuxinator project configs (only if tmux is enabled)
