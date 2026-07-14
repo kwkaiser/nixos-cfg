@@ -68,6 +68,16 @@
         StrictHostKeyChecking = "no";
         RemoteCommand = "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null bingus@192.168.4.109 wakeonlan 70:85:c2:dc:da:23";
       };
+      "desktop-wm" = {
+        Hostname = "192.168.4.110";
+        User = "kwkaiser";
+        ProxyJump = "kwkaiser@box.kwkaiser.io";
+        ForwardAgent = true;
+        StrictHostKeyChecking = "no";
+        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
+        RequestTTY = "force";
+        RemoteCommand = "sudo greetd-remote-login";
+      };
     };
   };
 }
