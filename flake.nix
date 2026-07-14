@@ -127,12 +127,21 @@
           {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
         ];
       }).config.system.build.vm;
+      desktop-vm = (self.nixosConfigurations.desktop.extendModules {
+        modules = [
+          {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
+        ];
+      }).config.system.build.vm;
     });
 
     apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
       homelab-vm = {
         type = "app";
         program = nixpkgs.lib.getExe self.packages.${system}.homelab-vm;
+      };
+      desktop-vm = {
+        type = "app";
+        program = nixpkgs.lib.getExe self.packages.${system}.desktop-vm;
       };
     });
   };
