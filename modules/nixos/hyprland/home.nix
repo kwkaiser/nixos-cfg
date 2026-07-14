@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
@@ -37,6 +41,16 @@
       "XCURSOR_THEME,Bibata-Modern-Classic"
       "XCURSOR_SIZE,24"
     ];
+  };
+
+  systemd.user.services.hypr-output-bootstrap = {
+    Unit.Description = "Creates the headless moonlight output for each new Hyprland session";
+    Service = {
+      ExecStart = "${config.home.profileDirectory}/bin/hypr-output-bootstrap";
+      Restart = "always";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["default.target"];
   };
 
   services.gammastep = {
@@ -80,7 +94,6 @@
     exec-once = [
       # systemd.variables handles dbus-update-activation-environment automatically
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-      "hypr-session-init"
       "sleep 1 && waybar &"
       "swaync &"
       "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"

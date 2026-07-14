@@ -41,8 +41,8 @@
 
     (pkgs.writeShellScriptBin "hypr-session-init" ''
       set -u
-      exec >"$HOME/.cache/hypr-session-init.log" 2>&1
-      echo "$(date -Is): starting"
+      exec >>"$HOME/.cache/hypr-session-init.log" 2>&1
+      echo "$(date -Is): starting for $HYPRLAND_INSTANCE_SIGNATURE"
 
       for _ in $(seq 1 100); do
         hyprctl monitors >/dev/null 2>&1 && break
@@ -58,7 +58,28 @@
 
       systemctl --user start hyprland-session.target
       systemctl --user start hyprpolkitagent
-      echo "$(date -Is): done"
+      echo "$(date -Is): done for $HYPRLAND_INSTANCE_SIGNATURE"
+    '')
+
+    (pkgs.writeShellScriptBin "hypr-output-bootstrap" ''
+      set -u
+      exec >>"$HOME/.cache/hypr-output-bootstrap.log" 2>&1
+      echo "$(date -Is): watcher starting"
+      seen=""
+      while true; do
+        for sig_dir in "$XDG_RUNTIME_DIR"/hypr/*/; do
+          [ -d "$sig_dir" ] || continue
+          sig=$(basename "$sig_dir")
+          case " $seen " in
+            *" $sig "*) continue ;;
+          esac
+          [ -S "''${sig_dir}.socket.sock" ] || continue
+          seen="$seen $sig"
+          echo "$(date -Is): found new hyprland instance $sig"
+          HYPRLAND_INSTANCE_SIGNATURE="$sig" hypr-session-init &
+        done
+        sleep 1
+      done
     '')
 
   ];
