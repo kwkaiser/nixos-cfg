@@ -41,7 +41,6 @@
         ProxyJump = "kwkaiser@box.kwkaiser.io";
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
-        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
       };
       "livingroom-lan-check" = lib.hm.dag.entryBefore ["livingroom"] {
         header = ''Match originalhost livingroom exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.109/22'"'';
@@ -74,7 +73,6 @@
         ProxyJump = "kwkaiser@box.kwkaiser.io";
         ForwardAgent = true;
         StrictHostKeyChecking = "no";
-        MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com";
         RequestTTY = "force";
         RemoteCommand = "sudo greetd-remote-login";
       };
