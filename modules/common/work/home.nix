@@ -39,26 +39,29 @@
       '';
     };
 
-  mkTmuxinatorProject = name: root:
+  mkTmuxinatorProject = name: root: extraWindows:
     yaml.generate "${name}.yml" {
       inherit name;
       root = root;
-      windows = [
-        {claude = "clear && ccp";}
-        {editor = "clear";}
-        {driver = "clear";}
-        {
-          build = {
-            layout = "even-horizontal";
-            panes = [
-              "cd backend && clear"
-              "cd frontend && clear"
-              "cd packages/tasks && clear"
-            ];
-          };
-        }
+      windows =
+        [
+          {claude = "clear && ccp";}
+          {editor = "clear";}
+          {driver = "clear";}
+        ]
+        ++ extraWindows;
+    };
+
+  copalletBuildWindow = {
+    build = {
+      layout = "even-horizontal";
+      panes = [
+        "cd backend && clear"
+        "cd frontend && clear"
+        "cd packages/tasks && clear"
       ];
     };
+  };
 
   # Script to pipe build output to neovim quickfix list
   nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./nvb.sh);
@@ -116,8 +119,9 @@ in {
 
   # Tmuxinator project configs (only if tmux is enabled)
   xdg.configFile = lib.mkIf config.programs.tmux.enable {
-    "tmuxinator/primary.yml".source = mkTmuxinatorProject "primary" "~/Documents/pallet/copallet";
-    "tmuxinator/wt-1.yml".source = mkTmuxinatorProject "wt-1" "~/Documents/pallet/copallet-wt-1";
-    "tmuxinator/wt-2.yml".source = mkTmuxinatorProject "wt-2" "~/Documents/pallet/copallet-wt-2";
+    "tmuxinator/primary.yml".source = mkTmuxinatorProject "primary" "~/Documents/pallet/copallet" [copalletBuildWindow];
+    "tmuxinator/wt-1.yml".source = mkTmuxinatorProject "wt-1" "~/Documents/pallet/copallet-wt-1" [copalletBuildWindow];
+    "tmuxinator/wt-2.yml".source = mkTmuxinatorProject "wt-2" "~/Documents/pallet/copallet-wt-2" [copalletBuildWindow];
+    "tmuxinator/pallet-iac.yml".source = mkTmuxinatorProject "pallet-iac" "~/Documents/pallet/pallet-iac" [];
   };
 }
