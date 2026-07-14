@@ -39,5 +39,27 @@
         --command-each '${pkgs.windowtolayer}/bin/windowtolayer -- ${pkgs.kitty}/bin/kitty -e ${pkgs.terminal-rain-lightning}/bin/terminal-rain'
     '')
 
+    (pkgs.writeShellScriptBin "hypr-session-init" ''
+      set -u
+      exec >"$HOME/.cache/hypr-session-init.log" 2>&1
+      echo "$(date -Is): starting"
+
+      for _ in $(seq 1 100); do
+        hyprctl monitors >/dev/null 2>&1 && break
+        sleep 0.1
+      done
+
+      for _ in $(seq 1 50); do
+        hyprctl -j monitors | jq -e '.[] | select(.name == "moonlight")' >/dev/null 2>&1 && break
+        hyprctl output create headless moonlight >/dev/null 2>&1
+        sleep 0.2
+      done
+      hyprctl keyword monitor "moonlight,1920x1080@60,5000x0,1"
+
+      systemctl --user start hyprland-session.target
+      systemctl --user start hyprpolkitagent
+      echo "$(date -Is): done"
+    '')
+
   ];
 }
