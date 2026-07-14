@@ -27,7 +27,13 @@ in {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/start-hyprland";
+          # No --remember: with a remembered username, tuigreet calls
+          # greetd's create_session itself the instant it starts (no
+          # keypress needed), racing greetd-remote-login for the single
+          # global session-negotiation slot - greetd's cancel-on-disconnect
+          # cleanup isn't scoped per-connection, so whichever loses that
+          # race gets silently cancelled out from under it.
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/start-hyprland";
           user = "greeter";
         };
       };
