@@ -81,6 +81,7 @@
       # systemd.variables handles dbus-update-activation-environment automatically
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "systemctl --user start hyprpolkitagent"
+      "hyprctl output create headless moonlight && hyprctl keyword monitor \"moonlight,1920x1080@60,5000x0,1\""
       "waybar &"
       "swaync &"
       "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"
