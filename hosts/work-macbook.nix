@@ -26,6 +26,7 @@
   mine.notes.enable = true;
   mine.messaging.enable = true;
   mine.ssh.enable = true;
+  mine.ssh.server.enable = false;
   mine.virt.enable = true;
   mine.docker.enable = true;
   mine.work.enable = true;
