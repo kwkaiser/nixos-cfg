@@ -26,6 +26,7 @@ If I ask for comments or explanations in an area:
 
 - When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes
 - Reference other pull requests this pull request may have up / downstream for stacked PRs / base branches
+- Never include description of "verification steps" that are duplicative with basic CI. Only include description of verification steps if we did something separate from what CI is doing.
 
 ## Pull request feedback
 
