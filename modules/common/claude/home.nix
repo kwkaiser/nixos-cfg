@@ -133,6 +133,7 @@
   claudeKeybindingsFile = pkgs.writeText "claude-keybindings.json" (builtins.toJSON claudeKeybindings);
 in {
   home.packages = with pkgs; [
+    claude-code
     claude-monitor
     claude-mermaid
     claude-sync
