@@ -21,6 +21,7 @@
   mine.zsh.enable = true;
   mine.keepass.enable = true;
   mine.syncthing.enable = true;
+  mine.syncthing.peers = [ "server" ];
   mine.cursor.enable = true;
   mine.steam.enable = true;
   mine.notes.enable = true;
