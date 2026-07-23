@@ -21,7 +21,11 @@
     // lib.optionalAttrs isDarwin {
       # Use Homebrew cask on Darwin to stay on the latest Signal release;
       # nixpkgs signal-desktop lags and causes database version mismatch errors
-      homebrew.casks = [ "signal" ];
+      #
+      # slack is also cask-only on Darwin: home-manager's app-trampoline rsync
+      # (--chmod=-w over Slack.app's signed bundle) gets blocked by endpoint
+      # security software on managed devices, which aborts the whole activation
+      homebrew.casks = [ "signal" "slack" ];
     }
     // lib.optionalAttrs (!isDarwin) {
       # Firewall rules for KDE Connect (non-Darwin only)
