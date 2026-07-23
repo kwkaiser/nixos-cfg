@@ -29,6 +29,7 @@
   mine.hyprland.enable = true;
   mine.kitty.enable = true;
   mine.syncthing.enable = true;
+  mine.syncthing.deviceName = "desktop";
   mine.rofi.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;

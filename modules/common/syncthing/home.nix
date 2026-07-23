@@ -1,4 +1,4 @@
-{ peers ? null }:
+{ selfDevice }:
 { config, pkgs, lib, ... }:
 let
   ignorePatterns = [
@@ -10,21 +10,28 @@ let
     ".TemporaryItems"
   ];
 
-  allDevices = {
-    phone.id = "C2OL7VB-VVCL6CM-2ZLO7N4-RLTP7GO-EN3EZSD-QPZL3XC-VTI7IUC-BDDCEAV";
-    desktop.id = "EN3PXUV-4CGWE5S-HJHI7ZE-BC2CH2X-TDV4SGQ-NL7XHRR-KBAEJEJ-74GQNQR";
-    server.id = "KCLNUZ7-P2YEIO4-WNZ7O6L-TXWD3VI-TETMH45-GQJKLNC-LMEFDIV-B7XBFAM";
-    pallet-macbook.id = "6JZGMBT-TX43LZJ-L7VCKGI-ZTSAJNV-GFAPC66-ENZ5UDE-SGT2XQV-I3RWFA7";
+  deviceIds = {
+    phone = "C2OL7VB-VVCL6CM-2ZLO7N4-RLTP7GO-EN3EZSD-QPZL3XC-VTI7IUC-BDDCEAV";
+    desktop = "EN3PXUV-4CGWE5S-HJHI7ZE-BC2CH2X-TDV4SGQ-NL7XHRR-KBAEJEJ-74GQNQR";
+    server = "KCLNUZ7-P2YEIO4-WNZ7O6L-TXWD3VI-TETMH45-GQJKLNC-LMEFDIV-B7XBFAM";
+    pallet-macbook = "6JZGMBT-TX43LZJ-L7VCKGI-ZTSAJNV-GFAPC66-ENZ5UDE-SGT2XQV-I3RWFA7";
   };
 
-  allowedPeers = if peers == null then builtins.attrNames allDevices else peers;
+  allDevices = lib.mapAttrs (name: id: { inherit id; }) deviceIds;
 
-  folderDevices = builtins.filter (d: builtins.elem d allowedPeers) [
-    "phone"
-    "desktop"
-    "server"
-    "pallet-macbook"
-  ];
+  # Who each device is allowed to connect to. pallet-macbook (work laptop,
+  # employer-controlled) only talks to server, so cutting it off is a single
+  # edit here rather than something enforced per-device.
+  topology = {
+    phone = [ "desktop" "server" ];
+    desktop = [ "phone" "server" ];
+    server = [ "phone" "desktop" "pallet-macbook" ];
+    pallet-macbook = [ "server" ];
+  };
+
+  allowedPeers = topology.${selfDevice} or [ ];
+
+  folderDevices = builtins.filter (d: builtins.elem d allowedPeers) (builtins.attrNames allDevices);
 in
 {
   services.syncthing = {
