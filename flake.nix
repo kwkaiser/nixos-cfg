@@ -132,6 +132,11 @@
           {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
         ];
       }).config.system.build.vm;
+      desktop-vm-btrfs = (self.nixosConfigurations.desktop.extendModules {
+        modules = [
+          {virtualisation.vmVariantWithDisko.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
+        ];
+      }).config.system.build.vmWithDisko;
     });
 
     apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
@@ -142,6 +147,10 @@
       desktop-vm = {
         type = "app";
         program = nixpkgs.lib.getExe self.packages.${system}.desktop-vm;
+      };
+      desktop-vm-btrfs = {
+        type = "app";
+        program = nixpkgs.lib.getExe self.packages.${system}.desktop-vm-btrfs;
       };
     });
   };
