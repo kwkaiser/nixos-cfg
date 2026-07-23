@@ -1,4 +1,4 @@
-# systemd will mount an ext4 filesystem at / and zfs will mount the dataset underneath it
+# systemd will mount a btrfs filesystem at / and zfs will mount the dataset underneath it
 { ... }: {
   disko.devices = {
     disk = {
@@ -32,9 +32,26 @@
                 name = "root";
                 settings.allowDiscards = true;
                 content = {
-                  type = "filesystem";
-                  format = "ext4";
-                  mountpoint = "/";
+                  type = "btrfs";
+                  extraArgs = [ "-f" ];
+                  subvolumes = {
+                    "/root" = {
+                      mountpoint = "/";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/home" = {
+                      mountpoint = "/home";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/log" = {
+                      mountpoint = "/var/log";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                  };
                 };
               };
             };
