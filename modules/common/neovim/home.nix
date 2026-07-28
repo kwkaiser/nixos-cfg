@@ -57,6 +57,7 @@
           expandtab = true;
           timeoutlen = 300;
           ttimeoutlen = 10;
+          diffopt = "internal,filler,closeoff,linematch:60,algorithm:histogram,indent-heuristic";
         };
 
         extraPlugins.review-comments = {
