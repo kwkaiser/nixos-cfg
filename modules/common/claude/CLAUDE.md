@@ -12,6 +12,10 @@ If I ask for comments or explanations in an area:
 
 # Git & Pull requests
 
+## Working with worktrees
+
+If `worktrunk` is available in a repo (usually the `wt` command) prefer to use it for setting up & tearing down worktrees. This is my preferred way of propagating values that may not be git-tracked.
+
 ## Pull requests
 
 - Never create one for me unless explicitly asked
