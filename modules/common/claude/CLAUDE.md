@@ -14,7 +14,15 @@ If I ask for comments or explanations in an area:
 
 ## Working with worktrees
 
-If `worktrunk` is available in a repo (usually the `wt` command) prefer to use it for setting up & tearing down worktrees. This is my preferred way of propagating values that may not be git-tracked.
+If `worktrunk` is available in a repo (usually the `wt` command) prefer to use it for setting up & tearing down worktrees. This is my preferred way of propagating values that may not be git-tracked. Here's a shortlist of options:
+
+```
+- `wt switch [-c] <branch>` — create/switch to a worktree by branch name (paths computed automatically)
+- `wt list` — status across all worktrees (staged, commits, remote tracking)
+- `wt merge <branch>` — squash/rebase/merge back + cleanup in one step
+- `wt remove` — delete worktree + branch
+- `wt switch pr:123` — checkout a PR into its own worktree
+```
 
 ## Pull requests
 
