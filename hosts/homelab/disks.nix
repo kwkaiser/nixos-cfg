@@ -1,11 +1,14 @@
-# systemd will mount an ext4 filesystem at / and zfs will mount the dataset underneath it
 {...}: {
+  # bulk-pool and cache-pool already exist on separate physical disks and hold
+  # live data; they are intentionally not declared here so disko never
+  # touches them. They're imported post-install via boot.zfs.extraPools.
+  boot.zfs.extraPools = ["bulk-pool" "cache-pool"];
+
   disko.devices = {
     disk = {
-      # Primary disk with boot & root partitions
       main = {
         type = "disk";
-        device = "/dev/sdc";
+        device = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_1TB_S59VNJ0N105754E";
         content = {
           type = "gpt";
           partitions = {
@@ -19,10 +22,10 @@
                 mountOptions = ["umask=0077"];
               };
             };
-            #swap = {
-            #  size = "1G";
-            #  content = {type = "swap";};
-            #};
+            swap = {
+              size = "976M";
+              content = {type = "swap";};
+            };
             root = {
               size = "100%";
               content = {
@@ -34,110 +37,6 @@
           };
         };
       };
-
-      #data = {
-      #  type = "disk";
-      #  device = "/dev/sdf";
-      #  content = {
-      #    type = "gpt";
-      #    partitions = {
-      #      data = {
-      #        size = "100%";
-      #        content = {
-      #          type = "filesystem";
-      #          format = "ext4";
-      #          mountpoint = "/cache";
-      #        };
-      #      };
-      #    };
-      #  };
-      #};
-
-      # data1 = {
-      #   type = "disk";
-      #   device = "/dev/sda";
-      #   content = {
-      #     type = "gpt";
-      #     partitions = {
-      #       zfs = {
-      #         size = "100%";
-      #         content = {
-      #           type = "zfs";
-      #           pool = "data";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
-      # data2 = {
-      #   type = "disk";
-      #   device = "/dev/sdb";
-      #   content = {
-      #     type = "gpt";
-      #     partitions = {
-      #       zfs = {
-      #         size = "100%";
-      #         content = {
-      #           type = "zfs";
-      #           pool = "data";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
-
-      # data3 = {
-      #   type = "disk";
-      #   device = "/dev/sdd";
-      #   content = {
-      #     type = "gpt";
-      #     partitions = {
-      #       zfs = {
-      #         size = "100%";
-      #         content = {
-      #           type = "zfs";
-      #           pool = "data";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
-
-      # data4 = {
-      #   type = "disk";
-      #   device = "/dev/sde";
-      #   content = {
-      #     type = "gpt";
-      #     partitions = {
-      #       zfs = {
-      #         size = "100%";
-      #         content = {
-      #           type = "zfs";
-      #           pool = "data";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
     };
-    #zpool = {
-    #  data = {
-    #    type = "zpool";
-    #    mode = "mirror";
-    #    rootFsOptions = {
-    #      compression = "zstd";
-    #      "com.sun:auto-snapshot" = "true";
-    #    };
-    #    postCreateHook =
-    #      "zfs list -t snapshot -H -o name | grep -E '^data@blank$' || zfs snapshot data@blank";
-
-    #    datasets = {
-    #      "encrypted" = {
-    #        type = "zfs_fs";
-    #        mountpoint = "/data";
-    #      };
-    #    };
-    #  };
-    #};
   };
 }
