@@ -17,6 +17,14 @@
         "ALLOW_SHELL_COMMANDS": "true",
         "NVIM_SOCKET_PATH": "/tmp/nvim-nixos-cfg.sock"
       }
+    },
+    "grafana": {
+      "command": "uvx",
+      "args": ["mcp-grafana"],
+      "env": {
+        "GRAFANA_URL": "https://stats.kwkaiser.io",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "<your service account token>"
+      }
     }
   }
 }
