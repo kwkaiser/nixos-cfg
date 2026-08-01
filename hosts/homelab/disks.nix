@@ -4,6 +4,12 @@
   # touches them. They're imported post-install via boot.zfs.extraPools.
   boot.zfs.extraPools = ["bulk-pool" "cache-pool"];
 
+  # Keys for these pools live under /etc/zfs/keys on this (LUKS-encrypted) root
+  # disk, so they auto-load once root is unlocked and mounted - no separate
+  # prompt. Inert until the pools are actually recreated with native
+  # encryption; see the homelab ZFS-encryption migration notes.
+  boot.zfs.requestEncryptionCredentials = ["bulk-pool" "cache-pool"];
+
   disko.devices = {
     disk = {
       main = {
@@ -26,12 +32,17 @@
               size = "976M";
               content = {type = "swap";};
             };
-            root = {
+            luks = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
+                type = "luks";
+                name = "root";
+                settings.allowDiscards = true;
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/";
+                };
               };
             };
           };
