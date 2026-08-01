@@ -23,7 +23,7 @@
       "args": ["mcp-grafana"],
       "env": {
         "GRAFANA_URL": "https://stats.kwkaiser.io",
-        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "<your service account token>"
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_ACCESS_TOKEN}"
       }
     }
   }
