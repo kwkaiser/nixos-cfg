@@ -14,6 +14,18 @@
       type = lib.types.str;
       description = "The name of the ethernet device to use for remote unlock.";
     };
+
+    mine.remoteUnlock.address = lib.mkOption {
+      type = lib.types.str;
+      default = "192.168.4.110/24";
+      description = "Static address (CIDR) to assign to ethDevice in the initrd.";
+    };
+
+    mine.remoteUnlock.gateway = lib.mkOption {
+      type = lib.types.str;
+      default = "192.168.4.1";
+      description = "Gateway to route through in the initrd.";
+    };
   };
 
   config = lib.mkIf config.mine.remoteUnlock.enable {
@@ -43,8 +55,8 @@
       availableKernelModules = config.mine.remoteUnlock.requiredKernelModules;
       systemd.network.networks."40-${config.mine.remoteUnlock.ethDevice}" = {
         DHCP = lib.mkOverride 10 "no";
-        address = [ "192.168.4.110/24" ];
-        routes = [ { Gateway = "192.168.4.1"; } ];
+        address = [ config.mine.remoteUnlock.address ];
+        routes = [ { Gateway = config.mine.remoteUnlock.gateway; } ];
       };
     };
     networking.useDHCP = false;

@@ -13,4 +13,9 @@
   mine.k3s.enable = true;
   mine.nfs.enable = true;
   mine.ssh.enable = true;
+  mine.remoteUnlock.enable = true;
+  mine.remoteUnlock.requiredKernelModules = [ "ixgbe" ];
+  mine.remoteUnlock.ethDevice = "enp8s0f0";
+  mine.remoteUnlock.address = "192.168.2.103/24";
+  mine.remoteUnlock.gateway = "192.168.2.1";
 }

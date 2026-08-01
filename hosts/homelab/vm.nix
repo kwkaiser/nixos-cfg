@@ -1,4 +1,8 @@
-{nixpkgs, ...}: let
+{
+  nixpkgs,
+  lib,
+  ...
+}: let
   sharedVmConfig = {
     memorySize = 8192;
     cores = 6;
@@ -34,6 +38,7 @@ in {
         // {
           diskSize = 15 * 1024; # 15GB in MB
         };
+      mine.remoteUnlock.enable = lib.mkForce false;
     };
 
     # Disko VM variant (used by system.build.vmWithDisko)
@@ -42,6 +47,11 @@ in {
       imports = [./vm-disks.nix];
       virtualisation = sharedVmConfig;
       nix.settings.require-sigs = false;
+
+      mine.remoteUnlock.requiredKernelModules = lib.mkForce ["virtio_net"];
+      mine.remoteUnlock.ethDevice = lib.mkForce "enp0s3";
+      mine.remoteUnlock.address = lib.mkForce "10.0.2.15/24";
+      mine.remoteUnlock.gateway = lib.mkForce "10.0.2.2";
     };
   };
 }
