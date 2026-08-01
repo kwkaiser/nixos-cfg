@@ -19,17 +19,12 @@
                 mountOptions = ["umask=0077"];
               };
             };
-            luks = {
+            root = {
               size = "100%";
               content = {
-                type = "luks";
-                name = "root";
-                settings.allowDiscards = true;
-                content = {
-                  type = "filesystem";
-                  format = "ext4";
-                  mountpoint = "/";
-                };
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
               };
             };
           };
