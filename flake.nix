@@ -144,5 +144,9 @@
         program = nixpkgs.lib.getExe self.packages.${system}.desktop-vm;
       };
     });
+
+    devShells = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
+      default = import ./devshell.nix {pkgs = nixpkgs.legacyPackages.${system};};
+    });
   };
 }
