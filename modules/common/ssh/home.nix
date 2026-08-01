@@ -69,6 +69,15 @@
         RequestTTY = "force";
         RemoteCommand = "ssh -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o MACs=hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com root@192.168.4.110 systemd-tty-ask-password-agent --query";
       };
+      "homelab-unlock" = {
+        Hostname = "box.kwkaiser.io";
+        User = "kwkaiser";
+        ForwardAgent = true;
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+        RequestTTY = "force";
+        RemoteCommand = "systemd-tty-ask-password-agent --query";
+      };
       "desktop-wakeup" = {
         Hostname = "box.kwkaiser.io";
         User = "kwkaiser";
