@@ -25,6 +25,16 @@
         "GRAFANA_URL": "https://stats.kwkaiser.io",
         "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_ACCESS_TOKEN}"
       }
+    },
+    "opnsense": {
+      "command": "npx",
+      "args": ["-y", "@richard-stovall/opnsense-mcp-server"],
+      "env": {
+        "OPNSENSE_URL": "${OPNSENSE_URL}",
+        "OPNSENSE_API_KEY": "${OPNSENSE_API_KEY}",
+        "OPNSENSE_API_SECRET": "${OPNSENSE_API_SECRET}",
+        "OPNSENSE_VERIFY_SSL": "${OPNSENSE_VERIFY_SSL:-false}"
+      }
     }
   }
 }

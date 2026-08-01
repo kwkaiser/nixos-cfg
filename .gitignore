@@ -6,3 +6,4 @@ result
 keys/*
 *.fd
 .env
+.direnv
