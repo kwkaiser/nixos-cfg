@@ -42,4 +42,5 @@
   mine.codex.enable = true;
   mine.firebase.enable = true;
   mine.typst.enable = true;
+  mine.wireguard.enable = true;
 }
