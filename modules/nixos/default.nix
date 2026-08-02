@@ -11,5 +11,6 @@
     ./k3s
     ./nfs
     ./keyring
+    ./pathofbuilding
   ];
 }

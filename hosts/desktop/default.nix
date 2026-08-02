@@ -39,6 +39,7 @@
   mine.messaging.enable = true;
   mine.gtk.enable = true;
   mine.steam.enable = true;
+  mine.pathofbuilding.enable = true;
   mine.notes.enable = true;
   mine.ssh.enable = true;
   mine.docker.enable = true;
