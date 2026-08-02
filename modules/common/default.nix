@@ -37,5 +37,6 @@
     ./typst
     ./anki
     ./tf2
+    ./wireguard
   ];
 }
