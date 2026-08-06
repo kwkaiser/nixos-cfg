@@ -26,6 +26,7 @@
     inherit inputs;
     bconfig = config;
     isDarwin = isDarwin;
+    hyprlandPackage = pkgs.hyprland or null;
   };
 
   home-manager.useUserPackages = true;

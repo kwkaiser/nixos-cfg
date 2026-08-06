@@ -1,9 +1,14 @@
 {
   pkgs,
   config,
-  inputs,
+  lib,
+  hyprlandPackage,
   ...
 }: {
+  home.activation.removeStaleHyprlandLua = lib.hm.dag.entryBefore ["writeBoundary"] ''
+    rm -f "$HOME/.config/hypr/hyprland.lua" "$HOME/.config/hypr/hyprlandd.lua"
+  '';
+
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
@@ -33,7 +38,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    package = hyprlandPackage;
     configType = "hyprlang";
     # Automatically import all environment variables for systemd services
     # This fixes issues where programs don't work in systemd services but do in terminal
