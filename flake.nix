@@ -90,6 +90,7 @@
           home-manager.nixosModules.default
           ./modules
           allowUnfree
+          { nixpkgs.overlays = [ inputs.hyprland.overlays.hyprland-packages ]; }
           hostModule
         ];
       };
