@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
   home.packages = with pkgs; [
@@ -32,6 +33,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     configType = "hyprlang";
     # Automatically import all environment variables for systemd services
     # This fixes issues where programs don't work in systemd services but do in terminal
