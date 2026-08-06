@@ -47,10 +47,7 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    hyprland.url = "github:hyprwm/Hyprland/ca90dfb0e736d187603d55c234ae34fa8834accf";
 
     stylix = {
       url = "github:danth/stylix";
@@ -78,6 +75,11 @@
       nixpkgs.config.allowUnfree = true;
     };
 
+    hyprlandOverlay = final: prev: {
+      hyprland = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland;
+      hyprland-unwrapped = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland-unwrapped;
+    };
+
     # Helper to create NixOS configurations
     mkNixosSystem = hostModule:
       nixpkgs.lib.nixosSystem {
@@ -90,7 +92,7 @@
           home-manager.nixosModules.default
           ./modules
           allowUnfree
-          { nixpkgs.overlays = [ inputs.hyprland.overlays.hyprland-packages ]; }
+          { nixpkgs.overlays = [ hyprlandOverlay ]; }
           hostModule
         ];
       };
