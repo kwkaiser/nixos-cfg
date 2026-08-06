@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   virtualisation.vmVariant = {
     mine.remoteUnlock.enable = lib.mkForce false;
 
@@ -6,7 +6,7 @@
       # No attached display, so this reproduces the "no physical monitor"
       # scenario (greetd/tuigreet/Hyprland headless bootstrap) for a fast
       # local debug loop instead of testing against the real desktop.
-      graphics = false;
+      graphics = true;
       memorySize = 4096;
       cores = 4;
 
