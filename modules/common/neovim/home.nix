@@ -178,7 +178,7 @@
         languages = {
           toml = {
             enable = true;
-            format = true;
+            format.enable = true;
           };
           typst = {
             enable = true;

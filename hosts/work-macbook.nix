@@ -20,6 +20,7 @@
   mine.firefox.enable = true;
   mine.zsh.enable = true;
   mine.keepass.enable = true;
+  mine.secretspec.enable = true;
   mine.syncthing.enable = true;
   mine.syncthing.deviceName = "pallet-macbook";
   mine.cursor.enable = true;
