@@ -38,5 +38,6 @@
     ./anki
     ./tf2
     ./wireguard
+    ./secretspec
   ];
 }
