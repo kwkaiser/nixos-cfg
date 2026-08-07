@@ -13,6 +13,7 @@
       (writeShellScriptBin "git-wt-claim" (builtins.readFile ./wt-claim.sh))
       (writeShellScriptBin "git-wt-release" (builtins.readFile ./wt-release.sh))
       (writeShellScriptBin "git-wt-switch" (builtins.readFile ./wt-switch.sh))
+      (writeShellScriptBin "git-wt-delete" (builtins.readFile ./wt-delete.sh))
     ];
   programs.git = {
     enable = true;
@@ -30,7 +31,7 @@
           rbx = "rebase -X ours";
           br = "branch";
           cof = "!git co \$(git branch --format='%(refname:short)' | fzf)";
-          df = "!git br -D \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
+          df = "!git wt-delete \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
           cleanup = "!git trim --no-update --no-confirm && git worktree prune";
         };
         push.default = "current";
