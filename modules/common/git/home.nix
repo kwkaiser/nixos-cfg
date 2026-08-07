@@ -4,10 +4,16 @@
   isDarwin,
   ...
 }: {
-  home.packages = with pkgs; [
-    git-trim
-    git-delete-merged-branches
-  ];
+  home.packages = with pkgs;
+    [
+      git-trim
+      git-delete-merged-branches
+    ]
+    ++ [
+      (writeShellScriptBin "git-wt-claim" (builtins.readFile ./wt-claim.sh))
+      (writeShellScriptBin "git-wt-release" (builtins.readFile ./wt-release.sh))
+      (writeShellScriptBin "git-wt-switch" (builtins.readFile ./wt-switch.sh))
+    ];
   programs.git = {
     enable = true;
     signing.format = null;
@@ -17,7 +23,7 @@
         user.email = bconfig.mine.email;
         alias = {
           co = "checkout";
-          cf = "!git checkout \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
+          cf = "!git wt-switch \$(git branch --format='%(refname:short)' | fzf -m | xargs)";
           pl = "pull";
           ps = "push";
           rb = "rebase";
