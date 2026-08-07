@@ -176,6 +176,10 @@
         lsp.formatOnSave = true;
 
         languages = {
+          toml = {
+            enable = true;
+            format = true;
+          };
           typst = {
             enable = true;
             format.enable = true;
