@@ -12,18 +12,6 @@ If I ask for comments or explanations in an area:
 
 # Git & Pull requests
 
-## Working with worktrees
-
-If `worktrunk` is available in a repo (usually the `wt` command) prefer to use it for setting up & tearing down worktrees. This is my preferred way of propagating values that may not be git-tracked. Here's a shortlist of options:
-
-```
-- `wt switch [-c] <branch>` — create/switch to a worktree by branch name (paths computed automatically)
-- `wt list` — status across all worktrees (staged, commits, remote tracking)
-- `wt merge <branch>` — squash/rebase/merge back + cleanup in one step
-- `wt remove` — delete worktree + branch
-- `wt switch pr:123` — checkout a PR into its own worktree
-```
-
 ## Pull requests
 
 - Never create one for me unless explicitly asked
@@ -36,7 +24,22 @@ If `worktrunk` is available in a repo (usually the `wt` command) prefer to use i
 
 ## Pull request descriptions
 
-- When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes
+When writing pull request descriptions, use the following format to indicate all generated content:
+
+```
+> [!NOTE]
+> Generated content:
+> 
+> foo
+> bar
+```
+
+Replacing  `foo`, `bar` with actual content. This provides important clarity to coworkers. 
+
+Other rules:
+
+- Do not use unbulleted descriptions of changes
+- When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes. Each bullet should be less than 100 characters
 - Reference other pull requests this pull request may have up / downstream for stacked PRs / base branches
 - Never include description of "verification steps" that are duplicative with basic CI. Only include description of verification steps if we did something separate from what CI is doing.
 - Never include "Generated with claude code"
