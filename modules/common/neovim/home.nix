@@ -176,6 +176,10 @@
         lsp.formatOnSave = true;
 
         languages = {
+          beancount = {
+            enable = true;
+            format.enable = true;
+          };
           toml = {
             enable = true;
             format.enable = true;
