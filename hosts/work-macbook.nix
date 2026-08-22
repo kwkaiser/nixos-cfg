@@ -12,6 +12,9 @@
   system.tools.darwin-uninstaller.enable = false;
 
   homebrew.enable = true;
+  homebrew.onActivation.upgrade = true;
+
+  launchd.user.envVariables.OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES";
   mine.aero.enable = true;
   mine.git.signCommits = true;
   mine.node.enable = true;

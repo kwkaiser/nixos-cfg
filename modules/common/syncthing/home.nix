@@ -26,15 +26,22 @@
   # employer-controlled) only talks to server, so cutting it off is a single
   # edit here rather than something enforced per-device.
   topology = {
-    phone = ["desktop" "server"];
+    phone = ["desktop" "server" "pallet-macbook"];
     desktop = ["phone" "server"];
     server = ["phone" "desktop" "pallet-macbook"];
-    pallet-macbook = ["server"];
+    pallet-macbook = ["server" "phone"];
   };
 
   allowedPeers = topology.${selfDevice} or [];
 
   folderDevices = builtins.filter (d: builtins.elem d allowedPeers) (builtins.attrNames allDevices);
+
+  # pallet-macbook keeps notes in an encrypted veracrypt volume that's only
+  # mounted on demand, rather than plaintext under ~/Documents.
+  notesPaths = {
+    pallet-macbook = "/Volumes/NO NAME";
+  };
+  notesPath = notesPaths.${selfDevice} or "~/Documents/notes";
 in {
   services.syncthing = {
     enable = true;
@@ -49,7 +56,7 @@ in {
         };
         notes = {
           id = "m4rpl-gqmhy";
-          path = "~/Documents/notes";
+          path = notesPath;
           devices = folderDevices;
           inherit ignorePatterns;
         };
