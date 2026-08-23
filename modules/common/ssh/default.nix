@@ -26,6 +26,9 @@
 
       home-manager.users.${config.mine.username} = {imports = [./home.nix];};
     }
+    // lib.optionalAttrs (!isDarwin) {
+      services.openssh.settings.PasswordAuthentication = false;
+    }
     // lib.optionalAttrs isDarwin {
       launchd.user.agents.ssh-config-guard = {
         serviceConfig = {
