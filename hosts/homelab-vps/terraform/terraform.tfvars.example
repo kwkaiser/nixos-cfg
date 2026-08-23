@@ -1,0 +1,5 @@
+root_pass = "..."
+
+authorized_keys = [
+  "ssh-ed25519 AAAA..."
+]

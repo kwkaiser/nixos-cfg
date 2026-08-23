@@ -7,3 +7,7 @@ keys/*
 *.fd
 .env
 .direnv
+*.tfvars
+*.tfstate
+*.tfstate.*
+.terraform

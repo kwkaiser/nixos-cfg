@@ -17,4 +17,16 @@
     [defaults.providers.kdbx]
     uri = "kdbx:${bconfig.mine.homeDir}/Documents/keys/keys.kdbx"
   '';
+
+  programs.zsh.initContent = ''
+    secretspec() {
+      if [ "$1" = "runx" ]; then
+        shift
+        source ensure-kdbx-password || return 1
+        command secretspec run "$@"
+      else
+        command secretspec "$@"
+      fi
+    }
+  '';
 }

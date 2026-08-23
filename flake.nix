@@ -80,6 +80,14 @@
       hyprland-unwrapped = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland-unwrapped;
     };
 
+    crossArchQemuPackage = hostPkgs: let
+      qemu = hostPkgs.qemu;
+    in
+      qemu
+      // {
+        stdenv = qemu.stdenv // {hostPlatform = qemu.stdenv.hostPlatform // {isLinux = true;};};
+      };
+
     # Helper to create NixOS configurations
     mkNixosSystem = hostModule:
       nixpkgs.lib.nixosSystem {
@@ -116,6 +124,7 @@
   in {
     nixosConfigurations = {
       homelab = mkNixosSystem ./hosts/homelab;
+      homelab-vps = mkNixosSystem ./hosts/homelab-vps;
       desktop = mkNixosSystem ./hosts/desktop;
     };
 
@@ -124,23 +133,28 @@
     # Per-system builds/apps so `nix run .#homelab-vm` picks the qemu host
     # pkgs matching whatever machine you're actually running it from (Linux
     # or the Mac), without needing `--impure` for builtins.currentSystem.
-    packages = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
-      homelab-vm = (self.nixosConfigurations.homelab.extendModules {
-        modules = [
-          {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
-        ];
-      }).config.system.build.vm;
-      desktop-vm = (self.nixosConfigurations.desktop.extendModules {
-        modules = [
-          {virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.${system};}
-        ];
-      }).config.system.build.vm;
+    packages = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: let
+      hostPkgs = nixpkgs.legacyPackages.${system};
+      vmModules = [
+        {virtualisation.vmVariant.virtualisation.host.pkgs = hostPkgs;}
+        (nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasSuffix "-darwin" system) {
+          virtualisation.vmVariant.virtualisation.qemu.package = crossArchQemuPackage hostPkgs;
+        })
+      ];
+    in {
+      homelab-vm = (self.nixosConfigurations.homelab.extendModules {modules = vmModules;}).config.system.build.vm;
+      homelab-vps-vm = (self.nixosConfigurations.homelab-vps.extendModules {modules = vmModules;}).config.system.build.vm;
+      desktop-vm = (self.nixosConfigurations.desktop.extendModules {modules = vmModules;}).config.system.build.vm;
     });
 
     apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
       homelab-vm = {
         type = "app";
         program = nixpkgs.lib.getExe self.packages.${system}.homelab-vm;
+      };
+      homelab-vps-vm = {
+        type = "app";
+        program = nixpkgs.lib.getExe self.packages.${system}.homelab-vps-vm;
       };
       desktop-vm = {
         type = "app";
