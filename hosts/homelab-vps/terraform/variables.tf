@@ -36,8 +36,20 @@ variable "root_pass" {
   sensitive   = true
 }
 
-variable "ssh_allow_list" {
-  description = "CIDRs allowed to reach SSH/k3s API. Defaults to open - tighten this once you know your source IPs."
+variable "ssh_allow_list_ipv4" {
+  description = "IPv4 CIDRs allowed to reach SSH/k3s API. Defaults to open - tighten this once you know your source IPs."
   type        = list(string)
-  default     = ["0.0.0.0/0", "::/0"]
+  default     = ["0.0.0.0/0"]
+}
+
+variable "ssh_allow_list_ipv6" {
+  description = "IPv6 CIDRs allowed to reach SSH/k3s API. Defaults to open - tighten this once you know your source IPs."
+  type        = list(string)
+  default     = ["::/0"]
+}
+
+variable "boot_into_direct_disk" {
+  description = "Switches the instance's active boot config to direct-disk and reboots into it. Leave false until nixos-anywhere has installed NixOS (and its own GRUB) onto the disk - flipping this before then reboots into a disk with no bootloader on it yet."
+  type        = bool
+  default     = false
 }

@@ -39,5 +39,6 @@
     ./tf2
     ./wireguard
     ./secretspec
+    ./borgmatic
   ];
 }
