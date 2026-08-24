@@ -12,7 +12,8 @@
     };
   };
 
-  config = lib.mkIf config.mine.ssh.enable ({
+  config = lib.mkIf config.mine.ssh.enable (lib.mkMerge [
+    {
       mine.ssh.server.enable = lib.mkDefault true;
 
       services.openssh.enable = config.mine.ssh.server.enable;
@@ -26,10 +27,10 @@
 
       home-manager.users.${config.mine.username} = {imports = [./home.nix];};
     }
-    // lib.optionalAttrs (!isDarwin) {
+    (lib.optionalAttrs (!isDarwin) {
       services.openssh.settings.PasswordAuthentication = false;
-    }
-    // lib.optionalAttrs isDarwin {
+    })
+    (lib.optionalAttrs isDarwin {
       launchd.user.agents.ssh-config-guard = {
         serviceConfig = {
           ProgramArguments = [
@@ -46,5 +47,6 @@
           StandardErrorPath = "${config.mine.homeDir}/Library/Logs/ssh-config-guard.log";
         };
       };
-    });
+    })
+  ]);
 }
