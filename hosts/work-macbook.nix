@@ -44,4 +44,6 @@
   mine.firebase.enable = true;
   mine.typst.enable = true;
   mine.wireguard.enable = true;
+  mine.sikarugir.enable = true;
+  mine.borgmatic.enable = true;
 }
