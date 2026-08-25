@@ -23,8 +23,10 @@
     secretspec() {
       if [ "$1" = "runx" ]; then
         shift
-        source ensure-kdbx-password || return 1
-        command secretspec run "$@"
+        (
+          source ensure-kdbx-password || exit 1
+          command secretspec run "$@"
+        )
       else
         command secretspec "$@"
       fi
