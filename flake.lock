@@ -129,11 +129,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1787630552,
-        "narHash": "sha256-w3LGSHkHWKRH5K4A8plRWaFbaSWfdZAIxv32kO2mpOg=",
+        "lastModified": 1787717002,
+        "narHash": "sha256-0USnDERfoTDeU6rUDkiVVJBszzenDzyjS1pYn3Saw1c=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "25227969423d7ef599f70e16364ac550a0f713cd",
+        "rev": "529e243fc4261dd2be0cc8807f016f8f129c7e4a",
         "type": "gitlab"
       },
       "original": {
@@ -254,11 +254,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787680808,
-        "narHash": "sha256-9168tNt0NZdtlx5RM5huEuc9NCWMLACJA9O4UK/l2Zc=",
+        "lastModified": 1787750582,
+        "narHash": "sha256-FfIAV44k33i+IjC1+new2KyjyVGUzGtV89VHVP4eK1U=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6840c9a8f50722944eb106ce8bb237c138584f2a",
+        "rev": "0a364342a66bcecfc8a00d2fc38c6c29eee7bc5e",
         "type": "github"
       },
       "original": {
@@ -675,11 +675,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1787619101,
-        "narHash": "sha256-wpKE3B4quoQGBruq5JT5U1Yp+IdSbpI1ToGxVhTKST4=",
+        "lastModified": 1787705557,
+        "narHash": "sha256-kPfPZ6JwUJGbPBG79xKiXOJ9xXm9EbAdwMmTKj7rvsA=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "40f0d2d7f35769644483e4a8faf804f12980e68e",
+        "rev": "67933b32415f244f24824b274c9fbb5ca59ebae6",
         "type": "github"
       },
       "original": {
