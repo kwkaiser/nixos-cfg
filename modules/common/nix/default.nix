@@ -41,7 +41,7 @@
             };
           };
           # We have to emulate aarch64 on x86 qemu, see https://github.com/golang/go/issues/69255
-          boot.binfmt.emulatedSystems = ["x86_64-linux"];
+          # boot.binfmt.emulatedSystems = ["x86_64-linux"];
         };
       };
       distributedBuilds = true;
