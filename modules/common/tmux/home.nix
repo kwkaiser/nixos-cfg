@@ -36,7 +36,7 @@
       tail -n +3 ${tmaWindowsYaml}
     } > "$config"
 
-    exec ${pkgs.tmuxinator}/bin/tmuxinator start --project-config "$config"
+    ${pkgs.tmuxinator}/bin/tmuxinator start --project-config "$config" --no-attach
   '';
 in {
   home.packages = [tma];
@@ -86,6 +86,9 @@ in {
       # Window navigation with [ and ] (like Hyprland mod+[/])
       bind-key '[' previous-window
       bind-key ']' next-window
+
+      # Jump back to the previously attached session
+      bind-key p switch-client -l
 
       # Select window 1-10, auto-create if doesn't exist
       bind-key 1 run-shell 'tmux select-window -t :1 2>/dev/null || tmux new-window -t :1'
