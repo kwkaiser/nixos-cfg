@@ -1,7 +1,45 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    tmuxinator
-  ];
+{pkgs, ...}: let
+  yaml = pkgs.formats.yaml {};
+
+  # Ad-hoc equivalent of a bare tmuxinator project (no extra windows): rendered
+  # once so `tma` can splice in a runtime name/root at invocation time.
+  tmaWindowsYaml = yaml.generate "tma-windows.yml" {
+    windows = [
+      {claude = "clear && ccp";}
+      {editor = "clear";}
+      {driver = "clear";}
+    ];
+  };
+
+  tma = pkgs.writeShellScriptBin "tma" ''
+    set -euo pipefail
+
+    query="''${1:?usage: tma <directory-or-zoxide-query>}"
+
+    if [ -d "$query" ]; then
+      dir="$(cd "$query" && pwd)"
+    elif dir="$(${pkgs.zoxide}/bin/zoxide query -- "$query" 2>/dev/null)"; then
+      :
+    else
+      echo "tma: could not resolve '$query' to a directory" >&2
+      exit 1
+    fi
+
+    name="$(basename "$dir")"
+    name="''${name//[^a-zA-Z0-9_-]/-}"
+    config="$(mktemp -t "tma-XXXXXX.yml")"
+    trap 'rm -f "$config"' EXIT
+
+    {
+      printf 'name: %s\n' "$name"
+      printf 'root: %s\n' "$dir"
+      tail -n +3 ${tmaWindowsYaml}
+    } > "$config"
+
+    exec ${pkgs.tmuxinator}/bin/tmuxinator start --project-config "$config"
+  '';
+in {
+  home.packages = [tma];
 
   programs.tmux = {
     enable = true;
@@ -12,6 +50,7 @@
     baseIndex = 1;
     keyMode = "vi";
     customPaneNavigationAndResize = false;
+    tmuxinator.enable = true;
 
     extraConfig = ''
       # Terminal and keyboard settings for Kitty/modern terminals

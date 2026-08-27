@@ -5,8 +5,6 @@
   inputs,
   ...
 }: let
-  yaml = pkgs.formats.yaml {};
-
   devbox = inputs.nixpkgs-devbox.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devbox;
 
   genai-toolbox = let
@@ -39,18 +37,16 @@
       '';
     };
 
-  mkTmuxinatorProject = name: root: extraWindows:
-    yaml.generate "${name}.yml" {
-      inherit name;
-      root = root;
-      windows =
-        [
-          {claude = "clear && ccp";}
-          {editor = "clear";}
-          {driver = "clear";}
-        ]
-        ++ extraWindows;
-    };
+  defaultTmuxinatorWindows = [
+    {claude = "clear && ccp";}
+    {editor = "clear";}
+    {driver = "clear";}
+  ];
+
+  mkTmuxinatorProject = name: root: extraWindows: {
+    inherit name root;
+    windows = defaultTmuxinatorWindows ++ extraWindows;
+  };
 
   copalletBuildWindow = {
     build = {
@@ -118,10 +114,10 @@ in {
   ];
 
   # Tmuxinator project configs (only if tmux is enabled)
-  xdg.configFile = lib.mkIf config.programs.tmux.enable {
-    "tmuxinator/primary.yml".source = mkTmuxinatorProject "primary" "~/Documents/pallet/copallet" [copalletBuildWindow];
-    "tmuxinator/wt-1.yml".source = mkTmuxinatorProject "wt-1" "~/Documents/pallet/copallet-wt-1" [copalletBuildWindow];
-    "tmuxinator/wt-2.yml".source = mkTmuxinatorProject "wt-2" "~/Documents/pallet/copallet-wt-2" [copalletBuildWindow];
-    "tmuxinator/pallet-iac.yml".source = mkTmuxinatorProject "pallet-iac" "~/Documents/pallet/pallet-iac" [];
+  programs.tmux.tmuxinator.projects = lib.mkIf config.programs.tmux.enable {
+    primary = mkTmuxinatorProject "primary" "~/Documents/pallet/copallet" [copalletBuildWindow];
+    "wt-1" = mkTmuxinatorProject "wt-1" "~/Documents/pallet/copallet-wt-1" [copalletBuildWindow];
+    "wt-2" = mkTmuxinatorProject "wt-2" "~/Documents/pallet/copallet-wt-2" [copalletBuildWindow];
+    "pallet-iac" = mkTmuxinatorProject "pallet-iac" "~/Documents/pallet/pallet-iac" [];
   };
 }
