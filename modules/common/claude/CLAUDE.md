@@ -36,6 +36,8 @@ When writing pull request descriptions, use the following format to indicate all
 
 Replacing  `foo`, `bar` with actual content. This provides important clarity to coworkers. 
 
+CRUCIAL: NEVER provide your own generated description outside of that generated summary block.
+
 Other rules:
 
 - If you find additions outside of the `Generated content` block, leave them alone
