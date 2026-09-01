@@ -1,4 +1,6 @@
-{ lib, ... }: {
+{lib, ...}: {
+  # Options kept separately from sister module definition under modules/nixos/builder/default.nix to allow for visibility
+  # on nix darwin devices
   options = {
     mine.builder.enable = lib.mkEnableOption "Marks this host as the nix remote builder (server role)";
 
