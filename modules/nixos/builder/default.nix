@@ -1,27 +1,22 @@
-{ pkgs, lib, config, ... }: {
-  options = {
-    mine.builder.enable = lib.mkEnableOption "Enables this host as a nix remote builder";
-
-    mine.builder.publicKey = lib.mkOption {
-      type = lib.types.str;
-      default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJmeeD/NBdZPSs5Frh+jgmt0eHabG3d2F2s1pFtwsVj nix-remote-build-homelab-vps";
-      description = "Public half of the dedicated remote-build keypair (private half lives in secretspec as NIX_BUILDER_KEY, installed on clients via `task install-nix-build-key`). Also referenced by client hosts' nix.buildMachines config.";
-    };
-  };
-
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   config = lib.mkIf config.mine.builder.enable {
-    users.groups.nixbuilder = { };
+    users.groups.${config.mine.builder.sshUser} = { };
 
-    users.users.nixbuilder = {
+    users.users.${config.mine.builder.sshUser} = {
       isSystemUser = true;
-      group = "nixbuilder";
+      group = config.mine.builder.sshUser;
       shell = pkgs.bash;
       openssh.authorizedKeys.keys = [
         ''restrict,command="nix-store --serve --write" ${config.mine.builder.publicKey}''
       ];
     };
 
-    nix.settings.trusted-users = [ "nixbuilder" ];
+    nix.settings.trusted-users = [ config.mine.builder.sshUser ];
 
     nix.gc.options = lib.mkForce "--delete-older-than 1d";
 

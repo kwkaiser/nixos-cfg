@@ -5,6 +5,18 @@
   lib,
   ...
 }:
+let
+  remoteBuildMachines = lib.optionals (!config.mine.builder.enable) [
+    {
+      hostName = config.mine.builder.hostName;
+      sshUser = config.mine.builder.sshUser;
+      sshKey = "/etc/nix/build-keys/builder";
+      systems = [ "x86_64-linux" ];
+      maxJobs = 2;
+      speedFactor = 1;
+    }
+  ];
+in
 {
   # Global nixpkgs configuration for all systems
   nixpkgs.config.allowUnfree = true;
@@ -45,6 +57,7 @@
         };
       };
       distributedBuilds = true;
+      buildMachines = remoteBuildMachines;
       settings = {
         trusted-users = [
           "@admin"
@@ -75,6 +88,8 @@
         automatic = true;
         persistent = true;
       };
+      distributedBuilds = true;
+      buildMachines = remoteBuildMachines;
       settings = {
         experimental-features = [
           "nix-command"

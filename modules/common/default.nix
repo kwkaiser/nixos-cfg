@@ -40,5 +40,6 @@
     ./wireguard
     ./secretspec
     ./borgmatic
+    ./builder
   ];
 }
