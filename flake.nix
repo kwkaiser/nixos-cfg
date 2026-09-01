@@ -145,6 +145,8 @@
       homelab-vm = (self.nixosConfigurations.homelab.extendModules {modules = vmModules;}).config.system.build.vm;
       homelab-vps-vm = (self.nixosConfigurations.homelab-vps.extendModules {modules = vmModules;}).config.system.build.vm;
       desktop-vm = (self.nixosConfigurations.desktop.extendModules {modules = vmModules;}).config.system.build.vm;
+    } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+      devbox-image = import ./devbox/image.nix {inherit inputs; pkgs = hostPkgs;};
     });
 
     apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
