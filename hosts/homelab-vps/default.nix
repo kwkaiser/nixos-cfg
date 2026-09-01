@@ -21,6 +21,7 @@
   mine.k3s.enable = true;
   mine.nfs.enable = true;
   mine.borgmatic.enable = true;
+  mine.builder.enable = true;
   mine.nfs.exports = ''
     /bulk-pool 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash) 10.43.0.0/16(rw,sync,no_subtree_check,no_root_squash) 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)
     /cache-pool 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash) 10.43.0.0/16(rw,sync,no_subtree_check,no_root_squash) 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)
