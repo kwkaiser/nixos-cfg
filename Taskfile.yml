@@ -68,7 +68,7 @@ tasks:
         chmod 600 "$tmp"
         sudo install -d -m 0755 /etc/nix/build-keys
         sudo mv "$tmp" /etc/nix/build-keys/builder
-        sudo chown root:root /etc/nix/build-keys/builder
+        sudo chown root /etc/nix/build-keys/builder
       - echo "Installed /etc/nix/build-keys/builder"
 
   clean:
