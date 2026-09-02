@@ -12,7 +12,7 @@
       group = config.mine.builder.sshUser;
       shell = pkgs.bash;
       openssh.authorizedKeys.keys = [
-        ''restrict,command="nix-store --serve --write" ${config.mine.builder.publicKey}''
+        ''restrict,command="nix-daemon --stdio" ${config.mine.builder.publicKey}''
       ];
     };
 
