@@ -17,6 +17,10 @@ let
       speedFactor = 1;
     }
   ];
+
+  remoteSubstituters = lib.optionals (!config.mine.builder.enable) [
+    "ssh-ng://${config.mine.builder.sshUser}@${config.mine.builder.hostName}?ssh-key=/etc/nix/build-keys/builder&trusted=true"
+  ];
 in
 {
   # Global nixpkgs configuration for all systems
@@ -77,6 +81,7 @@ in
           "flakes"
         ];
         builders-use-substitutes = true;
+        extra-substituters = remoteSubstituters;
       };
     };
   }
@@ -98,6 +103,7 @@ in
           "flakes"
         ];
         builders-use-substitutes = true;
+        extra-substituters = remoteSubstituters;
       };
     };
   }
