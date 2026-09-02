@@ -11,6 +11,7 @@ let
       hostName = config.mine.builder.hostName;
       sshUser = config.mine.builder.sshUser;
       sshKey = "/etc/nix/build-keys/builder";
+      protocol = "ssh-ng";
       systems = [ "x86_64-linux" ];
       maxJobs = 2;
       speedFactor = 1;
