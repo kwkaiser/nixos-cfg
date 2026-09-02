@@ -53,7 +53,7 @@ jobs:
           extra-conf: |
             builders = ssh-ng://nixbuilder@kwkaiser.io x86_64-linux /tmp/nix-remote-builder-key 2 1 - - -
             builders-use-substitutes = true
-            extra-substituters = ssh-ng://nixbuilder@kwkaiser.io
+            extra-substituters = ssh-ng://nixbuilder@kwkaiser.io?trusted=true
             max-jobs = 0
 
       - name: Build devbox image
