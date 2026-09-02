@@ -1,9 +1,8 @@
 name: release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  schedule:
+    - cron: '0 0 * * 0'
   workflow_dispatch:
     inputs:
       version:
@@ -24,18 +23,19 @@ jobs:
         id: meta
         run: |
           set -euo pipefail
+          sha="$(git rev-parse --short HEAD)"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             version="${{ github.event.inputs.version }}"
+            version="${version#v}"
           else
-            version="${{ github.ref_name }}"
+            version="$sha"
           fi
-          version="${version#v}"
           if [ -z "$version" ]; then
             echo "could not resolve a version" >&2
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
       - name: Set up remote builder SSH access
         env:
@@ -69,7 +69,8 @@ jobs:
         run: |
           set -eu
           : "${REGISTRY_TOKEN:?REGISTRY_TOKEN is not set}"
-          for tag in "$VERSION" "$SHA" latest; do
+          tags="$VERSION $SHA latest"
+          for tag in $(printf '%s\n' $tags | sort -u); do
             echo "pushing $IMAGE:$tag"
             nix run nixpkgs#skopeo -- --insecure-policy copy \
               --dest-creds "$REGISTRY_USER:$REGISTRY_TOKEN" \
