@@ -51,7 +51,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
-            builders = ssh://nixbuilder@kwkaiser.io x86_64-linux /tmp/nix-remote-builder-key 2 1 - - -
+            builders = ssh-ng://nixbuilder@kwkaiser.io x86_64-linux /tmp/nix-remote-builder-key 2 1 - - -
             builders-use-substitutes = true
             extra-substituters = ssh-ng://nixbuilder@kwkaiser.io
             max-jobs = 0
