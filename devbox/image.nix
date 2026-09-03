@@ -1,7 +1,16 @@
 { pkgs, inputs }:
 let
+  # claude-code is unfree-licensed; hostPkgs (what this flake output builds
+  # with) never has allowUnfree set - that only happens inside the
+  # NixOS/Darwin module system's shared `allowUnfree` module, which this
+  # standalone image build bypasses entirely.
+  homePkgs = import inputs.nixpkgs {
+    inherit (pkgs) system;
+    config.allowUnfree = true;
+  };
+
   home = inputs.home-manager.lib.homeManagerConfiguration {
-    inherit pkgs;
+    pkgs = homePkgs;
     extraSpecialArgs = {
       inherit inputs;
       isDarwin = false;
@@ -9,7 +18,7 @@ let
       # pass in via modules/user.nix — only the fields git/home.nix reads.
       bconfig = {
         mine.email = "karl@kwkaiser.io";
-        mine.git.signCommits = false;
+        mine.git.signCommits = true;
       };
     };
     modules = [ ./home.nix ];
