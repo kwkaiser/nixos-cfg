@@ -36,7 +36,7 @@ When writing pull request descriptions, use the following format to indicate all
 
 Replacing  `foo`, `bar` with actual content. This provides important clarity to coworkers. 
 
-CRUCIAL: NEVER provide your own generated description outside of that generated summary block.
+CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval.
 
 Other rules:
 
