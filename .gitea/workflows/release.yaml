@@ -12,6 +12,8 @@ on:
 env:
   REGISTRY: git.kwkaiser.io
   IMAGE: git.kwkaiser.io/kwkaiser/devbox
+  FLY_APP: kwkaiser-devbox
+  FLY_ORG: personal
 
 jobs:
   publish:
@@ -77,3 +79,17 @@ jobs:
               docker-archive:result \
               "docker://$IMAGE:$tag"
           done
+
+      - name: Push image to Fly.io
+        env:
+          FLY_APP: ${{ env.FLY_APP }}
+          FLY_ORG: ${{ env.FLY_ORG }}
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -eu
+          : "${FLY_API_TOKEN:?FLY_API_TOKEN is not set}"
+          nix run nixpkgs#flyctl -- apps create "$FLY_APP" --org "$FLY_ORG" 2>/dev/null || true
+          nix run nixpkgs#skopeo -- --insecure-policy copy \
+            --dest-creds "x:$FLY_API_TOKEN" \
+            docker-archive:result \
+            "docker://registry.fly.io/$FLY_APP:latest"
