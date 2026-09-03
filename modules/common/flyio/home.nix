@@ -4,15 +4,14 @@
 }:
 let
   devboxCli = pkgs.writeShellApplication {
-    name = "devbox";
+    name = "devbox-fly";
     runtimeInputs = [ pkgs.flyctl pkgs.jq ];
     text = ''
       app="''${DEVBOX_APP:-kwkaiser-devbox}"
       org="''${DEVBOX_ORG:-personal}"
-      repo="''${DEVBOX_REPO:-$HOME/Documents/nixos-cfg}"
 
       usage() {
-        echo "usage: devbox <deploy|up|down|ssh|status|destroy>" >&2
+        echo "usage: devbox-fly <deploy|up|down|ssh|status|destroy>" >&2
         exit 1
       }
 
@@ -20,16 +19,20 @@ let
         fly machine list -a "$app" --json | jq -r '.[0].id // empty'
       }
 
+      require_machine_id() {
+        local id
+        id=$(machine_id)
+        if [ -z "$id" ]; then
+          echo "no machine found for $app - run 'devbox-fly deploy' first" >&2
+          exit 1
+        fi
+        echo "$id"
+      }
+
       cmd="''${1:-}"
       case "$cmd" in
         deploy)
           fly apps create "$app" --org "$org" 2>/dev/null || true
-
-          out=$(nix build "$repo#devbox-image" --no-link --print-out-paths)
-          docker load -i "$out"
-          fly auth docker
-          docker tag devbox:latest "registry.fly.io/$app:latest"
-          docker push "registry.fly.io/$app:latest"
 
           id=$(machine_id)
           if [ -z "$id" ]; then
@@ -39,10 +42,12 @@ let
           fi
           ;;
         up)
-          fly machine start "$(machine_id)" -a "$app"
+          id="$(require_machine_id)"
+          fly machine start "$id" -a "$app"
           ;;
         down)
-          fly machine stop "$(machine_id)" -a "$app"
+          id="$(require_machine_id)"
+          fly machine stop "$id" -a "$app"
           ;;
         ssh)
           fly ssh console -a "$app"
@@ -51,7 +56,8 @@ let
           fly machine list -a "$app"
           ;;
         destroy)
-          fly machine destroy "$(machine_id)" -a "$app" --force
+          id="$(require_machine_id)"
+          fly machine destroy "$id" -a "$app" --force
           ;;
         *)
           usage
