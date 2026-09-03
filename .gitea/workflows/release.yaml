@@ -88,7 +88,7 @@ jobs:
         run: |
           set -eu
           : "${FLY_API_TOKEN:?FLY_API_TOKEN is not set}"
-          nix run nixpkgs#flyctl -- apps create "$FLY_APP" --org "$FLY_ORG" 2>/dev/null || true
+          nix run nixpkgs#flyctl -- apps create "$FLY_APP" --org "$FLY_ORG" || true
           nix run nixpkgs#skopeo -- --insecure-policy copy \
             --dest-creds "x:$FLY_API_TOKEN" \
             docker-archive:result \
