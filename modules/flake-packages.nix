@@ -19,15 +19,11 @@ let
         virtualisation.vmVariant.virtualisation.qemu.package = crossArchQemuPackage hostPkgs;
       })
     ];
-  in
-    {
-      homelab-vm = (config.flake.nixosConfigurations.homelab.extendModules { modules = vmModules; }).config.system.build.vm;
-      homelab-vps-vm = (config.flake.nixosConfigurations.homelab-vps.extendModules { modules = vmModules; }).config.system.build.vm;
-      desktop-vm = (config.flake.nixosConfigurations.desktop.extendModules { modules = vmModules; }).config.system.build.vm;
-    }
-    // inputs.nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
-      devbox-image = import ../devbox/image.nix { inherit inputs; pkgs = hostPkgs; };
-    };
+  in {
+    homelab-vm = (config.flake.nixosConfigurations.homelab.extendModules { modules = vmModules; }).config.system.build.vm;
+    homelab-vps-vm = (config.flake.nixosConfigurations.homelab-vps.extendModules { modules = vmModules; }).config.system.build.vm;
+    desktop-vm = (config.flake.nixosConfigurations.desktop.extendModules { modules = vmModules; }).config.system.build.vm;
+  };
 in
 {
   config.flake.packages = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] mkVmPackages;

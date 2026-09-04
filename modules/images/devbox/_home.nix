@@ -3,8 +3,7 @@
   lib,
   inputs,
   ...
-}:
-let
+}: let
   # Plain-tmux equivalent of the tmuxinator-based `tma` on the main
   # workstation, without the ~94MiB ruby/tmuxinator dependency - this box
   # only ever needs the one fixed claude/editor/driver layout. `ccp` comes
@@ -22,14 +21,13 @@ let
     tmux select-window -t "$session:claude"
     exec tmux attach -t "$session"
   '';
-in
-{
+in {
   imports = [
+    # git/neovim/claude/codex home-manager config comes from the dendritic
+    # registry instead (config.homeManager.modules.*) - wired in by the
+    # caller (../devbox/image.nix), since this file has no access to the
+    # flake-parts top-level config on its own.
     inputs.nvf.homeManagerModules.default
-    ../modules/common/neovim/home.nix
-    ../modules/common/git/home.nix
-    ../modules/common/claude/home.nix
-    ../modules/common/codex/home.nix
   ];
 
   home.username = "root";
