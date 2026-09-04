@@ -1,6 +1,10 @@
-{ config, mkDarwinSystem, lib, ... }:
 {
-  flake.darwinConfigurations."work-macbook" = mkDarwinSystem ({ lib, ... }: {
+  config,
+  mkDarwinSystem,
+  lib,
+  ...
+}: {
+  flake.darwinConfigurations."work-macbook" = mkDarwinSystem ({lib, ...}: {
     imports = with config.darwin.modules; [
       identity
       base
