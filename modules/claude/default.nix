@@ -1,11 +1,14 @@
-{lib, ...}: let
-  inherit (import ../../dendritic-lib.nix {inherit lib;}) mkHmFeature;
+{ lib, ... }:
+let
+  inherit (import ../../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
-  mkHmFeature "claude" ({
+mkHmFeature "claude" (
+  {
     pkgs,
     lib,
     ...
-  }: let
+  }:
+  let
     tmux-mcp = pkgs.buildNpmPackage {
       pname = "tmux-mcp";
       version = "0.2.2";
@@ -30,7 +33,7 @@ in
       npmDepsHash = "sha256-GN1bE+LS/DE5CARydzHkvPnE7doIP+WmNQllL9WSi+k=";
       npmBuildScript = "build";
       PUPPETEER_SKIP_DOWNLOAD = "true";
-      nativeBuildInputs = [pkgs.makeWrapper];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
       postInstall = lib.optionalString pkgs.stdenv.isLinux ''
         wrapProgram $out/bin/claude-mermaid \
           --set PUPPETEER_EXECUTABLE_PATH "${pkgs.chromium}/bin/chromium"
@@ -39,8 +42,12 @@ in
 
     claude-sync = pkgs.writeShellApplication {
       name = "claude-sync";
-      runtimeInputs = [pkgs.jq pkgs.rsync pkgs.openssh];
-      excludeShellChecks = ["SC2016"];
+      runtimeInputs = [
+        pkgs.jq
+        pkgs.rsync
+        pkgs.openssh
+      ];
+      excludeShellChecks = [ "SC2016" ];
       text = builtins.readFile ./claude-sync.sh;
     };
 
@@ -133,8 +140,11 @@ in
       ];
     };
 
-    claudeKeybindingsFile = pkgs.writeText "claude-keybindings.json" (builtins.toJSON claudeKeybindings);
-  in {
+    claudeKeybindingsFile = pkgs.writeText "claude-keybindings.json" (
+      builtins.toJSON claudeKeybindings
+    );
+  in
+  {
     home.packages = with pkgs; [
       claude-code
       claude-monitor
@@ -156,7 +166,7 @@ in
     home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
     home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
 
-    home.activation.claudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
       $DRY_RUN_CMD rm -f $HOME/.claude/settings.json $HOME/.claude-personal/settings.json
       $DRY_RUN_CMD install -m 644 ${claudeSettingsFile} $HOME/.claude/settings.json
@@ -178,4 +188,5 @@ in
         fi
       done
     '';
-  })
+  }
+)

@@ -23,29 +23,29 @@ let
         k = "kubectl";
       };
 
-      initContent =
-        ''
-          stty -ixon  # Allow Ctrl+S/Ctrl+Q to pass through to applications
+      initContent = ''
+        stty -ixon  # Allow Ctrl+S/Ctrl+Q to pass through to applications
 
-          if [ -n "$SSH_CONNECTION" ] && [ -S "$HOME/.ssh/ssh_auth_sock_link" ]; then
-            SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link" timeout 2 ssh-add -l >/dev/null 2>&1
-            if [ "$?" != 2 ]; then
-              export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link"
-            fi
+        if [ -n "$SSH_CONNECTION" ] && [ -S "$HOME/.ssh/ssh_auth_sock_link" ]; then
+          SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link" timeout 2 ssh-add -l >/dev/null 2>&1
+          if [ "$?" != 2 ]; then
+            export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock_link"
           fi
+        fi
 
-          # Unbind Ctrl+a from zsh-vi-mode so tmux prefix works
-          zvm_after_init() {
-            bindkey -r '^a'
-          }
-        ''
-        + (
-          if pkgs.stdenv.isDarwin
-          then ''
+        # Unbind Ctrl+a from zsh-vi-mode so tmux prefix works
+        zvm_after_init() {
+          bindkey -r '^a'
+        }
+      ''
+      + (
+        if pkgs.stdenv.isDarwin then
+          ''
             eval "$(/opt/homebrew/bin/brew shellenv)"
           ''
-          else ""
-        );
+        else
+          ""
+      );
     };
 
     home.sessionPath = [

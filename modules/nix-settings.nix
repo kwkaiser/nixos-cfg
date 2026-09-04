@@ -84,7 +84,13 @@ in
 
   config.homeManager.modules.nix-settings = homeModule;
 
-  config.nixos.modules.nix-settings = { config, lib, pkgs, ... }:
+  config.nixos.modules.nix-settings =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       remote = mkRemoteBuild { inherit config lib; };
     in
@@ -108,14 +114,23 @@ in
         distributedBuilds = true;
         buildMachines = remote.remoteBuildMachines;
         settings = {
-          experimental-features = [ "nix-command" "flakes" ];
+          experimental-features = [
+            "nix-command"
+            "flakes"
+          ];
           builders-use-substitutes = true;
           extra-substituters = remote.remoteSubstituters;
         };
       };
     };
 
-  config.darwin.modules.nix-settings = { config, lib, pkgs, ... }:
+  config.darwin.modules.nix-settings =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       remote = mkRemoteBuild { inherit config lib; };
     in
@@ -136,7 +151,10 @@ in
         };
         linux-builder = {
           enable = false;
-          systems = [ "x86_64-linux" "aarch64-linux" ];
+          systems = [
+            "x86_64-linux"
+            "aarch64-linux"
+          ];
           ephemeral = true;
           maxJobs = 6;
           config = {
@@ -154,9 +172,22 @@ in
         distributedBuilds = true;
         buildMachines = remote.remoteBuildMachines;
         settings = {
-          trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
-          extra-trusted-users = [ "@admin" "kwkaiser" "root" "karl" ];
-          experimental-features = [ "nix-command" "flakes" ];
+          trusted-users = [
+            "@admin"
+            "kwkaiser"
+            "root"
+            "karl"
+          ];
+          extra-trusted-users = [
+            "@admin"
+            "kwkaiser"
+            "root"
+            "karl"
+          ];
+          experimental-features = [
+            "nix-command"
+            "flakes"
+          ];
           builders-use-substitutes = true;
           extra-substituters = remote.remoteSubstituters;
         };

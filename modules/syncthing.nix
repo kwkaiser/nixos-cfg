@@ -22,13 +22,25 @@ let
   # employer-controlled) only talks to server, so cutting it off is a single
   # edit here rather than something enforced per-device.
   topology = {
-    phone = [ "desktop" "server" ];
-    desktop = [ "phone" "server" ];
-    server = [ "phone" "desktop" "pallet-macbook" ];
+    phone = [
+      "desktop"
+      "server"
+    ];
+    desktop = [
+      "phone"
+      "server"
+    ];
+    server = [
+      "phone"
+      "desktop"
+      "pallet-macbook"
+    ];
     pallet-macbook = [ "server" ];
   };
 
-  mkHmModule = selfDevice: { lib, ... }:
+  mkHmModule =
+    selfDevice:
+    { lib, ... }:
     let
       allowedPeers = topology.${selfDevice} or [ ];
       folderDevices = builtins.filter (d: builtins.elem d allowedPeers) (builtins.attrNames allDevices);
@@ -69,10 +81,14 @@ in
 
   config.nixos.modules.syncthing = { config, ... }: {
     imports = [ featureOptions ];
-    home-manager.users.${config.mine.username}.imports = [ (mkHmModule config.mine.syncthing.deviceName) ];
+    home-manager.users.${config.mine.username}.imports = [
+      (mkHmModule config.mine.syncthing.deviceName)
+    ];
   };
   config.darwin.modules.syncthing = { config, ... }: {
     imports = [ featureOptions ];
-    home-manager.users.${config.mine.username}.imports = [ (mkHmModule config.mine.syncthing.deviceName) ];
+    home-manager.users.${config.mine.username}.imports = [
+      (mkHmModule config.mine.syncthing.deviceName)
+    ];
   };
 }

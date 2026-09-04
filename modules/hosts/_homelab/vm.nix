@@ -1,4 +1,5 @@
-{ lib, ... }: let
+{ lib, ... }:
+let
   sharedVmConfig = {
     memorySize = 8192;
     cores = 6;
@@ -25,7 +26,8 @@
       }
     ];
   };
-in {
+in
+{
   mine.vmTesting = sharedVmConfig // {
     diskSize = 15 * 1024; # 15GB in MB
   };

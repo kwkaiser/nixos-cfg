@@ -1,22 +1,37 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules =
-    [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.kernelModules = [ "kvm-amd" ];
 
   networking.useDHCP = lib.mkDefault true;
 
-  hardware.cpu.amd.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
 
-    extraPackages = with pkgs; [ mesa vulkan-loader vulkan-validation-layers ];
+    extraPackages = with pkgs; [
+      mesa
+      vulkan-loader
+      vulkan-validation-layers
+    ];
   };
 
   services.blueman.enable = true;
