@@ -1,16 +1,20 @@
-{ mkModuleOption, ... }:
-let
-  hmModule = { config, pkgs, osConfig, ... }: {
+{mkModuleOption, ...}: let
+  hmModule = {
+    config,
+    pkgs,
+    osConfig,
+    ...
+  }: {
     home.packages = with pkgs;
       [
         git-trim
         git-delete-merged-branches
       ]
       ++ [
-        (writeShellScriptBin "git-wt-claim" (builtins.readFile ./git/wt-claim.sh))
-        (writeShellScriptBin "git-wt-release" (builtins.readFile ./git/wt-release.sh))
-        (writeShellScriptBin "git-wt-switch" (builtins.readFile ./git/wt-switch.sh))
-        (writeShellScriptBin "git-wt-delete" (builtins.readFile ./git/wt-delete.sh))
+        (writeShellScriptBin "git-wt-claim" (builtins.readFile ./wt-claim.sh))
+        (writeShellScriptBin "git-wt-release" (builtins.readFile ./wt-release.sh))
+        (writeShellScriptBin "git-wt-switch" (builtins.readFile ./wt-switch.sh))
+        (writeShellScriptBin "git-wt-delete" (builtins.readFile ./wt-delete.sh))
       ];
     programs.git = {
       enable = true;
@@ -44,11 +48,11 @@ let
             gpg.format = "ssh";
             gpg.ssh.defaultKeyCommand = "sh -c 'ssh-add -L | grep -i AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm'";
           }
-          else { }
+          else {}
         )
         // (
           if pkgs.stdenv.isDarwin
-          then { }
+          then {}
           else {
             credential.helper = "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
           }
@@ -56,23 +60,22 @@ let
     };
   };
 
-  gitOptions = { lib, ... }: {
+  gitOptions = {lib, ...}: {
     options.mine.git.signCommits = lib.mkEnableOption "Whether or not to sign commits with usual key";
   };
-in
-{
-  options.nixos.modules.git = mkModuleOption { };
-  options.darwin.modules.git = mkModuleOption { };
-  options.homeManager.modules.git = mkModuleOption { };
+in {
+  options.nixos.modules.git = mkModuleOption {};
+  options.darwin.modules.git = mkModuleOption {};
+  options.homeManager.modules.git = mkModuleOption {};
 
   config.homeManager.modules.git = hmModule;
 
-  config.nixos.modules.git = { config, ... }: {
-    imports = [ gitOptions ];
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+  config.nixos.modules.git = {config, ...}: {
+    imports = [gitOptions];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
   };
-  config.darwin.modules.git = { config, ... }: {
-    imports = [ gitOptions ];
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+  config.darwin.modules.git = {config, ...}: {
+    imports = [gitOptions];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
   };
 }

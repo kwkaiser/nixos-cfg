@@ -56,11 +56,11 @@ let
     };
 
     # Script to pipe build output to neovim quickfix list
-    nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./work/nvb.sh);
+    nvb = pkgs.writeShellScriptBin "nvb" (builtins.readFile ./nvb.sh);
     # Script to pipe eslint output to neovim quickfix list
-    nve = pkgs.writeShellScriptBin "nve" (builtins.readFile ./work/nve.sh);
+    nve = pkgs.writeShellScriptBin "nve" (builtins.readFile ./nve.sh);
     # Script to pipe vitest output to neovim quickfix list
-    nvt = pkgs.writeShellScriptBin "nvt" (builtins.readFile ./work/nvt.sh);
+    nvt = pkgs.writeShellScriptBin "nvt" (builtins.readFile ./nvt.sh);
   in {
     home.packages = with pkgs; [
       devbox

@@ -1,5 +1,5 @@
 {lib, ...}: let
-  inherit (import ../dendritic-lib.nix {inherit lib;}) mkHmFeature;
+  inherit (import ../../dendritic-lib.nix {inherit lib;}) mkHmFeature;
 in
   mkHmFeature "claude" ({
     pkgs,
@@ -41,7 +41,7 @@ in
       name = "claude-sync";
       runtimeInputs = [pkgs.jq pkgs.rsync pkgs.openssh];
       excludeShellChecks = ["SC2016"];
-      text = builtins.readFile ./claude/claude-sync.sh;
+      text = builtins.readFile ./claude-sync.sh;
     };
 
     forbiddenCommands = [
@@ -153,8 +153,8 @@ in
       '')
     ];
 
-    home.file.".claude/CLAUDE.md".source = ./claude/CLAUDE.md;
-    home.file.".claude-personal/CLAUDE.md".source = ./claude/CLAUDE.md;
+    home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+    home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
       $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
