@@ -1,28 +1,33 @@
-{ config, mkNixosSystem, lib, ... }:
 {
-  flake.nixosConfigurations.homelab-vps = mkNixosSystem ({ lib, ... }: {
-    imports = with config.nixos.modules; [
-      identity
-      base
-      git
-      nix-settings
-      stylix
-      timezone
-      vm-testing
+  config,
+  mkNixosSystem,
+  lib,
+  ...
+}: {
+  flake.nixosConfigurations.homelab-vps = mkNixosSystem ({lib, ...}: {
+    imports = with config.nixos.modules;
+      [
+        identity
+        base
+        git
+        nix-settings
+        stylix
+        timezone
+        vm-testing
 
-      ssh
-      k3s
-      nfs
-      borgmatic
-      builder
-    ]
-    ++ [
-      ./_homelab-vps/disks.nix
-      ./_homelab-vps/hardware.nix
-      ./_homelab-vps/net.nix
-      ./_homelab-vps/boot.nix
-      ./_homelab-vps/vm.nix
-    ];
+        ssh
+        k3s
+        nfs
+        borgmatic
+        builder
+      ]
+      ++ [
+        ./_homelab-vps/disks.nix
+        ./_homelab-vps/hardware.nix
+        ./_homelab-vps/net.nix
+        ./_homelab-vps/boot.nix
+        ./_homelab-vps/vm.nix
+      ];
 
     nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
     system.stateVersion = "25.05";

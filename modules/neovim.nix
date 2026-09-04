@@ -1,6 +1,9 @@
-{ mkModuleOption, ... }:
-let
-  tsModule = { pkgs, lib, ... }: {
+{mkModuleOption, ...}: let
+  tsModule = {
+    pkgs,
+    lib,
+    ...
+  }: {
     home.packages = with pkgs; [
       vscode-langservers-extracted # Provides vscode-eslint-language-server for nvim-eslint
     ];
@@ -88,8 +91,12 @@ let
     };
   };
 
-  hmModule = { pkgs, lib, ... }: {
-    imports = [ tsModule ];
+  hmModule = {
+    pkgs,
+    lib,
+    ...
+  }: {
+    imports = [tsModule];
 
     home.sessionVariables.EDITOR = "nvim";
 
@@ -540,20 +547,19 @@ let
       };
     };
   };
-in
-{
-  options.nixos.modules.neovim = mkModuleOption { };
-  options.darwin.modules.neovim = mkModuleOption { };
-  options.homeManager.modules.neovim = mkModuleOption { };
+in {
+  options.nixos.modules.neovim = mkModuleOption {};
+  options.darwin.modules.neovim = mkModuleOption {};
+  options.homeManager.modules.neovim = mkModuleOption {};
 
   config.homeManager.modules.neovim = hmModule;
 
-  config.nixos.modules.neovim = { config, ... }: {
+  config.nixos.modules.neovim = {config, ...}: {
     environment.variables.EDITOR = "nvim";
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
   };
-  config.darwin.modules.neovim = { config, ... }: {
+  config.darwin.modules.neovim = {config, ...}: {
     environment.variables.EDITOR = "nvim";
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
   };
 }
