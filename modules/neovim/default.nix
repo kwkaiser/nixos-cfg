@@ -233,6 +233,9 @@ let
                   diffview = true;
                 };
               };
+
+              gitsigns.enable = true;
+              gitsigns.mappings.blameLine = "<leader>gH";
             };
 
             utility.diffview-nvim = {
