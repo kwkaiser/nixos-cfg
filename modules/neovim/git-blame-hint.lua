@@ -4,10 +4,10 @@ local function close_blame_hint(winid)
   end
 end
 
-function git_blame_hint()
-  local bufname = vim.api.nvim_buf_get_name(0)
+-- Returns blame info for a line, or nil on failure, or { uncommitted = true }.
+function git_blame_info(bufname, lnum)
   if bufname == '' then
-    return
+    return nil
   end
 
   local root = git_root_for_buf()
@@ -17,14 +17,12 @@ function git_blame_hint()
     path = bufname:sub(#root + 2)
   end
 
-  local lnum = vim.fn.line('.')
   local result = vim.fn.systemlist(
     'git -C ' .. vim.fn.shellescape(dir)
     .. ' blame -L ' .. lnum .. ',' .. lnum .. ' --porcelain -- ' .. vim.fn.shellescape(path)
   )
   if vim.v.shell_error ~= 0 or #result == 0 then
-    vim.notify('git blame failed', vim.log.levels.WARN)
-    return
+    return nil
   end
 
   local sha = result[1]:match('^(%x+)')
@@ -40,14 +38,36 @@ function git_blame_hint()
   end
 
   if not sha or sha:match('^0+$') then
+    return { uncommitted = true }
+  end
+
+  local short_sha = vim.fn.systemlist('git -C ' .. vim.fn.shellescape(dir) .. ' rev-parse --short ' .. sha)[1]
+
+  return {
+    sha = sha,
+    short_sha = short_sha,
+    author = author,
+    author_time = author_time,
+    summary = summary,
+  }
+end
+
+function git_blame_hint()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  local info = git_blame_info(bufname, vim.fn.line('.'))
+  if not info then
+    vim.notify('git blame failed', vim.log.levels.WARN)
+    return
+  end
+  if info.uncommitted then
     vim.notify('Not committed yet', vim.log.levels.INFO)
     return
   end
 
-  local date = author_time and os.date('%Y-%m-%d %H:%M', author_time) or ''
+  local date = info.author_time and os.date('%Y-%m-%d %H:%M', info.author_time) or ''
   local lines = {
-    sha:sub(1, 8) .. '  ' .. (author or '') .. '  ' .. date,
-    summary or '',
+    info.short_sha .. '  ' .. (info.author or '') .. '  ' .. date,
+    info.summary or '',
   }
 
   local width = 0
@@ -75,8 +95,8 @@ function git_blame_hint()
   end
 
   vim.keymap.set('n', 'y', function()
-    vim.fn.setreg('+', sha)
-    vim.notify('Copied ' .. sha, vim.log.levels.INFO)
+    vim.fn.setreg('+', info.short_sha)
+    vim.notify('Copied ' .. info.short_sha, vim.log.levels.INFO)
     close()
   end, { buffer = bufnr, silent = true, nowait = true })
 
