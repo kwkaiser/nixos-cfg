@@ -2,7 +2,10 @@
   networking.hostId = "007f0101";
   networking.hostName = "desktop";
   networking.networkmanager.enable = true;
-  networking.firewall.allowedTCPPorts = [ 22 80 ];
+  networking.firewall.allowedTCPPorts = [
+    22
+    80
+  ];
   networking.interfaces.enp8s0.wakeOnLan.enable = true;
 
   # IPv6 upstream is dead on this network (blackholed, not rejected), but

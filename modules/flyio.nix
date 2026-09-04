@@ -1,10 +1,16 @@
-{lib, ...}: let
-  inherit (import ../dendritic-lib.nix {inherit lib;}) mkHmFeature;
+{ lib, ... }:
+let
+  inherit (import ../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
-  mkHmFeature "flyio" ({pkgs, ...}: let
+mkHmFeature "flyio" (
+  { pkgs, ... }:
+  let
     devboxCli = pkgs.writeShellApplication {
       name = "devbox-fly";
-      runtimeInputs = [pkgs.flyctl pkgs.jq];
+      runtimeInputs = [
+        pkgs.flyctl
+        pkgs.jq
+      ];
       text = ''
         app="''${DEVBOX_APP:-kwkaiser-devbox}"
         org="''${DEVBOX_ORG:-personal}"
@@ -64,9 +70,11 @@ in
         esac
       '';
     };
-  in {
+  in
+  {
     home.packages = with pkgs; [
       flyctl
       devboxCli
     ];
-  })
+  }
+)

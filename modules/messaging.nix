@@ -3,13 +3,16 @@ let
   hmModule = { pkgs, lib, ... }: {
     # Always install messaging packages through home-manager
     # signal-desktop and slack are excluded on Darwin — installed via Homebrew cask instead
-    home.packages = with pkgs; [
-      caprine
-      discord
-    ] ++ lib.optionals (!pkgs.stdenv.isDarwin) [
-      signal-desktop
-      slack
-    ];
+    home.packages =
+      with pkgs;
+      [
+        caprine
+        discord
+      ]
+      ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+        signal-desktop
+        slack
+      ];
 
     services.kdeconnect.enable = lib.mkIf (!pkgs.stdenv.isDarwin) true;
   };
@@ -43,6 +46,9 @@ in
     # slack is also cask-only on Darwin: home-manager's app-trampoline rsync
     # (--chmod=-w over Slack.app's signed bundle) gets blocked by endpoint
     # security software on managed devices, which aborts the whole activation
-    homebrew.casks = [ "signal" "slack" ];
+    homebrew.casks = [
+      "signal"
+      "slack"
+    ];
   };
 }

@@ -1,9 +1,12 @@
 { mkModuleOption, ... }:
 let
   hmModule = { pkgs, lib, ... }: {
-    home.packages = lib.optionals (!pkgs.stdenv.isDarwin) (with pkgs; [
-      prismlauncher
-    ]);
+    home.packages = lib.optionals (!pkgs.stdenv.isDarwin) (
+      with pkgs;
+      [
+        prismlauncher
+      ]
+    );
   };
 in
 {

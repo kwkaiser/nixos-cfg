@@ -1,8 +1,11 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  environment.systemPackages = with pkgs; [fuse ipvsadm];
+  environment.systemPackages = with pkgs; [
+    fuse
+    ipvsadm
+  ];
   boot.kernelModules = [
     "9p"
     "9pnet"

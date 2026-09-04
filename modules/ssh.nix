@@ -38,7 +38,7 @@ let
           UserKnownHostsFile = "/dev/null";
           AddKeysToAgent = "yes";
         };
-        "desktop-lan-check" = lib.hm.dag.entryBefore ["desktop"] {
+        "desktop-lan-check" = lib.hm.dag.entryBefore [ "desktop" ] {
           header = ''Match originalhost desktop exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.110/22'"'';
           ProxyJump = "none";
         };
@@ -49,7 +49,7 @@ let
           ForwardAgent = true;
           StrictHostKeyChecking = "no";
         };
-        "livingroom-lan-check" = lib.hm.dag.entryBefore ["livingroom"] {
+        "livingroom-lan-check" = lib.hm.dag.entryBefore [ "livingroom" ] {
           header = ''Match originalhost livingroom exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.109/22'"'';
           ProxyJump = "none";
         };

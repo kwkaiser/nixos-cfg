@@ -22,7 +22,12 @@ let
         notification-body-image-width = 200;
         hide-on-clear = true;
         hide-on-action = true;
-        widgets = [ "title" "notifications" "dnd" "volume" ];
+        widgets = [
+          "title"
+          "notifications"
+          "dnd"
+          "volume"
+        ];
         popup = {
           enabled = false;
           timeout = 0;

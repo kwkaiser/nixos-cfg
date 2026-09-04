@@ -1,12 +1,15 @@
-{lib, ...}: let
-  inherit (import ../dendritic-lib.nix {inherit lib;}) mkHmFeature;
+{ lib, ... }:
+let
+  inherit (import ../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
-  mkHmFeature "firefox" ({
+mkHmFeature "firefox" (
+  {
     pkgs,
     lib,
     inputs,
     ...
-  }: {
+  }:
+  {
     programs.firefox = {
       enable = true;
       # Firefox has no cached aarch64-darwin build in nixpkgs right now, so use
@@ -96,4 +99,5 @@ in
         };
       };
     };
-  })
+  }
+)

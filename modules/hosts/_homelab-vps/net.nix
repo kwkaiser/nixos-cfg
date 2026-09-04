@@ -1,6 +1,10 @@
 { ... }: {
   networking.hostName = "homelab-vps";
-  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    22
+    80
+    443
+  ];
 
   # Linode silently blackholes return traffic to this host's IPv6 privacy
   # (RFC 4941 temporary) address - only the stable SLAAC address they

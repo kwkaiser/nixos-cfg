@@ -1,111 +1,120 @@
 { mkModuleOption, ... }:
 let
-  hmModule = { pkgs, config, lib, ... }: {
-    imports = [ ./_scripts.nix ];
+  hmModule =
+    {
+      pkgs,
+      config,
+      lib,
+      ...
+    }:
+    {
+      imports = [ ./_scripts.nix ];
 
-    home.activation.removeStaleHyprlandLua = lib.hm.dag.entryBefore ["writeBoundary"] ''
-      rm -f "$HOME/.config/hypr/hyprland.lua" "$HOME/.config/hypr/hyprlandd.lua"
-    '';
+      home.activation.removeStaleHyprlandLua = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
+        rm -f "$HOME/.config/hypr/hyprland.lua" "$HOME/.config/hypr/hyprlandd.lua"
+      '';
 
-    home.packages = with pkgs; [
-      wl-clipboard
-      wf-recorder
-      awww
-      jq
-      bibata-cursors
-      thunar
-      tumbler
-      imv
-      sway-contrib.grimshot
-      hyprpolkitagent
-      pavucontrol
-    ];
-
-    home.sessionVariables = {
-      GDK_BACKEND = "wayland,x11";
-      QT_QPA_PLATFORM = "wayland;xcb";
-      #SDL_VIDEODRIVER = "x11"; # set via hyprland env instead so it applies to non-shell-spawned processes
-      CLUTTER_BACKEND = "wayland";
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "Hyprland";
-      WLR_NO_HARDWARE_CURSORS = "1";
-    };
-
-    wayland.windowManager.hyprland = {
-      enable = true;
-      package = pkgs.hyprland;
-      configType = "hyprlang";
-      # Automatically import all environment variables for systemd services
-      # This fixes issues where programs don't work in systemd services but do in terminal
-      systemd.variables = ["--all"];
-      settings.env = [
-        "SDL_VIDEODRIVER,x11"
-        "XCURSOR_THEME,Bibata-Modern-Classic"
-        "XCURSOR_SIZE,24"
+      home.packages = with pkgs; [
+        wl-clipboard
+        wf-recorder
+        awww
+        jq
+        bibata-cursors
+        thunar
+        tumbler
+        imv
+        sway-contrib.grimshot
+        hyprpolkitagent
+        pavucontrol
       ];
-    };
 
-    systemd.user.services.hypr-output-bootstrap = {
-      Unit.Description = "Creates the headless moonlight output for each new Hyprland session";
-      Service = {
-        ExecStart = "${config.home.profileDirectory}/bin/hypr-output-bootstrap";
-        Restart = "always";
-        RestartSec = 1;
-      };
-      Install.WantedBy = ["default.target"];
-    };
-
-    services.gammastep = {
-      enable = true;
-      latitude = 42.35;
-      longitude = -71.05;
-    };
-
-    home.pointerCursor = {
-      name = "Bibata-Modern-Classic";
-      package = pkgs.bibata-cursors;
-      size = 24;
-      gtk.enable = true;
-      x11.enable = true;
-    };
-
-    wayland.windowManager.hyprland.settings = {
-      input = {
-        accel_profile = "flat";
-        force_no_accel = true;
+      home.sessionVariables = {
+        GDK_BACKEND = "wayland,x11";
+        QT_QPA_PLATFORM = "wayland;xcb";
+        #SDL_VIDEODRIVER = "x11"; # set via hyprland env instead so it applies to non-shell-spawned processes
+        CLUTTER_BACKEND = "wayland";
+        XDG_CURRENT_DESKTOP = "Hyprland";
+        XDG_SESSION_TYPE = "wayland";
+        XDG_SESSION_DESKTOP = "Hyprland";
+        WLR_NO_HARDWARE_CURSORS = "1";
       };
 
-      monitor = ["DP-2,1920x1080@144,0x0,1,transform,1" "DP-1,1920x1080@144,1080x0,1"];
+      wayland.windowManager.hyprland = {
+        enable = true;
+        package = pkgs.hyprland;
+        configType = "hyprlang";
+        # Automatically import all environment variables for systemd services
+        # This fixes issues where programs don't work in systemd services but do in terminal
+        systemd.variables = [ "--all" ];
+        settings.env = [
+          "SDL_VIDEODRIVER,x11"
+          "XCURSOR_THEME,Bibata-Modern-Classic"
+          "XCURSOR_SIZE,24"
+        ];
+      };
 
-      # Workspace assignments
-      workspace = [
-        # Workspaces 1-5 on left monitor (DP-1)
-        "1, monitor:DP-2"
-        "2, monitor:DP-2"
-        "3, monitor:DP-2"
-        "4, monitor:DP-2"
-        "5, monitor:DP-2"
-        # Workspaces 6-10 on right monitor (DP-2)
-        "6, monitor:DP-1"
-        "7, monitor:DP-1"
-        "8, monitor:DP-1"
-        "9, monitor:DP-1"
-        "10, monitor:DP-1"
-      ];
+      systemd.user.services.hypr-output-bootstrap = {
+        Unit.Description = "Creates the headless moonlight output for each new Hyprland session";
+        Service = {
+          ExecStart = "${config.home.profileDirectory}/bin/hypr-output-bootstrap";
+          Restart = "always";
+          RestartSec = 1;
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
 
-      exec-once = [
-        # systemd.variables handles dbus-update-activation-environment automatically
-        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "sleep 1 && waybar &"
-        "swaync &"
-        "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"
-      ];
-      "$mod" = "SUPER";
-      "$terminal" = "kitty";
+      services.gammastep = {
+        enable = true;
+        latitude = 42.35;
+        longitude = -71.05;
+      };
 
-      bind =
-        [
+      home.pointerCursor = {
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
+        size = 24;
+        gtk.enable = true;
+        x11.enable = true;
+      };
+
+      wayland.windowManager.hyprland.settings = {
+        input = {
+          accel_profile = "flat";
+          force_no_accel = true;
+        };
+
+        monitor = [
+          "DP-2,1920x1080@144,0x0,1,transform,1"
+          "DP-1,1920x1080@144,1080x0,1"
+        ];
+
+        # Workspace assignments
+        workspace = [
+          # Workspaces 1-5 on left monitor (DP-1)
+          "1, monitor:DP-2"
+          "2, monitor:DP-2"
+          "3, monitor:DP-2"
+          "4, monitor:DP-2"
+          "5, monitor:DP-2"
+          # Workspaces 6-10 on right monitor (DP-2)
+          "6, monitor:DP-1"
+          "7, monitor:DP-1"
+          "8, monitor:DP-1"
+          "9, monitor:DP-1"
+          "10, monitor:DP-1"
+        ];
+
+        exec-once = [
+          # systemd.variables handles dbus-update-activation-environment automatically
+          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "sleep 1 && waybar &"
+          "swaync &"
+          "sleep 1 && swww-daemon && sleep 1 && swww img $(find ~/Documents/nixos-cfg/assets/backgrounds -type f | sort -R | head -n1) &"
+        ];
+        "$mod" = "SUPER";
+        "$terminal" = "kitty";
+
+        bind = [
           "$mod, Return, exec, $terminal"
           "$mod SHIFT, Q, killactive"
           "$mod SHIFT, E, exit"
@@ -161,13 +170,18 @@ let
 
           # Workspaces
         ]
-        ++ (builtins.concatLists (builtins.genList (i: let
-            ws = i + 1;
-          in [
-            "$mod, ${toString ws}, workspace, ${toString ws}"
-            "$mod SHIFT, ${toString ws}, movetoworkspace, ${toString ws}"
-          ])
-          9))
+        ++ (builtins.concatLists (
+          builtins.genList (
+            i:
+            let
+              ws = i + 1;
+            in
+            [
+              "$mod, ${toString ws}, workspace, ${toString ws}"
+              "$mod SHIFT, ${toString ws}, movetoworkspace, ${toString ws}"
+            ]
+          ) 9
+        ))
         ++ [
           "$mod, 0, workspace, 10"
         ]
@@ -177,104 +191,113 @@ let
           "$mod SHIFT, D, exec, sh -c 'ACTIVE_MONITOR=$(hyprctl monitors -j | jq -r \".[] | select(.focused == true) | .name\"); if [ \"$ACTIVE_MONITOR\" = \"DP-2\" ]; then rofi -show drun -monitor 0; else rofi -show drun -monitor 1; fi'"
         ];
 
-      group = {
-        groupbar = {
+        group = {
+          groupbar = {
+            enabled = true;
+            font_size = 12;
+            height = 18;
+            render_titles = true;
+            scrolling = true;
+          };
+        };
+
+        animations = {
           enabled = true;
-          font_size = 12;
-          height = 18;
-          render_titles = true;
-          scrolling = true;
+
+          bezier = [
+            "wind, 0.05, 0.9, 0.1, 1.05"
+            "winIn, 0.1, 1.1, 0.1, 1.1"
+            "winOut, 0.3, -0.3, 0, 1"
+            "liner, 1, 1, 1, 1"
+          ];
+
+          animation = [
+            "windows, 1, 3, wind, slide"
+            "windowsIn, 1, 3, winIn, slide"
+            "windowsOut, 1, 2, winOut, slide"
+            "windowsMove, 1, 3, wind, slide"
+            "border, 1, 1, liner"
+            "borderangle, 1, 4, liner"
+            "fade, 1, 5, default"
+            "workspaces, 1, 3, wind"
+          ];
         };
       };
 
-      animations = {
-        enabled = true;
+      programs.hyprlock.enable = true;
+      programs.hyprlock.settings = {
+        general = {
+          disable_loading_bar = true;
+          hide_cursor = true;
+          no_fade_in = false;
+        };
 
-        bezier = [
-          "wind, 0.05, 0.9, 0.1, 1.05"
-          "winIn, 0.1, 1.1, 0.1, 1.1"
-          "winOut, 0.3, -0.3, 0, 1"
-          "liner, 1, 1, 1, 1"
-        ];
-
-        animation = [
-          "windows, 1, 3, wind, slide"
-          "windowsIn, 1, 3, winIn, slide"
-          "windowsOut, 1, 2, winOut, slide"
-          "windowsMove, 1, 3, wind, slide"
-          "border, 1, 1, liner"
-          "borderangle, 1, 4, liner"
-          "fade, 1, 5, default"
-          "workspaces, 1, 3, wind"
-        ];
+        input-field = {
+          size = "200, 50";
+          position = "0, -80";
+          monitor = "";
+          dots_center = true;
+          fade_on_empty = false;
+          outline_thickness = 5;
+          placeholder_text = "Unlock:";
+          shadow_passes = 2;
+        };
       };
     };
-
-    programs.hyprlock.enable = true;
-    programs.hyprlock.settings = {
-      general = {
-        disable_loading_bar = true;
-        hide_cursor = true;
-        no_fade_in = false;
-      };
-
-      input-field = {
-        size = "200, 50";
-        position = "0, -80";
-        monitor = "";
-        dots_center = true;
-        fade_on_empty = false;
-        outline_thickness = 5;
-        placeholder_text = "Unlock:";
-        shadow_passes = 2;
-      };
-    };
-  };
 in
 {
   options.nixos.modules.hyprland = mkModuleOption { };
 
-  config.nixos.modules.hyprland = { pkgs, lib, config, ... }: let
-    # Speaks greetd's IPC protocol directly (the same protocol tuigreet uses)
-    # to log in and start Hyprland without a physical console, so PAM modules
-    # tied to the real password (e.g. gnome-keyring unlock) still fire, unlike
-    # a greetd `initial_session` autologin. See greetd-remote-login.py.
-    greetdRemoteLoginPy = pkgs.writers.writePython3Bin "greetd-remote-login-py"
-      { } (builtins.readFile ./greetd-remote-login.py);
+  config.nixos.modules.hyprland =
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    let
+      # Speaks greetd's IPC protocol directly (the same protocol tuigreet uses)
+      # to log in and start Hyprland without a physical console, so PAM modules
+      # tied to the real password (e.g. gnome-keyring unlock) still fire, unlike
+      # a greetd `initial_session` autologin. See greetd-remote-login.py.
+      greetdRemoteLoginPy = pkgs.writers.writePython3Bin "greetd-remote-login-py" { } (
+        builtins.readFile ./greetd-remote-login.py
+      );
 
-    greetdRemoteLogin = pkgs.writeShellScriptBin "greetd-remote-login" ''
-      exec ${greetdRemoteLoginPy}/bin/greetd-remote-login-py \
-        --user ${lib.escapeShellArg config.mine.username} \
-        -- ${pkgs.hyprland}/bin/start-hyprland
-    '';
-  in {
-    xdg.portal.enable = true;
-    xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
-    programs.hyprland.enable = true;
+      greetdRemoteLogin = pkgs.writeShellScriptBin "greetd-remote-login" ''
+        exec ${greetdRemoteLoginPy}/bin/greetd-remote-login-py \
+          --user ${lib.escapeShellArg config.mine.username} \
+          -- ${pkgs.hyprland}/bin/start-hyprland
+      '';
+    in
+    {
+      xdg.portal.enable = true;
+      xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+      programs.hyprland.enable = true;
 
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          # No --remember: with a remembered username, tuigreet calls
-          # greetd's create_session itself the instant it starts (no
-          # keypress needed), racing greetd-remote-login for the single
-          # global session-negotiation slot - greetd's cancel-on-disconnect
-          # cleanup isn't scoped per-connection, so whichever loses that
-          # race gets silently cancelled out from under it.
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/start-hyprland";
-          user = "greeter";
+      services.greetd = {
+        enable = true;
+        settings = {
+          default_session = {
+            # No --remember: with a remembered username, tuigreet calls
+            # greetd's create_session itself the instant it starts (no
+            # keypress needed), racing greetd-remote-login for the single
+            # global session-negotiation slot - greetd's cancel-on-disconnect
+            # cleanup isn't scoped per-connection, so whichever loses that
+            # race gets silently cancelled out from under it.
+            command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/start-hyprland";
+            user = "greeter";
+          };
         };
       };
+
+      # Lets `greetd-remote-login` (run via sudo) connect to greetd's
+      # session-broker socket, which is owned by the greeter user.
+      environment.systemPackages = [ greetdRemoteLogin ];
+
+      security.pam.services.hyprlock = { };
+      security.pam.services.swaylock = { };
+
+      home-manager.users.${config.mine.username}.imports = [ hmModule ];
     };
-
-    # Lets `greetd-remote-login` (run via sudo) connect to greetd's
-    # session-broker socket, which is owned by the greeter user.
-    environment.systemPackages = [ greetdRemoteLogin ];
-
-    security.pam.services.hyprlock = { };
-    security.pam.services.swaylock = { };
-
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
-  };
 }

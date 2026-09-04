@@ -43,7 +43,8 @@ in
 
   # Darwin: macOS doesn't support symlinked /etc/hosts (Network framework
   # ignores symlinks) - use an activation script to copy the file directly instead
-  config.darwin.modules.homelab-hosts-file = { pkgs, ... }:
+  config.darwin.modules.homelab-hosts-file =
+    { pkgs, ... }:
     let
       hostsFile = pkgs.writeText "hosts" darwinHostsContent;
     in

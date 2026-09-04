@@ -1,473 +1,560 @@
-{mkModuleOption, ...}: let
-  hmModule = {
-    pkgs,
-    lib,
-    ...
-  }: {
-    imports = [./_ts.nix];
+{ mkModuleOption, ... }:
+let
+  hmModule =
+    {
+      pkgs,
+      lib,
+      ...
+    }:
+    {
+      imports = [ ./_ts.nix ];
 
-    home.sessionVariables.EDITOR = "nvim";
+      home.sessionVariables.EDITOR = "nvim";
 
-    home.packages = with pkgs; [
-      ripgrep
-      fd
-      fzf
-      tree-sitter
-    ];
+      home.packages = with pkgs; [
+        ripgrep
+        fd
+        fzf
+        tree-sitter
+      ];
 
-    # Shell wrapper: opens neovim with git-based socket name for external RPC
-    programs.zsh.initContent = ''
-      nvim() {
-        if git rev-parse --show-toplevel &>/dev/null; then
-          local repo_name=$(basename "$(git rev-parse --show-toplevel)")
-          local socket_path="/tmp/nvim-''${repo_name}.sock"
+      # Shell wrapper: opens neovim with git-based socket name for external RPC
+      programs.zsh.initContent = ''
+        nvim() {
+          if git rev-parse --show-toplevel &>/dev/null; then
+            local repo_name=$(basename "$(git rev-parse --show-toplevel)")
+            local socket_path="/tmp/nvim-''${repo_name}.sock"
 
-          # Clean up stale socket if it exists but no process is listening
-          if [[ -S "$socket_path" ]] && ! command nvim --server "$socket_path" --remote-expr "1" &>/dev/null; then
-            rm -f "$socket_path"
+            # Clean up stale socket if it exists but no process is listening
+            if [[ -S "$socket_path" ]] && ! command nvim --server "$socket_path" --remote-expr "1" &>/dev/null; then
+              rm -f "$socket_path"
+            fi
+
+            command nvim --listen "$socket_path" --cmd "cd $(git rev-parse --show-toplevel)" "$@"
+          else
+            command nvim "$@"
           fi
+        }
+        vim() { nvim "$@"; }
+      '';
 
-          command nvim --listen "$socket_path" --cmd "cd $(git rev-parse --show-toplevel)" "$@"
-        else
-          command nvim "$@"
-        fi
-      }
-      vim() { nvim "$@"; }
-    '';
+      programs.neovim = {
+        defaultEditor = true;
+        vimAlias = false; # Handled via shell function above
+      };
 
-    programs.neovim = {
-      defaultEditor = true;
-      vimAlias = false; # Handled via shell function above
-    };
-
-    programs.nvf = {
-      enable = true;
-      settings = {
-        vim = {
-          vimAlias = false; # Handled via shell function above
-          globals.mapleader = " ";
-          clipboard = {
-            enable = true;
-            registers = "unnamedplus";
-          };
-          options = {
-            tabstop = 2;
-            shiftwidth = 2;
-            expandtab = true;
-            timeoutlen = 300;
-            ttimeoutlen = 10;
-            diffopt = "internal,filler,closeoff,linematch:60,algorithm:histogram,indent-heuristic";
-          };
-
-          extraPlugins.review-comments = {
-            package = pkgs.vimUtils.buildVimPlugin {
-              pname = "review-comments";
-              version = "0.1.0";
-              src = ./plugins/review-comments;
+      programs.nvf = {
+        enable = true;
+        settings = {
+          vim = {
+            vimAlias = false; # Handled via shell function above
+            globals.mapleader = " ";
+            clipboard = {
+              enable = true;
+              registers = "unnamedplus";
             };
-            setup = "require('review-comments').setup()";
-          };
-
-          theme = {
-            enable = true;
-            name = "gruvbox";
-            style = "dark";
-          };
-
-          lsp = {
-            enable = true;
-
-            mappings = {
-              # Disabled - using fzf-lua alternatives
-              codeAction = null;
-              listReferences = null;
-
-              # Disabled: different bindings
-              openDiagnosticFloat = "<leader>ldf";
-
-              # Disabled - not used
-              listImplementations = null;
-              previousDiagnostic = null;
-              hover = null;
-              renameSymbol = "<leader>lsr";
-              nextDiagnostic = null;
-              goToDeclaration = null;
-              signatureHelp = null;
-              addWorkspaceFolder = null;
-              removeWorkspaceFolder = null;
-              listWorkspaceFolders = null;
-              listWorkspaceSymbols = null;
-              documentHighlight = null;
-              listDocumentSymbols = null;
-              toggleFormatOnSave = "<leader>lf";
-              format = null; # Using formatOnSave instead
+            options = {
+              tabstop = 2;
+              shiftwidth = 2;
+              expandtab = true;
+              timeoutlen = 300;
+              ttimeoutlen = 10;
+              diffopt = "internal,filler,closeoff,linematch:60,algorithm:histogram,indent-heuristic";
             };
-          };
 
-          fzf-lua = {
-            enable = true;
-            setupOpts = {
-              lsp = {
-                async_or_timeout = true;
+            extraPlugins.review-comments = {
+              package = pkgs.vimUtils.buildVimPlugin {
+                pname = "review-comments";
+                version = "0.1.0";
+                src = ./plugins/review-comments;
               };
-              keymap = {
-                fzf = {
-                  "ctrl-q" = "select-all+accept";
-                  "ctrl-a" = "select-all";
+              setup = "require('review-comments').setup()";
+            };
+
+            theme = {
+              enable = true;
+              name = "gruvbox";
+              style = "dark";
+            };
+
+            lsp = {
+              enable = true;
+
+              mappings = {
+                # Disabled - using fzf-lua alternatives
+                codeAction = null;
+                listReferences = null;
+
+                # Disabled: different bindings
+                openDiagnosticFloat = "<leader>ldf";
+
+                # Disabled - not used
+                listImplementations = null;
+                previousDiagnostic = null;
+                hover = null;
+                renameSymbol = "<leader>lsr";
+                nextDiagnostic = null;
+                goToDeclaration = null;
+                signatureHelp = null;
+                addWorkspaceFolder = null;
+                removeWorkspaceFolder = null;
+                listWorkspaceFolders = null;
+                listWorkspaceSymbols = null;
+                documentHighlight = null;
+                listDocumentSymbols = null;
+                toggleFormatOnSave = "<leader>lf";
+                format = null; # Using formatOnSave instead
+              };
+            };
+
+            fzf-lua = {
+              enable = true;
+              setupOpts = {
+                lsp = {
+                  async_or_timeout = true;
                 };
-              };
-              git = {
-                branches = {
-                  cmd = "git branch --color";
-                  preview = "git log --max-count=16 --graph --pretty=oneline --abbrev-commit --color {1}";
+                keymap = {
+                  fzf = {
+                    "ctrl-q" = "select-all+accept";
+                    "ctrl-a" = "select-all";
+                  };
+                };
+                git = {
+                  branches = {
+                    cmd = "git branch --color";
+                    preview = "git log --max-count=16 --graph --pretty=oneline --abbrev-commit --color {1}";
+                  };
                 };
               };
             };
-          };
 
-          binds.whichKey.enable = true;
+            binds.whichKey.enable = true;
 
-          autocomplete.nvim-cmp = {
-            enable = true;
-            sources = {
-              nvim_lsp = "[LSP]";
-              path = "[Path]";
-              buffer = lib.mkForce null;
-              treesitter = lib.mkForce null;
+            autocomplete.nvim-cmp = {
+              enable = true;
+              sources = {
+                nvim_lsp = "[LSP]";
+                path = "[Path]";
+                buffer = lib.mkForce null;
+                treesitter = lib.mkForce null;
+              };
             };
-          };
-          autopairs.nvim-autopairs.enable = true;
-          statusline.lualine = {
-            enable = true;
-            setupOpts.tabline = {
-              lualine_a = [
-                (lib.generators.mkLuaInline ''
+            autopairs.nvim-autopairs.enable = true;
+            statusline.lualine = {
+              enable = true;
+              setupOpts.tabline = {
+                lualine_a = [
+                  (lib.generators.mkLuaInline ''
+                    {
+                      'tabs',
+                      mode = 1,
+                      fmt = function(name, context)
+                        return tab_format(name, context)
+                      end,
+                    }
+                  '')
+                ];
+              };
+              activeSection.b = [
+                ''
                   {
-                    'tabs',
-                    mode = 1,
-                    fmt = function(name, context)
-                      return tab_format(name, context)
-                    end,
+                    "filetype",
+                    colored = true,
+                    icon_only = true,
+                    icon = { align = 'left' }
                   }
-                '')
+                ''
+                ''
+                  {
+                    "filename",
+                    path = 1,
+                    symbols = {modified = ' ', readonly = ' '},
+                    separator = {right = '''}
+                  }
+                ''
               ];
             };
-            activeSection.b = [
-              ''
-                {
-                  "filetype",
-                  colored = true,
-                  icon_only = true,
-                  icon = { align = 'left' }
-                }
-              ''
-              ''
-                {
-                  "filename",
-                  path = 1,
-                  symbols = {modified = ' ', readonly = ' '},
-                  separator = {right = '''}
-                }
-              ''
+
+            lsp.formatOnSave = true;
+
+            languages = {
+              beancount = {
+                enable = true;
+                format.enable = true;
+              };
+              toml = {
+                enable = true;
+                format.enable = true;
+              };
+              typst = {
+                enable = true;
+                format.enable = true;
+                lsp.enable = true;
+                treesitter.enable = true;
+                extensions = {
+                  typst-preview-nvim.enable = true;
+                };
+              };
+              markdown = {
+                enable = true;
+                lsp.enable = false; # marksman requires building dotnet from source
+              };
+              python = {
+                enable = true;
+                format.enable = true;
+                lsp.enable = true;
+              };
+              yaml.enable = true;
+              sql.enable = true;
+              rust.enable = true;
+              bash.enable = true;
+              go.enable = true;
+
+              nix = {
+                enable = true;
+                extraDiagnostics.enable = true;
+                format.enable = true;
+                lsp.enable = true;
+                treesitter.enable = true;
+              };
+            };
+
+            git = {
+              neogit.enable = true;
+              neogit.setupOpts = {
+                signing = {
+                  enabled = true;
+                };
+                integrations = {
+                  diffview = true;
+                };
+              };
+            };
+
+            utility.diffview-nvim = {
+              enable = true;
+              setupOpts = {
+                show_untracked = true;
+                watch_index = false;
+                view = {
+                  default = {
+                    disable_diagnostics = true;
+                  };
+                  file_history = {
+                    disable_diagnostics = true;
+                  };
+                  merge_tool = {
+                    layout = "diff3_mixed";
+                  };
+                };
+                keymaps = {
+                  view = [
+                    [
+                      "n"
+                      "<leader>rc"
+                      "<Cmd>lua require('review-comments').add_comment()<CR>"
+                      { desc = "Add review comment"; }
+                    ]
+                    [
+                      "v"
+                      "<leader>rc"
+                      "<Cmd>lua require('review-comments').add_comment()<CR>"
+                      { desc = "Add review comment (range)"; }
+                    ]
+                    [
+                      "n"
+                      "<leader>rC"
+                      "<Cmd>lua require('review-comments').flush()<CR>"
+                      { desc = "Flush comments to clipboard"; }
+                    ]
+                    [
+                      "n"
+                      "q"
+                      "<Cmd>lua require('review-comments').abort()<CR>"
+                      { desc = "Discard comments and close"; }
+                    ]
+                    [
+                      "n"
+                      "Q"
+                      "<Cmd>lua require('review-comments').submit()<CR>"
+                      { desc = "Flush comments and close"; }
+                    ]
+                    [
+                      "n"
+                      "R"
+                      "<Cmd>DiffviewRefresh<CR>"
+                      { desc = "Refresh diffview"; }
+                    ]
+                  ];
+                  file_panel = [
+                    [
+                      "n"
+                      "<leader>rC"
+                      "<Cmd>lua require('review-comments').flush()<CR>"
+                      { desc = "Flush comments to clipboard"; }
+                    ]
+                    [
+                      "n"
+                      "q"
+                      "<Cmd>lua require('review-comments').abort()<CR>"
+                      { desc = "Discard comments and close"; }
+                    ]
+                    [
+                      "n"
+                      "Q"
+                      "<Cmd>lua require('review-comments').submit()<CR>"
+                      { desc = "Flush comments and close"; }
+                    ]
+                    [
+                      "n"
+                      "R"
+                      "<Cmd>DiffviewRefresh<CR>"
+                      { desc = "Refresh diffview"; }
+                    ]
+                  ];
+                  file_history_panel = [
+                    [
+                      "n"
+                      "<leader>gc"
+                      "<Cmd>lua diff_commit_at_cursor()<CR>"
+                      { desc = "View full commit diff"; }
+                    ]
+                    [
+                      "n"
+                      "<leader>gp"
+                      "<Cmd>lua copy_commit_pr_url()<CR>"
+                      { desc = "Copy PR URL for commit"; }
+                    ]
+                    [
+                      "n"
+                      "<leader>gP"
+                      "<Cmd>lua open_commit_pr()<CR>"
+                      { desc = "Open PR for commit"; }
+                    ]
+                    [
+                      "n"
+                      "<leader>gr"
+                      "<Cmd>lua copy_commit_release_url()<CR>"
+                      { desc = "Copy release URL for commit"; }
+                    ]
+                    [
+                      "n"
+                      "<leader>gR"
+                      "<Cmd>lua open_commit_release()<CR>"
+                      { desc = "Open release for commit"; }
+                    ]
+                    [
+                      "n"
+                      "q"
+                      "<Cmd>DiffviewClose<CR>"
+                      { desc = "Close history view"; }
+                    ]
+                  ];
+                };
+              };
+            };
+            filetree.neo-tree = {
+              enable = true;
+              setupOpts = {
+                filesystem = {
+                  use_libuv_file_watcher = false;
+                  scan_mode = "shallow";
+                  find_by_full_path_words = false;
+                  async_directory_scan = "always";
+                };
+                git_status_async = true;
+                enable_git_status = true;
+                enable_diagnostics = false;
+              };
+            };
+
+            keymaps = [
+              {
+                key = "<C-s>";
+                mode = [
+                  "n"
+                  "i"
+                ];
+                action = "<cmd>lua eslint_fix_all_sync()<CR><cmd>w<CR>";
+                desc = "Save file";
+              }
+
+              # Files & buffers
+              {
+                key = "<leader>ff";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').files()<CR>";
+                desc = "Find files";
+              }
+              {
+                key = "<leader>fb";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').buffers()<CR>";
+                desc = "Find buffers";
+              }
+
+              # Search
+              {
+                key = "<leader>fs";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
+                desc = "Live grep";
+              }
+
+              {
+                key = "<leader>qf";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
+                desc = "Open quickfix list";
+              }
+
+              {
+                key = "<leader>qc";
+                mode = "n";
+                action = "<cmd>lua vim.fn.setreg('+', table.concat(vim.tbl_map(function(e) return vim.fn.bufname(e.bufnr) .. ':' .. e.lnum .. ':' .. e.col .. ' ' .. e.text end, vim.fn.getqflist()), '\\n'))<CR>";
+                desc = "Copy quickfix to clipboard";
+              }
+
+              # LSP
+              {
+                key = "<leader>la";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').lsp_code_actions({ silent = true })<CR>";
+                desc = "Code actions";
+              }
+              {
+                key = "<leader>lrf";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').lsp_references()<CR>";
+                desc = "Code references";
+              }
+              {
+                key = "<leader>lrc";
+                mode = "n";
+                action = "<cmd>lua vim.lsp.buf.references(nil, { on_list = function(opts) local root = vim.fn.system('git rev-parse --show-toplevel 2>/dev/null'):gsub('\\n', ''); local lines = vim.tbl_map(function(i) local f = i.filename; if root ~= '' and f:sub(1, #root) == root then f = f:sub(#root + 2) end; return f .. ':' .. i.lnum .. ':' .. i.col .. ' ' .. i.text end, opts.items); vim.fn.setreg('+', table.concat(lines, '\\n')); print('Copied ' .. #opts.items .. ' references') end })<CR>";
+                desc = "Copy references to clipboard";
+              }
+              {
+                key = "<leader>ldd";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').diagnostics_document()<CR>";
+                desc = "Diagnostics (file)";
+              }
+              {
+                key = "<leader>ldw";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').diagnostics_workspace()<CR>";
+                desc = "Diagnostics (workspace)";
+              }
+              {
+                key = "<leader>ldc";
+                mode = "n";
+                action = "<cmd>lua vim.fn.setreg('+', vim.diagnostic.get(0, {lnum = vim.fn.line('.') - 1})[1].message)<CR>";
+                desc = "Copy diagnostic";
+              }
+              {
+                key = "<leader>lt";
+                mode = "n";
+                action = "<cmd>lua vim.lsp.buf.hover()<CR>";
+                desc = "Type description";
+              }
+
+              # Git
+              {
+                key = "<leader>gs";
+                mode = "n";
+                action = "<cmd>Neogit<CR>";
+                desc = "Git status";
+              }
+              {
+                key = "<leader>gh";
+                mode = "n";
+                action = "<cmd>lua open_file_history()<CR>";
+                desc = "File history";
+              }
+              {
+                key = "<leader>gL";
+                mode = "n";
+                action = "<cmd>lua copy_github_url()<CR>";
+                desc = "Copy GitHub URL to clipboard";
+              }
+              {
+                key = "<leader>gl";
+                mode = [
+                  "n"
+                  "v"
+                ];
+                action = "<cmd>lua copy_file_location()<CR>";
+                desc = "Copy file:line to clipboard";
+              }
+              {
+                key = "<leader>go";
+                mode = "n";
+                action = "<cmd>lua open_commit_pr()<CR>";
+                desc = "Open PR for commit";
+              }
+              {
+                key = "<leader>gdc";
+                mode = "n";
+                action = "<cmd>lua review_compare_branches()<CR>";
+                desc = "Review compare branches";
+              }
+              {
+                key = "<leader>gdm";
+                mode = "n";
+                action = "<cmd>lua review_branch_against_main()<CR>";
+                desc = "Review branch against main";
+              }
+              {
+                key = "<leader>gdd";
+                mode = "n";
+                action = "<cmd>lua diff_working_changes()<CR>";
+                desc = "Diff working changes against branch";
+              }
+              {
+                key = "<leader>b";
+                mode = "n";
+                action = "<cmd>:Neotree filesystem reveal float<CR>";
+                desc = "Open filetree";
+              }
+              {
+                key = "<Esc><Esc>";
+                mode = "t";
+                action = "<C-\\><C-n>";
+                desc = "Exit terminal mode";
+              }
             ];
+
+            luaConfigRC.release-commit = builtins.readFile ./release-commit.lua;
+            luaConfigRC.gitRoot = builtins.readFile ./git-root.lua;
+            luaConfigRC.tab-format = builtins.readFile ./tab-format.lua;
+            luaConfigRC.file-history = builtins.readFile ./file-history.lua;
+            luaConfigRC.review-compare = builtins.readFile ./review-compare.lua;
+            luaConfigRC.review-main = builtins.readFile ./review-main.lua;
+            luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
+            luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
+            luaConfigRC.github-url = builtins.readFile ./github-url.lua;
+            luaConfigRC.file-location = builtins.readFile ./file-location.lua;
+            luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
+            luaConfigRC.osc52-clipboard = builtins.readFile ./osc52-clipboard.lua;
           };
-
-          lsp.formatOnSave = true;
-
-          languages = {
-            beancount = {
-              enable = true;
-              format.enable = true;
-            };
-            toml = {
-              enable = true;
-              format.enable = true;
-            };
-            typst = {
-              enable = true;
-              format.enable = true;
-              lsp.enable = true;
-              treesitter.enable = true;
-              extensions = {
-                typst-preview-nvim.enable = true;
-              };
-            };
-            markdown = {
-              enable = true;
-              lsp.enable = false; # marksman requires building dotnet from source
-            };
-            python = {
-              enable = true;
-              format.enable = true;
-              lsp.enable = true;
-            };
-            yaml.enable = true;
-            sql.enable = true;
-            rust.enable = true;
-            bash.enable = true;
-            go.enable = true;
-
-            nix = {
-              enable = true;
-              extraDiagnostics.enable = true;
-              format.enable = true;
-              lsp.enable = true;
-              treesitter.enable = true;
-            };
-          };
-
-          git = {
-            neogit.enable = true;
-            neogit.setupOpts = {
-              signing = {
-                enabled = true;
-              };
-              integrations = {
-                diffview = true;
-              };
-            };
-          };
-
-          utility.diffview-nvim = {
-            enable = true;
-            setupOpts = {
-              show_untracked = true;
-              watch_index = false;
-              view = {
-                default = {
-                  disable_diagnostics = true;
-                };
-                file_history = {
-                  disable_diagnostics = true;
-                };
-                merge_tool = {
-                  layout = "diff3_mixed";
-                };
-              };
-              keymaps = {
-                view = [
-                  ["n" "<leader>rc" "<Cmd>lua require('review-comments').add_comment()<CR>" {desc = "Add review comment";}]
-                  ["v" "<leader>rc" "<Cmd>lua require('review-comments').add_comment()<CR>" {desc = "Add review comment (range)";}]
-                  ["n" "<leader>rC" "<Cmd>lua require('review-comments').flush()<CR>" {desc = "Flush comments to clipboard";}]
-                  ["n" "q" "<Cmd>lua require('review-comments').abort()<CR>" {desc = "Discard comments and close";}]
-                  ["n" "Q" "<Cmd>lua require('review-comments').submit()<CR>" {desc = "Flush comments and close";}]
-                  ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
-                ];
-                file_panel = [
-                  ["n" "<leader>rC" "<Cmd>lua require('review-comments').flush()<CR>" {desc = "Flush comments to clipboard";}]
-                  ["n" "q" "<Cmd>lua require('review-comments').abort()<CR>" {desc = "Discard comments and close";}]
-                  ["n" "Q" "<Cmd>lua require('review-comments').submit()<CR>" {desc = "Flush comments and close";}]
-                  ["n" "R" "<Cmd>DiffviewRefresh<CR>" {desc = "Refresh diffview";}]
-                ];
-                file_history_panel = [
-                  ["n" "<leader>gc" "<Cmd>lua diff_commit_at_cursor()<CR>" {desc = "View full commit diff";}]
-                  ["n" "<leader>gp" "<Cmd>lua copy_commit_pr_url()<CR>" {desc = "Copy PR URL for commit";}]
-                  ["n" "<leader>gP" "<Cmd>lua open_commit_pr()<CR>" {desc = "Open PR for commit";}]
-                  ["n" "<leader>gr" "<Cmd>lua copy_commit_release_url()<CR>" {desc = "Copy release URL for commit";}]
-                  ["n" "<leader>gR" "<Cmd>lua open_commit_release()<CR>" {desc = "Open release for commit";}]
-                  ["n" "q" "<Cmd>DiffviewClose<CR>" {desc = "Close history view";}]
-                ];
-              };
-            };
-          };
-          filetree.neo-tree = {
-            enable = true;
-            setupOpts = {
-              filesystem = {
-                use_libuv_file_watcher = false;
-                scan_mode = "shallow";
-                find_by_full_path_words = false;
-                async_directory_scan = "always";
-              };
-              git_status_async = true;
-              enable_git_status = true;
-              enable_diagnostics = false;
-            };
-          };
-
-          keymaps = [
-            {
-              key = "<C-s>";
-              mode = [
-                "n"
-                "i"
-              ];
-              action = "<cmd>lua eslint_fix_all_sync()<CR><cmd>w<CR>";
-              desc = "Save file";
-            }
-
-            # Files & buffers
-            {
-              key = "<leader>ff";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').files()<CR>";
-              desc = "Find files";
-            }
-            {
-              key = "<leader>fb";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').buffers()<CR>";
-              desc = "Find buffers";
-            }
-
-            # Search
-            {
-              key = "<leader>fs";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').live_grep()<CR>";
-              desc = "Live grep";
-            }
-
-            {
-              key = "<leader>qf";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').quickfix()<CR>";
-              desc = "Open quickfix list";
-            }
-
-            {
-              key = "<leader>qc";
-              mode = "n";
-              action = "<cmd>lua vim.fn.setreg('+', table.concat(vim.tbl_map(function(e) return vim.fn.bufname(e.bufnr) .. ':' .. e.lnum .. ':' .. e.col .. ' ' .. e.text end, vim.fn.getqflist()), '\\n'))<CR>";
-              desc = "Copy quickfix to clipboard";
-            }
-
-            # LSP
-            {
-              key = "<leader>la";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').lsp_code_actions({ silent = true })<CR>";
-              desc = "Code actions";
-            }
-            {
-              key = "<leader>lrf";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').lsp_references()<CR>";
-              desc = "Code references";
-            }
-            {
-              key = "<leader>lrc";
-              mode = "n";
-              action = "<cmd>lua vim.lsp.buf.references(nil, { on_list = function(opts) local root = vim.fn.system('git rev-parse --show-toplevel 2>/dev/null'):gsub('\\n', ''); local lines = vim.tbl_map(function(i) local f = i.filename; if root ~= '' and f:sub(1, #root) == root then f = f:sub(#root + 2) end; return f .. ':' .. i.lnum .. ':' .. i.col .. ' ' .. i.text end, opts.items); vim.fn.setreg('+', table.concat(lines, '\\n')); print('Copied ' .. #opts.items .. ' references') end })<CR>";
-              desc = "Copy references to clipboard";
-            }
-            {
-              key = "<leader>ldd";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').diagnostics_document()<CR>";
-              desc = "Diagnostics (file)";
-            }
-            {
-              key = "<leader>ldw";
-              mode = "n";
-              action = "<cmd>lua require('fzf-lua').diagnostics_workspace()<CR>";
-              desc = "Diagnostics (workspace)";
-            }
-            {
-              key = "<leader>ldc";
-              mode = "n";
-              action = "<cmd>lua vim.fn.setreg('+', vim.diagnostic.get(0, {lnum = vim.fn.line('.') - 1})[1].message)<CR>";
-              desc = "Copy diagnostic";
-            }
-            {
-              key = "<leader>lt";
-              mode = "n";
-              action = "<cmd>lua vim.lsp.buf.hover()<CR>";
-              desc = "Type description";
-            }
-
-            # Git
-            {
-              key = "<leader>gs";
-              mode = "n";
-              action = "<cmd>Neogit<CR>";
-              desc = "Git status";
-            }
-            {
-              key = "<leader>gh";
-              mode = "n";
-              action = "<cmd>lua open_file_history()<CR>";
-              desc = "File history";
-            }
-            {
-              key = "<leader>gL";
-              mode = "n";
-              action = "<cmd>lua copy_github_url()<CR>";
-              desc = "Copy GitHub URL to clipboard";
-            }
-            {
-              key = "<leader>gl";
-              mode = ["n" "v"];
-              action = "<cmd>lua copy_file_location()<CR>";
-              desc = "Copy file:line to clipboard";
-            }
-            {
-              key = "<leader>go";
-              mode = "n";
-              action = "<cmd>lua open_commit_pr()<CR>";
-              desc = "Open PR for commit";
-            }
-            {
-              key = "<leader>gdc";
-              mode = "n";
-              action = "<cmd>lua review_compare_branches()<CR>";
-              desc = "Review compare branches";
-            }
-            {
-              key = "<leader>gdm";
-              mode = "n";
-              action = "<cmd>lua review_branch_against_main()<CR>";
-              desc = "Review branch against main";
-            }
-            {
-              key = "<leader>gdd";
-              mode = "n";
-              action = "<cmd>lua diff_working_changes()<CR>";
-              desc = "Diff working changes against branch";
-            }
-            {
-              key = "<leader>b";
-              mode = "n";
-              action = "<cmd>:Neotree filesystem reveal float<CR>";
-              desc = "Open filetree";
-            }
-            {
-              key = "<Esc><Esc>";
-              mode = "t";
-              action = "<C-\\><C-n>";
-              desc = "Exit terminal mode";
-            }
-          ];
-
-          luaConfigRC.release-commit = builtins.readFile ./release-commit.lua;
-          luaConfigRC.gitRoot = builtins.readFile ./git-root.lua;
-          luaConfigRC.tab-format = builtins.readFile ./tab-format.lua;
-          luaConfigRC.file-history = builtins.readFile ./file-history.lua;
-          luaConfigRC.review-compare = builtins.readFile ./review-compare.lua;
-          luaConfigRC.review-main = builtins.readFile ./review-main.lua;
-          luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
-          luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
-          luaConfigRC.github-url = builtins.readFile ./github-url.lua;
-          luaConfigRC.file-location = builtins.readFile ./file-location.lua;
-          luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
-          luaConfigRC.osc52-clipboard = builtins.readFile ./osc52-clipboard.lua;
         };
       };
     };
-  };
-in {
-  options.nixos.modules.neovim = mkModuleOption {};
-  options.darwin.modules.neovim = mkModuleOption {};
-  options.homeManager.modules.neovim = mkModuleOption {};
+in
+{
+  options.nixos.modules.neovim = mkModuleOption { };
+  options.darwin.modules.neovim = mkModuleOption { };
+  options.homeManager.modules.neovim = mkModuleOption { };
 
   config.homeManager.modules.neovim = hmModule;
 
-  config.nixos.modules.neovim = {config, ...}: {
+  config.nixos.modules.neovim = { config, ... }: {
     environment.variables.EDITOR = "nvim";
-    home-manager.users.${config.mine.username}.imports = [hmModule];
+    home-manager.users.${config.mine.username}.imports = [ hmModule ];
   };
-  config.darwin.modules.neovim = {config, ...}: {
+  config.darwin.modules.neovim = { config, ... }: {
     environment.variables.EDITOR = "nvim";
-    home-manager.users.${config.mine.username}.imports = [hmModule];
+    home-manager.users.${config.mine.username}.imports = [ hmModule ];
   };
 }

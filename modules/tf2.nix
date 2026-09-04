@@ -1,6 +1,13 @@
 { mkModuleOption, ... }:
 let
-  hmModule = { config, lib, pkgs, osConfig, ... }:
+  hmModule =
+    {
+      config,
+      lib,
+      pkgs,
+      osConfig,
+      ...
+    }:
     let
       cfg = osConfig.mine.tf2;
 
@@ -11,17 +18,20 @@ let
         hash = "sha256-bPo7Gwzj3tGEnw1kHoPg56wjrud5aj6Tcn3oGtc6fiU=";
       };
 
-      bubbleHitsound = pkgs.runCommand "bubble-hitsound" {
-        src = pkgs.fetchurl {
-          url = "https://gamebanana.com/dl/185271";
-          hash = "sha256-03EZFeIj006aAofn98LnQGaqzmxf4Aa02EseUe6Da7E=";
-        };
-        nativeBuildInputs = [ pkgs.unar ];
-      } ''
-        unar -o "$TMPDIR" "$src"
-        mkdir -p "$out/sound/ui"
-        cp "$TMPDIR"/*/sound/ui/hitsound.wav "$out/sound/ui/hitsound.wav"
-      '';
+      bubbleHitsound =
+        pkgs.runCommand "bubble-hitsound"
+          {
+            src = pkgs.fetchurl {
+              url = "https://gamebanana.com/dl/185271";
+              hash = "sha256-03EZFeIj006aAofn98LnQGaqzmxf4Aa02EseUe6Da7E=";
+            };
+            nativeBuildInputs = [ pkgs.unar ];
+          }
+          ''
+            unar -o "$TMPDIR" "$src"
+            mkdir -p "$out/sound/ui"
+            cp "$TMPDIR"/*/sound/ui/hitsound.wav "$out/sound/ui/hitsound.wav"
+          '';
     in
     {
       home.activation.tf2 = {

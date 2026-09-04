@@ -35,7 +35,12 @@
     ];
 
     # Open firewall for k3s API and NodePort range
-    networking.firewall.allowedTCPPorts = [6443 8080 30080 30443];
+    networking.firewall.allowedTCPPorts = [
+      6443
+      8080
+      30080
+      30443
+    ];
 
     # Add kubectl and nftables for k3s compatibility
     environment.systemPackages = with pkgs; [

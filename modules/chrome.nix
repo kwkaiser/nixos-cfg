@@ -1,7 +1,10 @@
 { mkModuleOption, ... }:
 let
   systemModule = { pkgs, ... }: {
-    environment.systemPackages = with pkgs; [ chromium terraform ];
+    environment.systemPackages = with pkgs; [
+      chromium
+      terraform
+    ];
   };
 in
 {

@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   # bulk-pool/cache-pool are created fresh by disko below (destroying whatever
   # is currently on those disks). Encryption lives entirely at the LUKS layer
   # on each member disk (same pattern as desktop's multi-disk setup) - ZFS
@@ -34,12 +34,14 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = ["umask=0077"];
+                mountOptions = [ "umask=0077" ];
               };
             };
             swap = {
               size = "976M";
-              content = {type = "swap";};
+              content = {
+                type = "swap";
+              };
             };
             luks = {
               size = "100%";
@@ -71,7 +73,7 @@
               name = "bulk-disk1";
               settings = {
                 allowDiscards = true;
-                crypttabExtraOpts = ["nofail"];
+                crypttabExtraOpts = [ "nofail" ];
               };
               content = {
                 type = "zfs";
@@ -93,7 +95,7 @@
               name = "bulk-disk2";
               settings = {
                 allowDiscards = true;
-                crypttabExtraOpts = ["nofail"];
+                crypttabExtraOpts = [ "nofail" ];
               };
               content = {
                 type = "zfs";
@@ -115,7 +117,7 @@
               name = "bulk-disk3";
               settings = {
                 allowDiscards = true;
-                crypttabExtraOpts = ["nofail"];
+                crypttabExtraOpts = [ "nofail" ];
               };
               content = {
                 type = "zfs";
@@ -137,7 +139,7 @@
               name = "bulk-disk4";
               settings = {
                 allowDiscards = true;
-                crypttabExtraOpts = ["nofail"];
+                crypttabExtraOpts = [ "nofail" ];
               };
               content = {
                 type = "zfs";
@@ -161,7 +163,7 @@
               name = "cache-disk1";
               settings = {
                 allowDiscards = true;
-                crypttabExtraOpts = ["nofail"];
+                crypttabExtraOpts = [ "nofail" ];
               };
               content = {
                 type = "zfs";

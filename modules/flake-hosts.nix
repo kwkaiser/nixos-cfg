@@ -10,7 +10,8 @@ let
   };
 in
 {
-  config._module.args.mkNixosSystem = hostModule:
+  config._module.args.mkNixosSystem =
+    hostModule:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [
@@ -22,7 +23,8 @@ in
       ];
     };
 
-  config._module.args.mkDarwinSystem = hostModule:
+  config._module.args.mkDarwinSystem =
+    hostModule:
     inputs.nix-darwin.lib.darwinSystem {
       specialArgs = { inherit inputs; };
       modules = [
