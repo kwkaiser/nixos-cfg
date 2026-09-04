@@ -62,6 +62,6 @@ in
   });
 
   config.flake.devShells = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-    default = import ../devshell.nix { pkgs = inputs.nixpkgs.legacyPackages.${system}; };
+    default = import ../../devshell.nix { pkgs = inputs.nixpkgs.legacyPackages.${system}; };
   });
 }
