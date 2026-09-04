@@ -4,13 +4,17 @@ This repo contains [NixOS](https://nixos.org/) configurations for many of my dev
 
 ## Module structure
 
-The modules are structured to hide replicated config & installation details from whichever host is including the module; for example relying on an `isDarwin` conditional to determine if certain packages should be installed via `brew` in a darwin installation vs. via `nix` in a `NixOS` installation. You'll find:
+This repo follows the [dendritic pattern](https://github.com/mightyiam/dendritic): every `.nix` file under `modules/` (besides `flake.nix` itself and non-module asset files like `.sh`/`.lua`/`.py` scripts) is a [flake-parts](https://flake.parts) module, auto-imported via [`import-tree`](https://github.com/vic/import-tree). There's no manual `imports` list to maintain.
 
-- `modules/common` -> modules that may be supported across multiple hosts (common packages, dev tools, etc)
-- `modules/darwin` -> modules that are supported only on darwin (osx-specific apps, dock configs, etc)
-- `modules/nixos` -> modules that are supported only by nixos (zfs hosts, specific desktop environments, etc)
+Each feature file declares its own option under one or more of three registries:
 
-Packages that don't require any configuration or custom installation tweaks are generally defined alongside the host.
+- `nixos.modules.<name>` -> spliced into a host's NixOS system config
+- `darwin.modules.<name>` -> spliced into a host's nix-darwin system config
+- `homeManager.modules.<name>` -> spliced into `home-manager.users.<user>.imports`, from whichever of the above reference it
+
+A feature that behaves identically on nixos and darwin (e.g. `git`, `tmux`) usually only needs `homeManager.modules`; a feature with real platform differences (e.g. `docker`, `ssh`) declares both `nixos.modules.<name>` and `darwin.modules.<name>` with the platform-specific halves written directly, rather than branching on an `isDarwin` flag at runtime. Files under `modules/hosts/` are the same kind of module — each one lists which named modules a given host imports and supplies genuinely host-specific data (identity overrides, disk layout, hardware, VM port-forwards). There are no `mine.<feature>.enable` flags: importing a module *is* enabling it.
+
+`dendritic-lib.nix` at the repo root (deliberately outside `modules/`, so `import-tree` never scans it) provides `mkHmFeature`, a small helper for the common "same home-manager config on every platform" case.
 
 ## Virtual machines
 

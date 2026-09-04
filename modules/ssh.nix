@@ -1,0 +1,148 @@
+{ mkModuleOption, ... }:
+let
+  hmModule = { lib, pkgs, ... }: {
+    home.file.".ssh/config".force = true;
+    home.file.".ssh/rc" = {
+      executable = true;
+      text = ''
+        #!/bin/sh
+        if [ -n "$SSH_AUTH_SOCK" ]; then
+          ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock_link"
+        fi
+      '';
+    };
+    programs.ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      settings = {
+        "*" = {
+          ForwardAgent = true;
+          ServerAliveInterval = 300;
+          ServerAliveCountMax = 2;
+          TCPKeepAlive = "yes";
+          MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-sha1";
+        };
+        "homelab-vm" = {
+          Hostname = "localhost";
+          Port = 2222;
+          User = "kwkaiser";
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          AddKeysToAgent = "yes";
+        };
+        "desktop-vm" = {
+          Hostname = "localhost";
+          Port = 2223;
+          User = "kwkaiser";
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          AddKeysToAgent = "yes";
+        };
+        "desktop-lan-check" = lib.hm.dag.entryBefore ["desktop"] {
+          header = ''Match originalhost desktop exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.110/22'"'';
+          ProxyJump = "none";
+        };
+        "desktop" = {
+          Hostname = "192.168.4.110";
+          User = "kwkaiser";
+          ProxyJump = "kwkaiser@box.kwkaiser.io";
+          ForwardAgent = true;
+          StrictHostKeyChecking = "no";
+        };
+        "livingroom-lan-check" = lib.hm.dag.entryBefore ["livingroom"] {
+          header = ''Match originalhost livingroom exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.109/22'"'';
+          ProxyJump = "none";
+        };
+        "livingroom" = {
+          Hostname = "192.168.4.109";
+          User = "bingus";
+          ProxyJump = "kwkaiser@box.kwkaiser.io";
+          ForwardAgent = true;
+        };
+        "desktop-unlock" = {
+          Hostname = "box.kwkaiser.io";
+          User = "kwkaiser";
+          ForwardAgent = true;
+          StrictHostKeyChecking = "no";
+          RequestTTY = "force";
+          RemoteCommand = "ssh -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o MACs=hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com root@192.168.4.110 systemd-tty-ask-password-agent --query";
+        };
+        "homelab-unlock" = {
+          Hostname = "box.kwkaiser.io";
+          User = "kwkaiser";
+          ForwardAgent = true;
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          RequestTTY = "force";
+          RemoteCommand = "systemd-tty-ask-password-agent --query";
+        };
+        "desktop-wakeup" = {
+          Hostname = "box.kwkaiser.io";
+          User = "kwkaiser";
+          ForwardAgent = true;
+          StrictHostKeyChecking = "no";
+          RemoteCommand = "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null bingus@192.168.4.109 wakeonlan 70:85:c2:dc:da:23";
+        };
+        "desktop-wm" = {
+          Hostname = "192.168.4.110";
+          User = "kwkaiser";
+          ProxyJump = "kwkaiser@box.kwkaiser.io";
+          ForwardAgent = true;
+          StrictHostKeyChecking = "no";
+          RequestTTY = "force";
+          # A prior half-finished attempt (e.g. an ssh connection that dropped
+          # mid-password-prompt) leaves greetd's single session slot stuck
+          # "being configured" until greetd itself restarts. Safe to force
+          # here unconditionally, since this path is only ever used when
+          # nobody's physically at the console to lose a login attempt.
+          RemoteCommand = "sudo systemctl restart greetd && sudo greetd-remote-login";
+        };
+      };
+    };
+  };
+
+  serverOption = { lib, ... }: {
+    options.mine.ssh.server.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enables the sshd server (Remote Login on Darwin). Independent of the client config, since MDM-managed laptops may enforce this off.";
+    };
+  };
+in
+{
+  options.nixos.modules.ssh = mkModuleOption { };
+  options.darwin.modules.ssh = mkModuleOption { };
+  options.homeManager.modules.ssh = mkModuleOption { };
+
+  config.homeManager.modules.ssh = hmModule;
+
+  config.nixos.modules.ssh = { config, ... }: {
+    imports = [ serverOption ];
+    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+    services.openssh.enable = config.mine.ssh.server.enable;
+    services.openssh.settings.PasswordAuthentication = false;
+    programs.ssh.startAgent = true;
+  };
+
+  config.darwin.modules.ssh = { config, ... }: {
+    imports = [ serverOption ];
+    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+    services.openssh.enable = config.mine.ssh.server.enable;
+    launchd.user.agents.ssh-config-guard = {
+      serviceConfig = {
+        ProgramArguments = [
+          "${config.home-manager.users.${config.mine.username}.home.activationPackage}/activate"
+        ];
+        EnvironmentVariables = {
+          HOME = config.mine.homeDir;
+          USER = config.mine.username;
+          LOGNAME = config.mine.username;
+        };
+        WatchPaths = [ "${config.mine.homeDir}/.ssh/config" ];
+        RunAtLoad = true;
+        StandardOutPath = "${config.mine.homeDir}/Library/Logs/ssh-config-guard.log";
+        StandardErrorPath = "${config.mine.homeDir}/Library/Logs/ssh-config-guard.log";
+      };
+    };
+  };
+}
