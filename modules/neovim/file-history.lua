@@ -7,26 +7,18 @@ local function jump_file_history_to_commit(sha, attempts)
   end
 
   local view = lib.get_current_view()
-  if not view or not view.panel then
-    if attempts < 50 then
-      vim.defer_fn(function() jump_file_history_to_commit(sha, attempts + 1) end, 100)
-    end
-    return
-  end
-
-  local panel = view.panel
-  for _, entry in ipairs(panel.entries) do
-    if entry.commit and entry.commit.hash == sha then
-      panel:highlight_item(entry)
-      view:set_file(entry.files[1], false)
-      return
+  if view and view.panel then
+    for _, entry in ipairs(view.panel.entries) do
+      if entry.commit and entry.commit.hash == sha then
+        view.panel:highlight_item(entry)
+        view:set_file(entry.files[1], false)
+        return
+      end
     end
   end
 
-  if panel.updating then
-    if attempts < 50 then
-      vim.defer_fn(function() jump_file_history_to_commit(sha, attempts + 1) end, 100)
-    end
+  if attempts < 50 then
+    vim.defer_fn(function() jump_file_history_to_commit(sha, attempts + 1) end, 100)
   else
     vim.notify('Commit not found in file history', vim.log.levels.WARN)
   end
