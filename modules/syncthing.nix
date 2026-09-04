@@ -1,5 +1,4 @@
-{ mkModuleOption, ... }:
-let
+{mkModuleOption, ...}: let
   ignorePatterns = [
     ".DS_Store"
     "._*"
@@ -16,7 +15,7 @@ let
     pallet-macbook = "6JZGMBT-TX43LZJ-L7VCKGI-ZTSAJNV-GFAPC66-ENZ5UDE-SGT2XQV-I3RWFA7";
   };
 
-  allDevices = builtins.mapAttrs (name: id: { inherit id; }) deviceIds;
+  allDevices = builtins.mapAttrs (name: id: {inherit id;}) deviceIds;
 
   # Who each device is allowed to connect to. pallet-macbook (work laptop,
   # employer-controlled) only talks to server, so cutting it off is a single
@@ -33,60 +32,54 @@ let
     server = [
       "phone"
       "desktop"
-      "pallet-macbook"
     ];
-    pallet-macbook = [ "server" ];
+    pallet-macbook = [];
   };
 
-  mkHmModule =
-    selfDevice:
-    { lib, ... }:
-    let
-      allowedPeers = topology.${selfDevice} or [ ];
-      folderDevices = builtins.filter (d: builtins.elem d allowedPeers) (builtins.attrNames allDevices);
-    in
-    {
-      services.syncthing = {
-        enable = true;
-        settings = {
-          devices = lib.filterAttrs (name: _: builtins.elem name allowedPeers) allDevices;
-          folders = {
-            keys = {
-              id = "5plku-9azor";
-              path = "~/Documents/keys";
-              devices = folderDevices;
-              inherit ignorePatterns;
-            };
-            notes = {
-              id = "m4rpl-gqmhy";
-              path = "~/Documents/notes";
-              devices = folderDevices;
-              inherit ignorePatterns;
-            };
+  mkHmModule = selfDevice: {lib, ...}: let
+    allowedPeers = topology.${selfDevice} or [];
+    folderDevices = builtins.filter (d: builtins.elem d allowedPeers) (builtins.attrNames allDevices);
+  in {
+    services.syncthing = {
+      enable = true;
+      settings = {
+        devices = lib.filterAttrs (name: _: builtins.elem name allowedPeers) allDevices;
+        folders = {
+          keys = {
+            id = "5plku-9azor";
+            path = "~/Documents/keys";
+            devices = folderDevices;
+            inherit ignorePatterns;
+          };
+          notes = {
+            id = "m4rpl-gqmhy";
+            path = "~/Documents/notes";
+            devices = folderDevices;
+            inherit ignorePatterns;
           };
         };
       };
     };
+  };
 
-  featureOptions = { lib, ... }: {
+  featureOptions = {lib, ...}: {
     options.mine.syncthing.deviceName = lib.mkOption {
       type = lib.types.str;
       description = "This host's syncthing device name. Determines which peers it's allowed to connect to, per the edges declared in ./syncthing.nix.";
     };
   };
-in
-{
-  options.nixos.modules.syncthing = mkModuleOption { };
-  options.darwin.modules.syncthing = mkModuleOption { };
+in {
+  options.nixos.modules.syncthing = mkModuleOption {};
+  options.darwin.modules.syncthing = mkModuleOption {};
 
-  config.nixos.modules.syncthing = { config, ... }: {
-    imports = [ featureOptions ];
+  config.nixos.modules.syncthing = {config, ...}: {
+    imports = [featureOptions];
     home-manager.users.${config.mine.username}.imports = [
       (mkHmModule config.mine.syncthing.deviceName)
     ];
   };
-  config.darwin.modules.syncthing = { config, ... }: {
-    imports = [ featureOptions ];
+  config.darwin.modules.syncthing = {config, ...}: {
+    imports = [featureOptions];
     home-manager.users.${config.mine.username}.imports = [
       (mkHmModule config.mine.syncthing.deviceName)
     ];
