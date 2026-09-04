@@ -7,30 +7,29 @@ Build and run a NixOS VM for `$ARGUMENTS` (e.g. `desktop`), then help the user v
 
 ## How this repo's VM testing works
 
+This repo follows the [dendritic pattern](https://github.com/mightyiam/dendritic): every `modules/*.nix` file is a flake-parts module contributing to `nixos.modules.<name>` / `darwin.modules.<name>` / `homeManager.modules.<name>` registries, and each host under `modules/hosts/<hostname>.nix` lists which of those it imports.
+
 ### VM config pattern
 
-Each host that supports VM testing has a `hosts/<hostname>/vm.nix` imported in its `default.nix`. This file uses the `virtualisation.vmVariant` module to apply VM-only overrides without affecting the real system build. See `hosts/homelab/vm.nix` and `hosts/desktop/vm.nix` for examples.
+Each host that supports VM testing imports the shared `vm-testing` module (`modules/vm-testing.nix`, registry key `nixos.modules.vm-testing`) plus a thin per-host `modules/hosts/_<hostname>/vm.nix` (not itself auto-imported — it's referenced by relative path from `modules/hosts/<hostname>.nix`, matching the underscore-prefixed-directory convention `import-tree` skips) that sets `mine.vmTesting.{memorySize,cores,diskSize,forwardPorts}`. See `modules/hosts/_homelab/vm.nix` and `modules/hosts/_desktop/vm.nix` for examples.
 
-Minimum `vm.nix` for a desktop-style host:
+Minimum per-host `vm.nix` for a desktop-style host:
 
 ```nix
 { lib, ... }: {
-  virtualisation.vmVariant = {
-    # Disable modules that are incompatible with the VM bootloader
-    mine.remoteUnlock.enable = lib.mkForce false;
-
-    virtualisation = {
-      forwardPorts = [
-        { from = "host"; host.port = 2222; guest.port = 22; }
-      ];
-    };
+  mine.vmTesting = {
+    memorySize = 4096;
+    cores = 4;
+    forwardPorts = [
+      { from = "host"; host.port = 2222; guest.port = 22; }
+    ];
   };
 }
 ```
 
 ### Known incompatibilities in vmVariant
 
-- **`mine.remoteUnlock`**: generates initrd SSH host keys via `pkgs.runCommand` (derivation paths). The VM variant's bootloader requires unquoted Nix store paths for `boot.initrd.secrets`, so this module must be force-disabled in `vmVariant`.
+- **`mine.remoteUnlock`**: generates initrd SSH host keys via `pkgs.runCommand` (derivation paths) and binds to a physical ethernet device name that never matches the VM's virtual NIC. Hosts that import `remote-unlock` (`modules/remote-unlock.nix`) must also force `virtualisation.vmVariant.mine.remoteUnlock.vmCompatible = lib.mkForce false;` in their per-host `vm.nix` — see `modules/hosts/_desktop/vm.nix`.
 - Any module that sets `boot.initrd.secrets` to derivation values will hit the same assertion failure.
 
 ### Build
@@ -47,7 +46,7 @@ New files must be `git add`ed before Nix can see them — Nix reads the flake fr
 ./result/bin/run-<hostname>-vm
 ```
 
-This opens a QEMU window. The default user is `kwkaiser`, password `bingus` (set via `initialPassword` in `modules/user.nix`).
+This opens a QEMU window. The default user is `kwkaiser`, password `bingus` (set via `initialPassword` in `modules/identity.nix`).
 
 ### SSH in
 
@@ -71,3 +70,4 @@ pkill -f "qemu.*<hostname>"
 4. Tell the user to interact with the VM window (e.g. log in via tuigreet).
 5. SSH in to verify the behavior once the user confirms they've completed the UI step.
 6. Kill with `pkill -f "qemu.*$ARGUMENTS"` when done.
+

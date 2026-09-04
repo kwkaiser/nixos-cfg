@@ -58,114 +58,15 @@
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    import-tree.url = "github:vic/import-tree";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    disko,
-    home-manager,
-    nix-darwin,
-    stylix,
-    nvf,
-    ...
-  } @ inputs: let
-    # Shared module for unfree packages
-    allowUnfree = {
-      nixpkgs.config.allowUnfree = true;
-    };
-
-    hyprlandOverlay = final: prev: {
-      hyprland = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland;
-      hyprland-unwrapped = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland-unwrapped;
-    };
-
-    crossArchQemuPackage = hostPkgs: let
-      qemu = hostPkgs.qemu;
-    in
-      qemu
-      // {
-        stdenv = qemu.stdenv // {hostPlatform = qemu.stdenv.hostPlatform // {isLinux = true;};};
-      };
-
-    # Helper to create NixOS configurations
-    mkNixosSystem = hostModule:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs nixpkgs;
-          isDarwin = false;
-        };
-        modules = [
-          disko.nixosModules.disko
-          home-manager.nixosModules.default
-          ./modules
-          allowUnfree
-          { nixpkgs.overlays = [ hyprlandOverlay ]; }
-          hostModule
-        ];
-      };
-
-    # Helper to create Darwin configurations
-    mkDarwinSystem = hostModule:
-      nix-darwin.lib.darwinSystem {
-        specialArgs = {
-          inherit inputs;
-          isDarwin = true;
-        };
-        modules = [
-          home-manager.darwinModules.default
-          stylix.darwinModules.stylix
-          ./modules
-          allowUnfree
-          { nixpkgs.overlays = [ inputs.nixpkgs-firefox-darwin.overlay ]; }
-          hostModule
-        ];
-      };
-  in {
-    nixosConfigurations = {
-      homelab = mkNixosSystem ./hosts/homelab;
-      homelab-vps = mkNixosSystem ./hosts/homelab-vps;
-      desktop = mkNixosSystem ./hosts/desktop;
-    };
-
-    darwinConfigurations."work-macbook" = mkDarwinSystem ./hosts/work-macbook.nix;
-
-    # Per-system builds/apps so `nix run .#homelab-vm` picks the qemu host
-    # pkgs matching whatever machine you're actually running it from (Linux
-    # or the Mac), without needing `--impure` for builtins.currentSystem.
-    packages = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: let
-      hostPkgs = nixpkgs.legacyPackages.${system};
-      vmModules = [
-        {virtualisation.vmVariant.virtualisation.host.pkgs = hostPkgs;}
-        (nixpkgs.lib.optionalAttrs (nixpkgs.lib.hasSuffix "-darwin" system) {
-          virtualisation.vmVariant.virtualisation.qemu.package = crossArchQemuPackage hostPkgs;
-        })
-      ];
-    in {
-      homelab-vm = (self.nixosConfigurations.homelab.extendModules {modules = vmModules;}).config.system.build.vm;
-      homelab-vps-vm = (self.nixosConfigurations.homelab-vps.extendModules {modules = vmModules;}).config.system.build.vm;
-      desktop-vm = (self.nixosConfigurations.desktop.extendModules {modules = vmModules;}).config.system.build.vm;
-    } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
-      devbox-image = import ./devbox/image.nix {inherit inputs; pkgs = hostPkgs;};
-    });
-
-    apps = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
-      homelab-vm = {
-        type = "app";
-        program = nixpkgs.lib.getExe self.packages.${system}.homelab-vm;
-      };
-      homelab-vps-vm = {
-        type = "app";
-        program = nixpkgs.lib.getExe self.packages.${system}.homelab-vps-vm;
-      };
-      desktop-vm = {
-        type = "app";
-        program = nixpkgs.lib.getExe self.packages.${system}.desktop-vm;
-      };
-    });
-
-    devShells = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-darwin"] (system: {
-      default = import ./devshell.nix {pkgs = nixpkgs.legacyPackages.${system};};
-    });
-  };
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./modules);
 }
