@@ -30,7 +30,11 @@
 
       nix.gc.options = lib.mkForce "--delete-older-than 1d";
 
-      nix.settings.min-free = 5 * 1024 * 1024 * 1024;
+      # min-free needs real headroom above k3s's kubelet ephemeral-storage
+      # eviction threshold (~5% of disk, ~3.7GiB here) or a fast burst of
+      # remote-build traffic can blow past both before nix's 5s-interval
+      # auto-GC check can react and free space in time.
+      nix.settings.min-free = 10 * 1024 * 1024 * 1024;
       nix.settings.max-free = 20 * 1024 * 1024 * 1024;
     };
 }
