@@ -1,11 +1,17 @@
 { mkModuleOption, ... }:
 let
-  hmModule = { pkgs, ... }: {
+  hmModule = { pkgs, lib, ... }: {
     # home-manager keeps its own nixpkgs.config, separate from the outer
     # NixOS/darwin one even with useUserPackages - joypixels' unfree-license
     # check runs against whichever config produced the `pkgs.joypixels`
     # value actually forced here, so it needs the acceptance too.
     nixpkgs.config.joypixels.acceptLicense = true;
+    # Safe default for every host: dconf activation talks to a real DBus
+    # session, which headless hosts (homelab, homelab-vps) don't have and
+    # which fails activation outright. Hosts with an actual desktop session
+    # (currently just desktop.nix) override this back to `true` with a
+    # plain (higher-priority than mkDefault) assignment.
+    dconf.enable = lib.mkDefault false;
     stylix.enable = true;
     stylix.image = ../assets/backgrounds/bay-wharf.jpg;
     # Other themes available under https://github.com/tinted-theming/base16-schemes
