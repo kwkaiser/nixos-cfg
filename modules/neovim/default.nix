@@ -142,37 +142,41 @@ let
             autopairs.nvim-autopairs.enable = true;
             statusline.lualine = {
               enable = true;
-              setupOpts.tabline = {
-                lualine_a = [
-                  (lib.generators.mkLuaInline ''
+              setupOpts = {
+                tabline = {
+                  lualine_a = [
+                    (lib.generators.mkLuaInline ''
+                      {
+                        'tabs',
+                        mode = 1,
+                        fmt = function(name, context)
+                          return tab_format(name, context)
+                        end,
+                      }
+                    '')
+                  ];
+                };
+                # activeSection.b was removed by nvf upstream; the raw
+                # setupOpts.sections.lualine_b path replaces it.
+                sections.lualine_b = [
+                  ''
                     {
-                      'tabs',
-                      mode = 1,
-                      fmt = function(name, context)
-                        return tab_format(name, context)
-                      end,
+                      "filetype",
+                      colored = true,
+                      icon_only = true,
+                      icon = { align = 'left' }
                     }
-                  '')
+                  ''
+                  ''
+                    {
+                      "filename",
+                      path = 1,
+                      symbols = {modified = ' ', readonly = ' '},
+                      separator = {right = '''}
+                    }
+                  ''
                 ];
               };
-              activeSection.b = [
-                ''
-                  {
-                    "filetype",
-                    colored = true,
-                    icon_only = true,
-                    icon = { align = 'left' }
-                  }
-                ''
-                ''
-                  {
-                    "filename",
-                    path = 1,
-                    symbols = {modified = ' ', readonly = ' '},
-                    separator = {right = '''}
-                  }
-                ''
-              ];
             };
 
             lsp.formatOnSave = true;
