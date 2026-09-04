@@ -159,22 +159,22 @@ let
                 # activeSection.b was removed by nvf upstream; the raw
                 # setupOpts.sections.lualine_b path replaces it.
                 sections.lualine_b = [
-                  ''
+                  (lib.generators.mkLuaInline ''
                     {
                       "filetype",
                       colored = true,
                       icon_only = true,
                       icon = { align = 'left' }
                     }
-                  ''
-                  ''
+                  '')
+                  (lib.generators.mkLuaInline ''
                     {
                       "filename",
                       path = 1,
                       symbols = {modified = ' ', readonly = ' '},
                       separator = {right = '''}
                     }
-                  ''
+                  '')
                 ];
               };
             };
@@ -499,12 +499,6 @@ let
                 desc = "Open PR for commit";
               }
               {
-                key = "<leader>gH";
-                mode = "n";
-                action = "<cmd>lua git_blame_hint()<CR>";
-                desc = "Show git blame hint";
-              }
-              {
                 key = "<leader>gdc";
                 mode = "n";
                 action = "<cmd>lua review_compare_branches()<CR>";
@@ -544,7 +538,7 @@ let
             luaConfigRC.review-main = builtins.readFile ./review-main.lua;
             luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
             luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
-            luaConfigRC.git-blame-hint = builtins.readFile ./git-blame-hint.lua;
+            luaConfigRC.git-blame = builtins.readFile ./git-blame.lua;
             luaConfigRC.github-url = builtins.readFile ./github-url.lua;
             luaConfigRC.file-location = builtins.readFile ./file-location.lua;
             luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
