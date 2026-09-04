@@ -234,8 +234,6 @@ let
                 };
               };
 
-              gitsigns.enable = true;
-              gitsigns.mappings.blameLine = "<leader>gH";
             };
 
             utility.diffview-nvim = {
@@ -501,6 +499,12 @@ let
                 desc = "Open PR for commit";
               }
               {
+                key = "<leader>gH";
+                mode = "n";
+                action = "<cmd>lua git_blame_hint()<CR>";
+                desc = "Show git blame hint";
+              }
+              {
                 key = "<leader>gdc";
                 mode = "n";
                 action = "<cmd>lua review_compare_branches()<CR>";
@@ -540,6 +544,7 @@ let
             luaConfigRC.review-main = builtins.readFile ./review-main.lua;
             luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
             luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
+            luaConfigRC.git-blame-hint = builtins.readFile ./git-blame-hint.lua;
             luaConfigRC.github-url = builtins.readFile ./github-url.lua;
             luaConfigRC.file-location = builtins.readFile ./file-location.lua;
             luaConfigRC.open-pr = builtins.readFile ./open-pr.lua;
