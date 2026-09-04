@@ -83,8 +83,10 @@
       mine.tf2.hitsound.enable = true;
 
       # stylix's dconf integration only makes sense with a desktop session -
-      # this is the only nixos host that imports hyprland.
-      home-manager.users.${config.mine.username}.dconf.enable = lib.mkDefault true;
+      # this is the only nixos host that imports hyprland. Plain assignment
+      # (not mkDefault) so it wins over stylix.nix's mkDefault-false baseline
+      # without a same-priority conflict.
+      home-manager.users.${config.mine.username}.dconf.enable = true;
     }
   );
 }
