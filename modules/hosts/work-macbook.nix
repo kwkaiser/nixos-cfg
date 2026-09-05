@@ -52,6 +52,7 @@
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
       system.stateVersion = 5;
 
+      mine.username = "karl";
       mine.git.signCommits = true;
       mine.syncthing.deviceName = "pallet-macbook";
       mine.ssh.server.enable = false;

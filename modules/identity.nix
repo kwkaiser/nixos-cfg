@@ -66,7 +66,6 @@ in
       options.mine = {
         username = lib.mkOption {
           type = lib.types.str;
-          default = "karl";
           description = "Username for the primary user";
         };
         homeDir = lib.mkOption {
