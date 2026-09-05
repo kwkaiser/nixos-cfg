@@ -1,37 +1,41 @@
 { mkModuleOption, ... }:
 let
-  homeModule = { pkgs, ... }: {
-    home.packages = with pkgs; [
-      fzf
-      nix-search-tv
+  mkHomeModule =
+    { flakeHost, isDarwin }:
+    { pkgs, ... }:
+    {
+      home.packages = with pkgs; [
+        fzf
+        nix-search-tv
 
-      (writeShellScriptBin "ns" ''
-        nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history
-      '')
+        (writeShellScriptBin "ns" ''
+          nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history
+        '')
 
-      (writeShellScriptBin "update" ''
-        cd ~/Documents/nixos-cfg && git pl && nix flake update && git commit --all --message "update flake" && git ps
-      '')
+        (writeShellScriptBin "update" ''
+          cd ~/Documents/nixos-cfg && git pl && nix flake update && git commit --all --message "update flake" && git ps
+        '')
 
-      (writeShellScriptBin "cleanup" ''
-        nix-collect-garbage -d && sudo nix-collect-garbage -d
-      '')
+        (writeShellScriptBin "cleanup" ''
+          nix-collect-garbage -d && sudo nix-collect-garbage -d
+        '')
 
-      (writeShellScriptBin "upgrade" ''
-        cd ~/Documents/nixos-cfg
-        if [ "$(hostname)" = "karls-MacBook-Pro" ]; then
-          sudo nix run nix-darwin -- switch --flake .#work-macbook
-        else
-          sudo nixos-rebuild switch --flake .#$(hostname)
-        fi
-      '')
-    ];
+        (writeShellScriptBin "upgrade" ''
+          cd ~/Documents/nixos-cfg
+          ${
+            if isDarwin then
+              "sudo nix run nix-darwin -- switch --flake .#${flakeHost}"
+            else
+              "sudo nixos-rebuild switch --flake .#${flakeHost}"
+          }
+        '')
+      ];
 
-    programs.direnv = {
-      enable = true;
-      nix-direnv.enable = true;
+      programs.direnv = {
+        enable = true;
+        nix-direnv.enable = true;
+      };
     };
-  };
 
   # Declared here (rather than in ./builder.nix) so they're visible on every
   # host, including darwin clients that never import ./builder.nix itself.
@@ -80,9 +84,6 @@ in
 {
   options.nixos.modules.nix-settings = mkModuleOption { };
   options.darwin.modules.nix-settings = mkModuleOption { };
-  options.homeManager.modules.nix-settings = mkModuleOption { };
-
-  config.homeManager.modules.nix-settings = homeModule;
 
   config.nixos.modules.nix-settings =
     {
@@ -100,7 +101,12 @@ in
       nixpkgs.config.allowUnfree = true;
       nixpkgs.config.allowUnfreePredicate = _: true;
       environment.systemPackages = [ pkgs.nixfmt ];
-      home-manager.users.${config.mine.username}.imports = [ homeModule ];
+      home-manager.users.${config.mine.username}.imports = [
+        (mkHomeModule {
+          flakeHost = config.mine.flakeHost;
+          isDarwin = false;
+        })
+      ];
 
       nix = {
         gc = {
@@ -140,7 +146,12 @@ in
       nixpkgs.config.allowUnfree = true;
       nixpkgs.config.allowUnfreePredicate = _: true;
       environment.systemPackages = [ pkgs.nixfmt ];
-      home-manager.users.${config.mine.username}.imports = [ homeModule ];
+      home-manager.users.${config.mine.username}.imports = [
+        (mkHomeModule {
+          flakeHost = config.mine.flakeHost;
+          isDarwin = true;
+        })
+      ];
 
       nix = {
         enable = true;

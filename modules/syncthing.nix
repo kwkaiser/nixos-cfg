@@ -12,7 +12,7 @@
     phone = "C2OL7VB-VVCL6CM-2ZLO7N4-RLTP7GO-EN3EZSD-QPZL3XC-VTI7IUC-BDDCEAV";
     desktop = "GUNDSXG-DIIM4AU-IF2MLGU-TAGH3RP-X7AJELO-VJAEZAF-4VMV4QI-SQIT2AQ";
     server = "KCLNUZ7-P2YEIO4-WNZ7O6L-TXWD3VI-TETMH45-GQJKLNC-LMEFDIV-B7XBFAM";
-    pallet-macbook = "6JZGMBT-TX43LZJ-L7VCKGI-ZTSAJNV-GFAPC66-ENZ5UDE-SGT2XQV-I3RWFA7";
+    personal-macbook = "QKCXSV7-OHBD7AI-VNRHTWB-MVGQ5XW-ZDK24WA-SU2PVLG-GWWYQPL-CAESIA7";
   };
 
   allDevices = builtins.mapAttrs (name: id: {inherit id;}) deviceIds;
@@ -33,7 +33,11 @@
       "phone"
       "desktop"
     ];
-    pallet-macbook = [];
+    personal-macbook = [
+      "server"
+      "phone"
+      "desktop"
+    ];
   };
 
   mkHmModule = selfDevice: {lib, ...}: let
