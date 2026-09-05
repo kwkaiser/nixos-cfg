@@ -3,10 +3,9 @@
   mkDarwinSystem,
   lib,
   ...
-}:
-{
-  flake.darwinConfigurations."work-macbook" = mkDarwinSystem (
-    { lib, ... }: {
+}: {
+  flake.darwinConfigurations."personal-macbook" = mkDarwinSystem (
+    {lib, ...}: {
       imports = with config.darwin.modules; [
         identity
         base
@@ -52,9 +51,9 @@
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
       system.stateVersion = 5;
 
-      mine.username = "karl";
+      mine.username = "kwkaiser";
       mine.git.signCommits = true;
-      mine.syncthing.deviceName = "pallet-macbook";
+      mine.syncthing.deviceName = "personal-macbook";
       mine.ssh.server.enable = false;
 
       documentation.doc.enable = false;
