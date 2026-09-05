@@ -34,6 +34,7 @@
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
       system.stateVersion = "25.05";
 
+      mine.flakeHost = "homelab";
       mine.remoteUnlock.requiredKernelModules = [ "ixgbe" ];
       mine.remoteUnlock.ethDevice = "enp8s0f0";
       mine.remoteUnlock.address = "192.168.2.103/24";

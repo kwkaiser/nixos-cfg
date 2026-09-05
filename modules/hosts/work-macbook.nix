@@ -53,6 +53,7 @@
       system.stateVersion = 5;
 
       mine.username = "karl";
+      mine.flakeHost = "work-macbook";
       mine.git.signCommits = true;
       mine.syncthing.deviceName = "pallet-macbook";
       mine.ssh.server.enable = false;

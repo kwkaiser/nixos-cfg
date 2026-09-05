@@ -3,9 +3,10 @@
   mkDarwinSystem,
   lib,
   ...
-}: {
+}:
+{
   flake.darwinConfigurations."personal-macbook" = mkDarwinSystem (
-    {lib, ...}: {
+    { lib, ... }: {
       imports = with config.darwin.modules; [
         identity
         base
@@ -46,12 +47,14 @@
         wireguard
         sikarugir
         borgmatic
+        spotlight
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
       system.stateVersion = 5;
 
       mine.username = "kwkaiser";
+      mine.flakeHost = "personal-macbook";
       mine.git.signCommits = true;
       mine.syncthing.deviceName = "personal-macbook";
       mine.ssh.server.enable = false;
@@ -60,6 +63,9 @@
       system.tools.darwin-uninstaller.enable = false;
 
       homebrew.enable = true;
+      homebrew.onActivation.cleanup = "zap";
+
+      system.defaults.dock.persistent-apps = [ ];
     }
   );
 }

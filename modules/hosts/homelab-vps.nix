@@ -35,6 +35,7 @@
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
       system.stateVersion = "25.05";
 
+      mine.flakeHost = "homelab-vps";
       mine.isBuilder = true;
       mine.nfs.exports = ''
         /bulk-pool 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash) 10.43.0.0/16(rw,sync,no_subtree_check,no_root_squash) 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)

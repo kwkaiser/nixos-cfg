@@ -73,6 +73,7 @@
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
       ];
 
+      mine.flakeHost = "desktop";
       mine.waybar.primaryMonitor = "DP-1";
       mine.waybar.secondaryMonitor = "DP-2";
       mine.syncthing.deviceName = "desktop";

@@ -8,10 +8,6 @@
       "com.apple.assistant.support"."Assistant Enabled" = false;
       "com.apple.sharingd".DiscoverableMode = "Off";
       "com.apple.SubmitDiagInfo".AutoSubmit = false;
-      "com.apple.Safari" = {
-        UniversalSearchEnabled = false;
-        SuppressSearchSuggestions = true;
-      };
       "com.apple.lookup.shared".LookupSuggestionsDisabled = true;
     };
 
@@ -47,7 +43,7 @@
       };
     };
 
-    system.activationScripts.disableSharingServices.text = ''
+    system.activationScripts.postActivation.text = ''
       /usr/sbin/systemsetup -setremoteappleevents off >/dev/null 2>&1 || true
       /bin/launchctl disable system/com.apple.AEServer >/dev/null 2>&1 || true
       /bin/launchctl disable system/com.apple.smbd >/dev/null 2>&1 || true

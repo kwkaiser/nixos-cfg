@@ -25,6 +25,10 @@ in
           default = "/home/${config.mine.username}";
           description = "Home directory for the primary user";
         };
+        flakeHost = lib.mkOption {
+          type = lib.types.str;
+          description = "Attribute name of this host under nixosConfigurations/darwinConfigurations, e.g. for `nixos-rebuild switch --flake .#<flakeHost>`. May differ from the OS-level hostname.";
+        };
         email = lib.mkOption {
           type = lib.types.str;
           default = email;
@@ -72,6 +76,10 @@ in
           type = lib.types.str;
           default = "/Users/${config.mine.username}";
           description = "Home directory for the primary user";
+        };
+        flakeHost = lib.mkOption {
+          type = lib.types.str;
+          description = "Attribute name of this host under nixosConfigurations/darwinConfigurations, e.g. for `nix run nix-darwin -- switch --flake .#<flakeHost>`. May differ from the OS-level hostname.";
         };
         email = lib.mkOption {
           type = lib.types.str;
