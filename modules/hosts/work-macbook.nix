@@ -15,6 +15,7 @@
         stylix
 
         aero
+        macos-minimal
         node
         neovim
         kitty
