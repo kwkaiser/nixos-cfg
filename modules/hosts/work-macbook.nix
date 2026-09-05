@@ -38,6 +38,7 @@
         homelab-hosts-file
         gh-dash
         rust
+        tailcat
         flyio
         codex
         firebase
