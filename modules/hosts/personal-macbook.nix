@@ -16,6 +16,8 @@
 
         aero
         macos-minimal
+        macos-snappy
+        macos-perf
         node
         neovim
         kitty
