@@ -50,8 +50,6 @@
     system.activationScripts.disableSharingServices.text = ''
       /usr/sbin/systemsetup -setremoteappleevents off >/dev/null 2>&1 || true
       /bin/launchctl disable system/com.apple.AEServer >/dev/null 2>&1 || true
-      /bin/launchctl disable system/com.apple.screensharing >/dev/null 2>&1 || true
-      /bin/launchctl bootout system/com.apple.screensharing >/dev/null 2>&1 || true
       /bin/launchctl disable system/com.apple.smbd >/dev/null 2>&1 || true
       /bin/launchctl bootout system/com.apple.smbd >/dev/null 2>&1 || true
       /usr/sbin/cupsctl --no-share-printers >/dev/null 2>&1 || true
