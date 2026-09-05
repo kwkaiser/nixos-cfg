@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 let
   hyprlandOverlay = final: prev: {
     hyprland = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland;
@@ -10,6 +10,16 @@ let
   };
 in
 {
+  # Unlike `nixosConfigurations`, flake-parts has no built-in option for
+  # `darwinConfigurations`, so without this it falls through to the generic
+  # freeform flake-output type, which requires the whole attribute be defined
+  # exactly once - multiple host files each adding their own key then
+  # collides as "defined multiple times".
+  options.flake.darwinConfigurations = lib.mkOption {
+    type = lib.types.lazyAttrsOf lib.types.raw;
+    default = { };
+  };
+
   config._module.args.mkNixosSystem =
     hostModule:
     inputs.nixpkgs.lib.nixosSystem {
