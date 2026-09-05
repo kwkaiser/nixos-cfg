@@ -56,6 +56,11 @@ let
         default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJmeeD/NBdZPSs5Frh+jgmt0eHabG3d2F2s1pFtwsVj nix-remote-build-homelab-vps";
         description = "Public half of the dedicated remote-build keypair (private half lives in secretspec as NIX_BUILDER_KEY, installed on clients via `task install-nix-build-key`).";
       };
+      publicHostKey = lib.mkOption {
+        type = lib.types.str;
+        default = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUcrekltTDRIY2Y4Sjd1V0hFWXdaeW5mYXp0VEp1anppZytST2ROSWRaOTA=";
+        description = "Base64-encoded SSH host public key of the remote builder (its `/etc/ssh/ssh_host_ed25519_key.pub`), so clients trust it without needing an entry in root's known_hosts.";
+      };
     };
     options.mine.isBuilder = lib.mkOption {
       type = lib.types.bool;
@@ -70,6 +75,7 @@ let
         hostName = config.mine.builder.hostName;
         sshUser = config.mine.builder.sshUser;
         sshKey = "/etc/nix/build-keys/builder";
+        publicHostKey = config.mine.builder.publicHostKey;
         protocol = "ssh-ng";
         systems = [ "x86_64-linux" ];
         maxJobs = 2;
@@ -77,7 +83,7 @@ let
       }
     ];
     remoteSubstituters = lib.optionals (!config.mine.isBuilder) [
-      "ssh-ng://${config.mine.builder.sshUser}@${config.mine.builder.hostName}?ssh-key=/etc/nix/build-keys/builder&trusted=true"
+      "ssh-ng://${config.mine.builder.sshUser}@${config.mine.builder.hostName}?ssh-key=/etc/nix/build-keys/builder&base64-ssh-public-host-key=${config.mine.builder.publicHostKey}&trusted=true"
     ];
   };
 in
