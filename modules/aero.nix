@@ -51,6 +51,7 @@
     # Apply keyboard shortcut changes immediately without requiring logout
     system.activationScripts.postActivation.text = ''
       sudo -u ${config.mine.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      rm -rf "${config.mine.homeDir}/Library/Saved Application State"/*.savedState
     '';
 
     services.aerospace.settings = {
