@@ -1,70 +1,57 @@
-resource "linode_instance" "homelab_vps" {
-  label           = var.label
-  region          = var.region
-  type            = var.instance_type
-  image           = var.image
-  authorized_keys = var.authorized_keys
-  root_pass       = var.root_pass
+resource "hcloud_ssh_key" "homelab_vps" {
+  for_each = { for idx, key in var.authorized_keys : tostring(idx) => key }
+
+  name       = "${var.label}-${each.key}"
+  public_key = each.value
 }
 
-resource "linode_instance_config" "homelab_vps" {
-  linode_id   = linode_instance.homelab_vps.id
-  label       = "direct-disk"
-  kernel      = "linode/direct-disk"
-  root_device = "/dev/sda"
-  booted      = var.boot_into_direct_disk ? true : null
+resource "hcloud_firewall" "homelab_vps" {
+  name = "${var.label}-fw"
 
-  device {
-    device_name = "sda"
-    disk_id     = [for d in linode_instance.homelab_vps.disk : d.id if d.filesystem != "swap"][0]
+  rule {
+    description = "ssh"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "22"
+    source_ips  = concat(var.ssh_allow_list_ipv4, var.ssh_allow_list_ipv6)
   }
-  device {
-    device_name = "sdb"
-    disk_id     = [for d in linode_instance.homelab_vps.disk : d.id if d.filesystem == "swap"][0]
+
+  rule {
+    description = "http"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "80"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    description = "https"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "443"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    description = "k3s-api"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "6443"
+    source_ips  = concat(var.ssh_allow_list_ipv4, var.ssh_allow_list_ipv6)
   }
 }
 
-resource "linode_firewall" "homelab_vps" {
-  label = "${var.label}-fw"
+resource "hcloud_server" "homelab_vps" {
+  name        = var.label
+  server_type = var.server_type
+  image       = var.image
+  location    = var.location
 
-  inbound_policy  = "DROP"
-  outbound_policy = "ACCEPT"
+  ssh_keys     = [for k in hcloud_ssh_key.homelab_vps : k.id]
+  firewall_ids = [hcloud_firewall.homelab_vps.id]
 
-  inbound {
-    label    = "ssh"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "22"
-    ipv4     = var.ssh_allow_list_ipv4
-    ipv6     = var.ssh_allow_list_ipv6
+  public_net {
+    ipv4_enabled = true
+    ipv6_enabled = true
   }
-
-  inbound {
-    label    = "http"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "80"
-    ipv4     = ["0.0.0.0/0"]
-    ipv6     = ["::/0"]
-  }
-
-  inbound {
-    label    = "https"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "443"
-    ipv4     = ["0.0.0.0/0"]
-    ipv6     = ["::/0"]
-  }
-
-  inbound {
-    label    = "k3s-api"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "6443"
-    ipv4     = var.ssh_allow_list_ipv4
-    ipv6     = var.ssh_allow_list_ipv6
-  }
-
-  linodes = [linode_instance.homelab_vps.id]
 }
