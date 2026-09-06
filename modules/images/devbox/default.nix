@@ -7,7 +7,7 @@ let
   # NixOS/Darwin module system's shared `allowUnfree` module, which this
   # standalone image build bypasses entirely.
   homePkgs = import inputs.nixpkgs {
-    inherit (pkgs) system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
   };
 

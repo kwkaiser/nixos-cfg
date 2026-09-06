@@ -3,7 +3,7 @@ let
   hmModule = { pkgs, ... }: {
     home.packages =
       with pkgs;
-      pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [ keepassxc ]
+      pkgs.lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [ keepassxc ]
       ++ [
         _1password-cli
         _1password-gui

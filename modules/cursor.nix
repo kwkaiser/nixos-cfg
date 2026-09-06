@@ -4,7 +4,7 @@ let
 in
 mkHmFeature "cursor" (
   { pkgs, lib, ... }: {
-    home.packages = lib.mkIf (!pkgs.stdenv.isDarwin) [ pkgs.code-cursor ];
+    home.packages = lib.mkIf (!pkgs.stdenv.hostPlatform.isDarwin) [ pkgs.code-cursor ];
 
     programs.zsh.initContent = ''
       ndc() {

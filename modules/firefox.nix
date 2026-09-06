@@ -14,7 +14,7 @@ mkHmFeature "firefox" (
       enable = true;
       # Firefox has no cached aarch64-darwin build in nixpkgs right now, so use
       # the official .dmg build on Darwin instead of building from source.
-      package = lib.mkIf pkgs.stdenv.isDarwin pkgs.firefox-bin;
+      package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin pkgs.firefox-bin;
       policies = {
         "3rdparty".Extensions."uBlock0@raymondhill.net" = {
           toAdd = {
