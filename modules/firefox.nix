@@ -37,6 +37,8 @@ mkHmFeature "firefox" (
               "easylist-notifications"
               "fanboy-ai-suggestions"
               "ublock-annoyances"
+              "adguard-popup-overlays"
+              "adguard-widgets"
             ];
           };
         };

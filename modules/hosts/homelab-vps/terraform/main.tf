@@ -54,6 +54,14 @@ resource "hcloud_server" "homelab_vps" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
+
+  lifecycle {
+    # ssh_keys is write-once: Hetzner never reports it back on read/import, so
+    # after importing an existing server, tofu sees the computed list as a new
+    # value on a ForceNew attribute and wants to destroy+recreate the server
+    # to "fix" it. Ignore it - it can't be changed post-creation anyway.
+    ignore_changes = [ssh_keys]
+  }
 }
 
 resource "hcloud_volume" "nix" {
