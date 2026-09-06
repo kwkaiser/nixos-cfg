@@ -42,3 +42,9 @@ variable "ssh_allow_list_ipv6" {
   type        = list(string)
   default     = ["::/0"]
 }
+
+variable "nix_volume_size" {
+  description = "Size in GB of the dedicated /nix volume - isolates nix store/build churn from k3s's disk-pressure eviction threshold on the root filesystem. Grow-only in Hetzner's API."
+  type        = number
+  default     = 50
+}
