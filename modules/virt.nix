@@ -4,6 +4,6 @@ let
 in
 mkHmFeature "virt" (
   { pkgs, lib, ... }: {
-    home.packages = with pkgs; [ qemu ] ++ lib.optionals pkgs.stdenv.isDarwin [ utm ];
+    home.packages = with pkgs; [ qemu ] ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ utm ];
   }
 )

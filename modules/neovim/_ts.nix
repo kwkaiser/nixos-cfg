@@ -49,7 +49,7 @@
       treesitter.enable = true;
     };
 
-    luaConfigRC.tsgo-bundled-glob-workaround = lib.mkIf pkgs.stdenv.isDarwin ''
+    luaConfigRC.tsgo-bundled-glob-workaround = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
       local _orig_register_cap = vim.lsp.handlers['client/registerCapability']
       vim.lsp.handlers['client/registerCapability'] = function(err, result, ctx, config)
         local client = vim.lsp.get_client_by_id(ctx.client_id)

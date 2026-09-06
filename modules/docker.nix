@@ -26,6 +26,6 @@ in
 
   config.darwin.modules.docker = { config, ... }: {
     home-manager.users.${config.mine.username}.imports = [ hmModule ];
-    homebrew.casks = [ "docker" ];
+    homebrew.casks = [ "docker-desktop" ];
   };
 }

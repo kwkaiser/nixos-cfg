@@ -9,7 +9,7 @@ mkHmFeature "kitty" (
         enable = true;
         # Current nixos-unstable's ld64/libclang_rt combo crashes
         # (Trace/BPT trap: 5) linking kitty's cocoa glfw backend on Darwin.
-        package = inputs.nixpkgs-darwin-stable.legacyPackages.${pkgs.system}.kitty;
+        package = inputs.nixpkgs-darwin-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.kitty;
         extraConfig = ''
           confirm_os_window_close 0
           paste_actions no-op

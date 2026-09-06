@@ -143,6 +143,6 @@ in
     home-manager.users.${config.mine.username}.imports = [ hmModule ];
     homebrew.taps = [ "schpet/tap" ];
     homebrew.brews = [ "schpet/tap/linear" ];
-    homebrew.casks = [ "linear-linear" ];
+    homebrew.casks = [ "linear" ];
   };
 }

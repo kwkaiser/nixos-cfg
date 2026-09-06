@@ -39,7 +39,7 @@ let
         }
       ''
       + (
-        if pkgs.stdenv.isDarwin then
+        if pkgs.stdenv.hostPlatform.isDarwin then
           ''
             eval "$(/opt/homebrew/bin/brew shellenv)"
           ''

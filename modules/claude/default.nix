@@ -34,7 +34,7 @@ mkHmFeature "claude" (
       npmBuildScript = "build";
       PUPPETEER_SKIP_DOWNLOAD = "true";
       nativeBuildInputs = [ pkgs.makeWrapper ];
-      postInstall = lib.optionalString pkgs.stdenv.isLinux ''
+      postInstall = lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
         wrapProgram $out/bin/claude-mermaid \
           --set PUPPETEER_EXECUTABLE_PATH "${pkgs.chromium}/bin/chromium"
       '';
