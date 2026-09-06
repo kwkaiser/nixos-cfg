@@ -55,3 +55,17 @@ resource "hcloud_server" "homelab_vps" {
     ipv6_enabled = true
   }
 }
+
+resource "hcloud_volume" "nix" {
+  name     = "${var.label}-nix"
+  size     = var.nix_volume_size
+  location = var.location
+  # Unformatted - disko owns partitioning/formatting on the NixOS side.
+  format = null
+}
+
+resource "hcloud_volume_attachment" "nix" {
+  volume_id = hcloud_volume.nix.id
+  server_id = hcloud_server.homelab_vps.id
+  automount = false
+}
