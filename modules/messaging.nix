@@ -49,6 +49,7 @@ in
     homebrew.casks = [
       "signal"
       "slack"
+      "whatsapp"
     ];
   };
 }
