@@ -58,7 +58,7 @@ let
       };
       publicHostKey = lib.mkOption {
         type = lib.types.str;
-        default = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUcrekltTDRIY2Y4Sjd1V0hFWXdaeW5mYXp0VEp1anppZytST2ROSWRaOTA=";
+        default = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUJqZzMvdGdJUlJ3dlV4M1NZQmd6YmJDQVgzUUNkd1Q5NVdsNzNsZTRlUG4=";
         description = "Base64-encoded SSH host public key of the remote builder (its `/etc/ssh/ssh_host_ed25519_key.pub`), so clients trust it without needing an entry in root's known_hosts.";
       };
     };
