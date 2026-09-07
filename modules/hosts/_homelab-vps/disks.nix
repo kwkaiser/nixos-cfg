@@ -25,7 +25,7 @@
 
       nix = {
         type = "disk";
-        device = "/dev/disk/by-id/scsi-0HC_Volume_106805489";
+        device = "/dev/disk/by-id/scsi-0HC_Volume_106805640";
         content = {
           type = "gpt";
           partitions = {
