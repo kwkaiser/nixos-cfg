@@ -2,8 +2,7 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   home.packages = with pkgs; [
     vscode-langservers-extracted # Provides vscode-eslint-language-server for nvim-eslint
   ];
@@ -43,7 +42,7 @@
     languages.typescript = {
       enable = true;
       lsp.enable = true;
-      lsp.servers = [ "typescript-go" ];
+      lsp.servers = ["typescript"];
       extraDiagnostics.enable = false; # Using nvim-eslint LSP instead of nvim-lint
       format.enable = true;
       treesitter.enable = true;
@@ -53,7 +52,7 @@
       local _orig_register_cap = vim.lsp.handlers['client/registerCapability']
       vim.lsp.handlers['client/registerCapability'] = function(err, result, ctx, config)
         local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if client and client.name == 'typescript-go' and result and result.registrations then
+        if client and client.name == 'typescript' and result and result.registrations then
           for _, reg in ipairs(result.registrations) do
             if reg.method == 'workspace/didChangeWatchedFiles'
               and reg.registerOptions
