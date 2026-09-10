@@ -1,13 +1,16 @@
-{ mkModuleOption, lib, ... }:
-let
+{
+  mkModuleOption,
+  lib,
+  ...
+}: let
   listenPort = 51820;
 
   hosts = {
     homelab-vps = {
-      publicKey = "REPLACE_WITH_homelab-vps_PUBLIC_KEY";
+      publicKey = "/n3rcGG+jC5kPlmhB18V8DRtSIviHO6MmBUXxpWzsyQ=";
       address = "10.100.0.1";
-      endpoint = "REPLACE_WITH_homelab-vps_PUBLIC_ENDPOINT:51820";
-      allowedIPs = [ ];
+      endpoint = "kwkaiser.io:51820";
+      allowedIPs = [];
     };
     # homelab = {
     #   publicKey = "REPLACE_WITH_homelab_PUBLIC_KEY";
@@ -22,83 +25,87 @@ let
     #   allowedIPs = [ ];
     # };
     personal-macbook = {
-      publicKey = "REPLACE_WITH_personal-macbook_PUBLIC_KEY";
+      publicKey = "30CDzowfLVxg3oz29A1AOGZqmbdIzezKCu+wYA9N1m4=";
       address = "10.100.0.4";
       endpoint = null;
-      allowedIPs = [ ];
+      allowedIPs = [];
     };
   };
 
   topology = {
-    personal-macbook = [ "homelab-vps" ];
+    personal-macbook = ["homelab-vps"];
   };
 
-  peersOf =
-    self:
-    let
-      accesses = topology.${self} or [ ];
-      accessedBy = lib.attrNames (lib.filterAttrs (name: edges: builtins.elem self edges) topology);
-    in
+  peersOf = self: let
+    accesses = topology.${self} or [];
+    accessedBy = lib.attrNames (lib.filterAttrs (name: edges: builtins.elem self edges) topology);
+  in
     lib.unique (accesses ++ accessedBy);
 
-  peersFor =
-    self:
+  peersFor = self:
     map
-      (
-        name:
-        let
-          h = hosts.${name};
-        in
-        {
-          publicKey = h.publicKey;
-          allowedIPs = if h.endpoint != null then [ "0.0.0.0/0" ] else [ "${h.address}/32" ] ++ h.allowedIPs;
-          endpoint = h.endpoint;
-          persistentKeepalive = if hosts.${self}.endpoint == null then 25 else null;
-        }
-      )
-      (peersOf self);
-in
-{
-  options.nixos.modules.wireguard = mkModuleOption { };
-  options.darwin.modules.wireguard = mkModuleOption { };
+    (
+      name: let
+        h = hosts.${name};
+      in {
+        publicKey = h.publicKey;
+        allowedIPs =
+          if h.endpoint != null
+          then ["0.0.0.0/0"]
+          else ["${h.address}/32"] ++ h.allowedIPs;
+        endpoint = h.endpoint;
+        persistentKeepalive =
+          if hosts.${self}.endpoint == null
+          then 25
+          else null;
+      }
+    )
+    (peersOf self);
+in {
+  options.nixos.modules.wireguard = mkModuleOption {};
+  options.darwin.modules.wireguard = mkModuleOption {};
 
-  config.nixos.modules.wireguard =
-    { config, pkgs, ... }:
-    let
-      self = hosts.${config.mine.flakeHost} or null;
-    in
-    {
-      home-manager.users.${config.mine.username}.home.packages = [ pkgs.wireguard-tools ];
+  config.nixos.modules.wireguard = {
+    config,
+    pkgs,
+    ...
+  }: let
+    self = hosts.${config.mine.flakeHost} or null;
+  in {
+    home-manager.users.${config.mine.username}.home.packages = [pkgs.wireguard-tools];
 
-      networking.firewall.allowedUDPPorts = lib.optional (
+    networking.firewall.allowedUDPPorts =
+      lib.optional (
         self != null && self.endpoint != null
-      ) listenPort;
+      )
+      listenPort;
 
-      networking.wireguard.interfaces = lib.optionalAttrs (self != null) {
-        wg0 = {
-          ips = [ "${self.address}/24" ];
-          inherit listenPort;
-          privateKeyFile = "/etc/wireguard/wg0-private-key";
-          peers = peersFor config.mine.flakeHost;
-        };
+    networking.wireguard.interfaces = lib.optionalAttrs (self != null) {
+      wg0 = {
+        ips = ["${self.address}/24"];
+        inherit listenPort;
+        privateKeyFile = "/etc/wireguard/wg0-private-key";
+        peers = peersFor config.mine.flakeHost;
       };
     };
+  };
 
-  config.darwin.modules.wireguard =
-    { config, pkgs, ... }:
-    let
-      self = hosts.${config.mine.flakeHost} or null;
-    in
-    {
-      home-manager.users.${config.mine.username}.home.packages = [ pkgs.wireguard-tools ];
+  config.darwin.modules.wireguard = {
+    config,
+    pkgs,
+    ...
+  }: let
+    self = hosts.${config.mine.flakeHost} or null;
+  in {
+    home-manager.users.${config.mine.username}.home.packages = [pkgs.wireguard-tools];
 
-      networking.wg-quick.interfaces = lib.optionalAttrs (self != null) {
-        wg0 = {
-          address = [ "${self.address}/24" ];
-          inherit listenPort;
-          privateKeyFile = "/etc/wireguard/wg0-private-key";
-          peers = peersFor config.mine.flakeHost;
-        };
+    networking.wg-quick.interfaces = lib.optionalAttrs (self != null) {
+      wg0 = {
+        address = ["${self.address}/24"];
+        inherit listenPort;
+        privateKeyFile = "/etc/wireguard/wg0-private-key";
+        peers = peersFor config.mine.flakeHost;
       };
     };
+  };
 }
