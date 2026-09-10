@@ -71,6 +71,28 @@ tasks:
         sudo chown root /etc/nix/build-keys/builder
       - echo "Installed /etc/nix/build-keys/builder"
 
+  install-wg-key:
+    desc: Fetch a host's wireguard private key from secretspec and install it, locally (cp) or over ssh
+    cmds:
+      - |
+        host="{{.CLI_ARGS}}"
+        if [ -z "$host" ]; then
+          echo "usage: task install-wg-key -- <host>" >&2
+          exit 1
+        fi
+        source ensure-kdbx-password
+        varName="WG_$(echo "$host" | tr 'a-z-' 'A-Z_')_PRIVATE_KEY"
+        if [ "$host" = "$(hostname -s)" ]; then
+          sudo install -d -m 0755 /etc/wireguard
+          secretspec get "$varName" | sudo tee /etc/wireguard/wg0-private-key > /dev/null
+          sudo chmod 600 /etc/wireguard/wg0-private-key
+          echo "Installed /etc/wireguard/wg0-private-key on $host (local)"
+        else
+          ssh "$host" 'sudo install -d -m 0755 /etc/wireguard'
+          secretspec get "$varName" | ssh "$host" 'sudo tee /etc/wireguard/wg0-private-key > /dev/null && sudo chmod 600 /etc/wireguard/wg0-private-key'
+          echo "Installed /etc/wireguard/wg0-private-key on $host (remote via ssh)"
+        fi
+
   clean:
     cmds:
       - rm -rf data

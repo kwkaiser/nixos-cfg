@@ -23,6 +23,7 @@
           nfs
           borgmatic
           builder
+          wireguard
         ]
         ++ [
           ./_homelab-vps/disks.nix
