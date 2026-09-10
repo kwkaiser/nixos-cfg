@@ -102,6 +102,7 @@ in {
     networking.wg-quick.interfaces = lib.optionalAttrs (self != null) {
       wg0 = {
         address = ["${self.address}/24"];
+        autostart = false;
         inherit listenPort;
         privateKeyFile = "/etc/wireguard/wg0-private-key";
         peers = peersFor config.mine.flakeHost;
