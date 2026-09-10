@@ -27,7 +27,6 @@
         };
         "homelab-vps" = {
           Hostname = "kwkaiser.io";
-          Port = 2222;
           User = "kwkaiser";
           StrictHostKeyChecking = "no";
           UserKnownHostsFile = "/dev/null";

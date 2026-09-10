@@ -39,6 +39,14 @@ resource "hcloud_firewall" "homelab_vps" {
     port        = "6443"
     source_ips  = concat(var.ssh_allow_list_ipv4, var.ssh_allow_list_ipv6)
   }
+
+  rule {
+    description = "wireguard"
+    direction   = "in"
+    protocol    = "udp"
+    port        = "51820"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
 }
 
 resource "hcloud_server" "homelab_vps" {
