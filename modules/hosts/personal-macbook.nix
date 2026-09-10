@@ -55,6 +55,8 @@
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
       system.stateVersion = 5;
 
+      networking.hostName = "personal-macbook";
+
       mine.username = "kwkaiser";
       mine.flakeHost = "personal-macbook";
       mine.git.signCommits = true;

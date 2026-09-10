@@ -1,6 +1,9 @@
-{ mkModuleOption, ... }:
-let
-  hmModule = { lib, pkgs, ... }: {
+{mkModuleOption, ...}: let
+  hmModule = {
+    lib,
+    pkgs,
+    ...
+  }: {
     home.file.".ssh/config".force = true;
     home.file.".ssh/rc" = {
       executable = true;
@@ -22,6 +25,14 @@ let
           TCPKeepAlive = "yes";
           MACs = "hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-sha1";
         };
+        "homelab-vps" = {
+          Hostname = "kwkaiser.io";
+          Port = 2222;
+          User = "kwkaiser";
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          AddKeysToAgent = "yes";
+        };
         "homelab-vm" = {
           Hostname = "localhost";
           Port = 2222;
@@ -38,7 +49,7 @@ let
           UserKnownHostsFile = "/dev/null";
           AddKeysToAgent = "yes";
         };
-        "desktop-lan-check" = lib.hm.dag.entryBefore [ "desktop" ] {
+        "desktop-lan-check" = lib.hm.dag.entryBefore ["desktop"] {
           header = ''Match originalhost desktop exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.110/22'"'';
           ProxyJump = "none";
         };
@@ -49,7 +60,7 @@ let
           ForwardAgent = true;
           StrictHostKeyChecking = "no";
         };
-        "livingroom-lan-check" = lib.hm.dag.entryBefore [ "livingroom" ] {
+        "livingroom-lan-check" = lib.hm.dag.entryBefore ["livingroom"] {
           header = ''Match originalhost livingroom exec "${pkgs.coreutils}/bin/timeout 1 ${pkgs.bash}/bin/bash -c '</dev/tcp/192.168.4.109/22'"'';
           ProxyJump = "none";
         };
@@ -101,32 +112,31 @@ let
     };
   };
 
-  serverOption = { lib, ... }: {
+  serverOption = {lib, ...}: {
     options.mine.ssh.server.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
       description = "Enables the sshd server (Remote Login on Darwin). Independent of the client config, since MDM-managed laptops may enforce this off.";
     };
   };
-in
-{
-  options.nixos.modules.ssh = mkModuleOption { };
-  options.darwin.modules.ssh = mkModuleOption { };
-  options.homeManager.modules.ssh = mkModuleOption { };
+in {
+  options.nixos.modules.ssh = mkModuleOption {};
+  options.darwin.modules.ssh = mkModuleOption {};
+  options.homeManager.modules.ssh = mkModuleOption {};
 
   config.homeManager.modules.ssh = hmModule;
 
-  config.nixos.modules.ssh = { config, ... }: {
-    imports = [ serverOption ];
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+  config.nixos.modules.ssh = {config, ...}: {
+    imports = [serverOption];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
     services.openssh.enable = config.mine.ssh.server.enable;
     services.openssh.settings.PasswordAuthentication = false;
     programs.ssh.startAgent = true;
   };
 
-  config.darwin.modules.ssh = { config, ... }: {
-    imports = [ serverOption ];
-    home-manager.users.${config.mine.username}.imports = [ hmModule ];
+  config.darwin.modules.ssh = {config, ...}: {
+    imports = [serverOption];
+    home-manager.users.${config.mine.username}.imports = [hmModule];
     services.openssh.enable = config.mine.ssh.server.enable;
     launchd.user.agents.ssh-config-guard = {
       serviceConfig = {
@@ -138,7 +148,7 @@ in
           USER = config.mine.username;
           LOGNAME = config.mine.username;
         };
-        WatchPaths = [ "${config.mine.homeDir}/.ssh/config" ];
+        WatchPaths = ["${config.mine.homeDir}/.ssh/config"];
         RunAtLoad = true;
         StandardOutPath = "${config.mine.homeDir}/Library/Logs/ssh-config-guard.log";
         StandardErrorPath = "${config.mine.homeDir}/Library/Logs/ssh-config-guard.log";
