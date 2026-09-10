@@ -6,6 +6,17 @@
     443
   ];
 
+  networking.interfaces.enp1s0.ipv6.addresses = [
+    {
+      address = "2a01:4f8:c014:207::1";
+      prefixLength = 64;
+    }
+  ];
+  networking.defaultGateway6 = {
+    address = "fe80::1";
+    interface = "enp1s0";
+  };
+
   # Linode silently blackholes return traffic to this host's IPv6 privacy
   # (RFC 4941 temporary) address - only the stable SLAAC address they
   # actually track works. Outbound IPv6 connections default to using the
