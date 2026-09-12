@@ -50,6 +50,7 @@
         sikarugir
         borgmatic
         spotlight
+        handy
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
