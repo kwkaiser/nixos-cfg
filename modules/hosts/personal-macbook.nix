@@ -3,10 +3,9 @@
   mkDarwinSystem,
   lib,
   ...
-}:
-{
+}: {
   flake.darwinConfigurations."personal-macbook" = mkDarwinSystem (
-    { lib, ... }: {
+    {lib, ...}: {
       imports = with config.darwin.modules; [
         identity
         base
@@ -15,6 +14,7 @@
         stylix
 
         aero
+        spotify
         macos-minimal
         macos-snappy
         macos-perf
@@ -70,7 +70,7 @@
       homebrew.enable = true;
       homebrew.onActivation.cleanup = "zap";
 
-      system.defaults.dock.persistent-apps = [ ];
+      system.defaults.dock.persistent-apps = [];
     }
   );
 }
