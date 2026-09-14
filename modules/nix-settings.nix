@@ -193,13 +193,13 @@ in
             "@admin"
             "kwkaiser"
             "root"
-            "karl"
+            "kkaiser"
           ];
           extra-trusted-users = [
             "@admin"
             "kwkaiser"
             "root"
-            "karl"
+            "kkaiser"
           ];
           experimental-features = [
             "nix-command"
