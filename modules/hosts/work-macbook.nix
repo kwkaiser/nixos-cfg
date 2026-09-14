@@ -3,20 +3,18 @@
   mkDarwinSystem,
   lib,
   ...
-}:
-{
+}: {
   flake.darwinConfigurations."work-macbook" = mkDarwinSystem (
-    { lib, ... }: {
+    {lib, ...}: {
       imports = with config.darwin.modules; [
         identity
         base
         git
         nix-settings
+        macos-minimal
         stylix
 
         aero
-        macos-minimal
-        node
         neovim
         kitty
         firefox
@@ -24,38 +22,23 @@
         keepass
         secretspec
         syncthing
-        cursor
-        steam
-        notes
-        messaging
         ssh
-        virt
         docker
-        work
         claude
         misc-cli-util
         tmux
-        mc
-        homelab-hosts-file
         gh-dash
         rust
         tailcat
-        flyio
-        codex
-        firebase
-        typst
-        wireguard
-        sikarugir
-        borgmatic
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
       system.stateVersion = 5;
 
-      mine.username = "karl";
+      mine.username = "kkaiser";
       mine.flakeHost = "work-macbook";
       mine.git.signCommits = true;
-      mine.syncthing.deviceName = "pallet-macbook";
+      mine.syncthing.deviceName = "work-macbook";
       mine.ssh.server.enable = false;
 
       documentation.doc.enable = false;

@@ -13,6 +13,7 @@
     desktop = "GUNDSXG-DIIM4AU-IF2MLGU-TAGH3RP-X7AJELO-VJAEZAF-4VMV4QI-SQIT2AQ";
     server = "KCLNUZ7-P2YEIO4-WNZ7O6L-TXWD3VI-TETMH45-GQJKLNC-LMEFDIV-B7XBFAM";
     personal-macbook = "QKCXSV7-OHBD7AI-VNRHTWB-MVGQ5XW-ZDK24WA-SU2PVLG-GWWYQPL-CAESIA7";
+    work-macbook = "637DUS3-EEDWM7T-U33REVH-SBQ7ND6-VU3AUYE-C2HBQYY-AI7JDJN-ZYABXQS";
   };
 
   allDevices = builtins.mapAttrs (name: id: {inherit id;}) deviceIds;
@@ -32,11 +33,15 @@
     server = [
       "phone"
       "desktop"
+      "work-macbook"
     ];
     personal-macbook = [
       "server"
       "phone"
       "desktop"
+    ];
+    work-macbook = [
+      "server"
     ];
   };
 
