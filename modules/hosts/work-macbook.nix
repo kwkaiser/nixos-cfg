@@ -1,7 +1,6 @@
 {
   config,
   mkDarwinSystem,
-  lib,
   ...
 }: {
   flake.darwinConfigurations."work-macbook" = mkDarwinSystem (
@@ -11,7 +10,6 @@
         base
         git
         nix-settings
-        macos-minimal
         stylix
 
         aero

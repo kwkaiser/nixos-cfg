@@ -2,7 +2,7 @@
 {
   options.darwin.modules.aero = mkModuleOption { };
 
-  config.darwin.modules.aero = { config, ... }: {
+  config.darwin.modules.aero = { config, lib, ... }: {
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
     system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
@@ -55,16 +55,21 @@
     '';
 
     services.aerospace.settings = {
+      workspace-to-monitor-force-assignment =
+        lib.genAttrs (map toString (lib.range 1 5)) (_: 1)
+        // lib.genAttrs (map toString (lib.range 6 10)) (_: 3)
+        // { "11" = "built-in"; };
+
       mode.main.binding = {
-        cmd-h = "focus left";
+        cmd-h = "focus left --boundaries all-monitors-outer-frame";
         cmd-j = "focus down";
         cmd-k = "focus up";
-        cmd-l = "focus right";
+        cmd-l = "focus right --boundaries all-monitors-outer-frame";
         cmd-shift-q = "close"; # Close window (like hyprland mod+shift+q)
-        cmd-shift-h = "move left";
+        cmd-shift-h = "move left --boundaries all-monitors-outer-frame --boundaries-action stop";
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
-        cmd-shift-l = "move right";
+        cmd-shift-l = "move right --boundaries all-monitors-outer-frame --boundaries-action stop";
         cmd-comma = "layout h_tiles";
         cmd-shift-comma = "layout v_tiles";
 
@@ -90,6 +95,7 @@
         cmd-8 = "workspace 8";
         cmd-9 = "workspace 9";
         cmd-0 = "workspace 10";
+        cmd-backtick = "workspace 11";
         cmd-shift-1 = "move-node-to-workspace 1";
         cmd-shift-2 = "move-node-to-workspace 2";
         cmd-shift-3 = "move-node-to-workspace 3";
@@ -100,6 +106,7 @@
         cmd-shift-8 = "move-node-to-workspace 8";
         cmd-shift-9 = "move-node-to-workspace 9";
         cmd-shift-0 = "move-node-to-workspace 10";
+        cmd-shift-backtick = "move-node-to-workspace 11";
       };
     };
   };
