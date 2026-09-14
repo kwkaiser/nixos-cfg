@@ -119,6 +119,12 @@ mkHmFeature "claude" (
 
     claudeSettingsFile = pkgs.writeText "claude-settings.json" (builtins.toJSON claudeSettings);
 
+    claude-settings-merge = pkgs.writeShellApplication {
+      name = "claude-settings-merge";
+      runtimeInputs = [ pkgs.jq ];
+      text = builtins.readFile ./settings-merge.sh;
+    };
+
     claudeMcpServers = {
       mermaid = {
         command = "${claude-mermaid}/bin/claude-mermaid";
@@ -168,9 +174,10 @@ mkHmFeature "claude" (
 
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
-      $DRY_RUN_CMD rm -f $HOME/.claude/settings.json $HOME/.claude-personal/settings.json
-      $DRY_RUN_CMD install -m 644 ${claudeSettingsFile} $HOME/.claude/settings.json
-      $DRY_RUN_CMD install -m 644 ${claudeSettingsFile} $HOME/.claude-personal/settings.json
+      for d in $HOME/.claude $HOME/.claude-personal; do
+        $DRY_RUN_CMD ${claude-settings-merge}/bin/claude-settings-merge \
+          "$d/settings.json" ${claudeSettingsFile}
+      done
       $DRY_RUN_CMD rm -f $HOME/.claude/keybindings.json $HOME/.claude-personal/keybindings.json
       $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude/keybindings.json
       $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude-personal/keybindings.json
