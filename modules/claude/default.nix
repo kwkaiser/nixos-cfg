@@ -130,6 +130,10 @@ mkHmFeature "claude" (
       mermaid = {
         command = "${claude-mermaid}/bin/claude-mermaid";
       };
+      notion = {
+        type = "http";
+        url = "https://mcp.notion.com/mcp";
+      };
     };
 
     claudeMcpServersFile = pkgs.writeText "claude-mcp-servers.json" (builtins.toJSON claudeMcpServers);

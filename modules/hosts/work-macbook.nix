@@ -11,6 +11,7 @@
         git
         nix-settings
         stylix
+        python
 
         aero
         neovim
