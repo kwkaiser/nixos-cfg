@@ -202,6 +202,20 @@ let
               markdown = {
                 enable = true;
                 lsp.enable = false; # marksman requires building dotnet from source
+                treesitter.enable = true;
+                extensions.markview-nvim = {
+                  enable = true;
+                  setupOpts = {
+                    preview = {
+                      enable = false;
+                      filetypes = [
+                        "markdown"
+                        "quarto"
+                        "rmd"
+                      ];
+                    };
+                  };
+                };
               };
               python = {
                 enable = true;
@@ -521,6 +535,12 @@ let
                 mode = "n";
                 action = "<cmd>:Neotree filesystem reveal float<CR>";
                 desc = "Open filetree";
+              }
+              {
+                key = "<leader>P";
+                mode = "n";
+                action = "<cmd>Markview toggle<CR>";
+                desc = "Toggle markdown preview";
               }
               {
                 key = "<Esc><Esc>";
