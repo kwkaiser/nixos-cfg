@@ -1,5 +1,22 @@
 { mkModuleOption, ... }:
 let
+  signingKeyCommand =
+    pkgs: pattern:
+    pkgs.writeShellScript "git-signing-key" ''
+      key=$(ssh-add -L | while read -r line; do
+        fp=$(printf '%s\n' "$line" | ${pkgs.openssh}/bin/ssh-keygen -lf - | cut -d ' ' -f 2)
+        case "$fp $line" in
+          *${pattern}*)
+            printf '%s\n' "$line"
+            exit 0
+            ;;
+        esac
+      done)
+
+      [ -n "$key" ] || exit 1
+      printf '%s\n' "$key"
+    '';
+
   hmModule =
     {
       config,
@@ -49,7 +66,7 @@ let
             {
               commit.gpgsign = true;
               gpg.format = "ssh";
-              gpg.ssh.defaultKeyCommand = "sh -c 'ssh-add -L | grep -i AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm'";
+              gpg.ssh.defaultKeyCommand = "${signingKeyCommand pkgs osConfig.mine.git.signingKey}";
             }
           else
             { }
@@ -67,6 +84,11 @@ let
 
   gitOptions = { lib, ... }: {
     options.mine.git.signCommits = lib.mkEnableOption "Whether or not to sign commits with usual key";
+    options.mine.git.signingKey = lib.mkOption {
+      type = lib.types.str;
+      default = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDTAi1Dr0jHCqvAKGnZzpFy0I7AqB2aDTih8cxq0Q3ZkaAJK0lhbmm";
+      description = "SHA256 fingerprint (or public key fragment) of the agent key used to sign commits";
+    };
   };
 in
 {
