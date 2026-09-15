@@ -68,6 +68,7 @@ mkHmFeature "claude" (
 
       preferredNotifChannel = "terminal_bell";
       editorMode = "vim";
+      diffSidebarOpen = false;
       voice = {
         enabled = true;
         mode = "hold";

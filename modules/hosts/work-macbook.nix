@@ -37,6 +37,7 @@
       mine.email = "kkaiser@lila.ai";
       mine.flakeHost = "work-macbook";
       mine.git.signCommits = true;
+      mine.builder.enable = false;
       mine.git.signingKey = "RD6eqflf19EJJRF4Hj0NlpBq5Pzz9x7sq4mBe36lya8";
       mine.syncthing.deviceName = "work-macbook";
       mine.ssh.server.enable = false;
