@@ -16,6 +16,9 @@ let
       oh-my-zsh = {
         enable = true;
         theme = "robbyrussell";
+        extraConfig = ''
+          ZSH_DISABLE_COMPFIX=true
+        '';
       };
 
       # TODO: find better home for this
@@ -67,5 +70,8 @@ in
 
   config.homeManager.modules.zsh = hmModule;
   config.nixos.modules.zsh = systemModule;
-  config.darwin.modules.zsh = systemModule;
+  config.darwin.modules.zsh = {
+    imports = [ systemModule ];
+    programs.zsh.enableGlobalCompInit = false;
+  };
 }
