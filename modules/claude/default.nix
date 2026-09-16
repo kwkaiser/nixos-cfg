@@ -134,6 +134,10 @@ mkHmFeature "claude" (
         type = "http";
         url = "https://mcp.notion.com/mcp";
       };
+      jira = {
+        type = "http";
+        url = "https://mcp.atlassian.com/v1/mcp/authv2";
+      };
     };
 
     claudeMcpServersFile = pkgs.writeText "claude-mcp-servers.json" (builtins.toJSON claudeMcpServers);
