@@ -20,6 +20,7 @@
         zsh
         keepass
         node
+        work
         secretspec
         syncthing
         ssh

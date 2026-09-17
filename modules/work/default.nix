@@ -23,7 +23,6 @@
       devbox
       gh
       gh-dash
-      jira-cli-go
       awscli2
       google-cloud-sdk
       typescript
