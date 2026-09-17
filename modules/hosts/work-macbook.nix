@@ -19,6 +19,7 @@
         firefox
         zsh
         keepass
+        node
         secretspec
         syncthing
         ssh

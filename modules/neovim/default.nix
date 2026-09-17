@@ -219,7 +219,13 @@ let
               };
               python = {
                 enable = true;
-                format.enable = true;
+                format = {
+                  enable = true;
+                  type = [
+                    "ruff-fix"
+                    "ruff"
+                  ];
+                };
                 lsp.enable = true;
               };
               yaml.enable = true;
