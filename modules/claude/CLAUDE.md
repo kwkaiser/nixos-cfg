@@ -30,11 +30,12 @@ When writing pull request descriptions, use the following format to indicate all
 > [!NOTE]
 > Generated summary:
 > 
+> [<Ticket name or ID>](<link to ticket>)
 > foo
 > bar
 ```
 
-Replacing  `foo`, `bar` with actual content. This provides important clarity to coworkers. 
+Replacing the ticket details if available (skip if not) and `foo`, `bar` with actual content. This provides important clarity to coworkers. 
 
 CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval.
 
