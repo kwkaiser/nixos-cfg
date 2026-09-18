@@ -13,6 +13,7 @@
         nix-settings
         stylix
 
+        anki
         aero
         spotify
         macos-minimal
