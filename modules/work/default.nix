@@ -18,6 +18,15 @@
       inherit name root;
       windows = defaultTmuxinatorWindows;
     };
+
+    mkLimsMcp = url: {
+      type = "http";
+      inherit url;
+      oauth = {
+        clientId = "mcp-servers";
+        callbackPort = 8080;
+      };
+    };
   in {
     home.packages = with pkgs; [
       devbox
@@ -46,9 +55,15 @@
       '')
     ];
 
-    mine.claude.extraMcpServers.sentry = {
-      type = "http";
-      url = "https://mcp.sentry.dev/mcp";
+    mine.claude.extraMcpServers = {
+      sentry = {
+        type = "http";
+        url = "https://mcp.sentry.dev/mcp";
+      };
+
+      lims-dev = mkLimsMcp "https://lims-mcp-dev.solo.lilasci.io/mcp";
+      lims-staging = mkLimsMcp "https://lims-mcp-staging.ripley.lilasci.io/mcp";
+      lims-prod = mkLimsMcp "https://lims-mcp-prod.ride.lilasci.io/mcp";
     };
 
     # Tmuxinator project configs (only if tmux is enabled)
