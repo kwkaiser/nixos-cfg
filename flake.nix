@@ -21,6 +21,13 @@
     # .dmg builds repackaged as a nix derivation instead of building from source.
     nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin";
 
+    # Internal repo: fetched over ssh so nix uses the same key as `git clone`,
+    # rather than needing a PAT the way the homebrew tap's formula does.
+    lila-auth-cli = {
+      url = "git+ssh://git@github.com/lilasci-dev/lila-auth-cli?ref=refs/tags/v0.6.0";
+      flake = false;
+    };
+
     firefox-addons = {
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";

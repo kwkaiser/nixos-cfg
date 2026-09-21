@@ -622,6 +622,23 @@
         "type": "github"
       }
     },
+    "lila-auth-cli": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788560650,
+        "narHash": "sha256-k7ro80t5IKVaq4RbeqYHt3KOaq5qJgWcce5xXS3wBZo=",
+        "ref": "refs/tags/v0.6.0",
+        "rev": "ea086696ca6ae8db09be8a2a7c56b35ba98196a4",
+        "revCount": 36,
+        "type": "git",
+        "url": "ssh://git@github.com/lilasci-dev/lila-auth-cli"
+      },
+      "original": {
+        "ref": "refs/tags/v0.6.0",
+        "type": "git",
+        "url": "ssh://git@github.com/lilasci-dev/lila-auth-cli"
+      }
+    },
     "mnw": {
       "locked": {
         "lastModified": 1780772958,
@@ -855,6 +872,7 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "import-tree": "import-tree",
+        "lila-auth-cli": "lila-auth-cli",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-darwin-stable": "nixpkgs-darwin-stable",
