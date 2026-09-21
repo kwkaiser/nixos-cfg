@@ -8,6 +8,19 @@
   }: let
     devbox = inputs.nixpkgs-devbox.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devbox;
 
+    lila-auth-cli = pkgs.buildGoModule rec {
+      pname = "lila-auth-cli";
+      version = "0.6.0";
+      src = inputs.lila-auth-cli;
+      vendorHash = "sha256-bCLdNyDvSKl6c3VE3wwoeIuFs8QnNUfaNbjo5UB/1OY=";
+      ldflags = [
+        "-s"
+        "-w"
+        "-X github.com/lilasci-dev/lila-auth-cli/cmd.Version=${version}"
+      ];
+      postInstall = "mv $out/bin/${pname} $out/bin/lila-auth";
+    };
+
     defaultTmuxinatorWindows = [
       {claude = "clear && ccp";}
       {editor = "clear";}
@@ -30,6 +43,7 @@
   in {
     home.packages = with pkgs; [
       devbox
+      lila-auth-cli
       gh
       gh-dash
       awscli2
