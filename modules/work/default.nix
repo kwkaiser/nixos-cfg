@@ -46,6 +46,11 @@
       '')
     ];
 
+    mine.claude.extraMcpServers.sentry = {
+      type = "http";
+      url = "https://mcp.sentry.dev/mcp";
+    };
+
     # Tmuxinator project configs (only if tmux is enabled)
     programs.tmux.tmuxinator.projects = lib.mkIf config.programs.tmux.enable {
       primary = mkTmuxinatorProject "primary" "~/Documents/pallet/copallet";

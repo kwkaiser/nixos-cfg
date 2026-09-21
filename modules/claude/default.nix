@@ -6,6 +6,7 @@ mkHmFeature "claude" (
   {
     pkgs,
     lib,
+    config,
     ...
   }:
   let
@@ -142,6 +143,10 @@ mkHmFeature "claude" (
 
     claudeMcpServersFile = pkgs.writeText "claude-mcp-servers.json" (builtins.toJSON claudeMcpServers);
 
+    ccpMcpServersFile = pkgs.writeText "claude-ccp-mcp-servers.json" (
+      builtins.toJSON (claudeMcpServers // config.mine.claude.extraMcpServers)
+    );
+
     claudeKeybindings = {
       "$schema" = "https://www.schemastore.org/claude-code-keybindings.json";
       "$docs" = "https://code.claude.com/docs/en/keybindings";
@@ -160,7 +165,13 @@ mkHmFeature "claude" (
     );
   in
   {
-    home.packages = with pkgs; [
+    options.mine.claude.extraMcpServers = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.attrsOf lib.types.anything);
+      default = { };
+      description = "Extra global MCP servers, added to the `ccp` instance only.";
+    };
+
+    config.home.packages = with pkgs; [
       claude-code
       claude-monitor
       claude-mermaid
@@ -178,10 +189,10 @@ mkHmFeature "claude" (
       '')
     ];
 
-    home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
-    home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
+    config.home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+    config.home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
 
-    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    config.home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal
       for d in $HOME/.claude $HOME/.claude-personal; do
         $DRY_RUN_CMD ${claude-settings-merge}/bin/claude-settings-merge \
@@ -191,18 +202,23 @@ mkHmFeature "claude" (
       $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude/keybindings.json
       $DRY_RUN_CMD install -m 644 ${claudeKeybindingsFile} $HOME/.claude-personal/keybindings.json
 
-      for f in $HOME/.claude.json $HOME/.claude-personal/.claude.json; do
+      mergeMcpServers() {
+        f="$1"
+        servers="$2"
         if [ -f "$f" ]; then
-          $DRY_RUN_CMD ${pkgs.jq}/bin/jq \
-            --argjson servers "$(cat ${claudeMcpServersFile})" \
+          ${pkgs.jq}/bin/jq \
+            --argjson servers "$(cat "$servers")" \
             '.mcpServers = ((.mcpServers // {}) + $servers)' \
-            "$f" > "$f.tmp" && $DRY_RUN_CMD mv "$f.tmp" "$f"
+            "$f" > "$f.tmp" && mv "$f.tmp" "$f"
         else
-          $DRY_RUN_CMD ${pkgs.jq}/bin/jq -n \
-            --argjson servers "$(cat ${claudeMcpServersFile})" \
+          ${pkgs.jq}/bin/jq -n \
+            --argjson servers "$(cat "$servers")" \
             '{mcpServers: $servers}' > "$f"
         fi
-      done
+      }
+
+      $DRY_RUN_CMD mergeMcpServers $HOME/.claude.json ${ccpMcpServersFile}
+      $DRY_RUN_CMD mergeMcpServers $HOME/.claude-personal/.claude.json ${claudeMcpServersFile}
     '';
   }
 )
