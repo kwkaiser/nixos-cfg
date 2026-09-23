@@ -1,11 +1,15 @@
 {
-  config,
   mkDarwinSystem,
   ...
-}: {
+} @ topArgs: {
   flake.darwinConfigurations."work-macbook" = mkDarwinSystem (
-    {lib, ...}: {
-      imports = with config.darwin.modules; [
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }: {
+      imports = with topArgs.config.darwin.modules; [
         identity
         base
         git
@@ -50,6 +54,14 @@
       system.tools.darwin-uninstaller.enable = false;
 
       homebrew.enable = true;
+
+      home-manager.users.${config.mine.username}.mine.claude.extraMcpServers.grafana = {
+        command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
+        env = {
+          GRAFANA_URL = "\${GRAFANA_URL}";
+          GRAFANA_SERVICE_ACCOUNT_TOKEN = "\${GRAFANA_SERVICE_ACCOUNT_TOKEN}";
+        };
+      };
     }
   );
 }
