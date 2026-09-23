@@ -1,3 +1,7 @@
+# Links
+
+Never use shortlinks
+
 # Code
 
 ## Code comments
