@@ -105,6 +105,18 @@ let
                 toggleFormatOnSave = "<leader>lf";
                 format = null; # Using formatOnSave instead
               };
+
+              servers.basedpyright.root_markers = lib.mkForce [
+                "uv.lock"
+                "poetry.lock"
+                "pyrightconfig.json"
+                "Pipfile"
+                "pyproject.toml"
+                "requirements.txt"
+                "setup.cfg"
+                "setup.py"
+                ".git"
+              ];
             };
 
             fzf-lua = {
