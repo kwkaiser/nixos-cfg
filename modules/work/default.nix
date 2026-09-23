@@ -63,11 +63,32 @@
         kitty --directory ~/Documents/pallet/copallet-wt-2 ccp &
       '')
 
+      (writeShellScriptBin "asso" ''
+        profile="''${1:-''${AWS_PROFILE:-}}"
+        if [ -z "$profile" ]; then
+          echo "usage: asso <profile> (or set AWS_PROFILE)" >&2
+          exit 1
+        fi
+
+        if ! ${awscli2}/bin/aws configure export-credentials --profile "$profile" --format env 2>/dev/null; then
+          ${awscli2}/bin/aws sso login --profile "$profile" >&2 || exit 1
+          ${awscli2}/bin/aws configure export-credentials --profile "$profile" --format env
+        fi
+      '')
+
       (writeShellScriptBin "bind-mermaid" ''
         host="''${1:?usage: bind-mermaid <ssh-host>}"
         exec ssh -N -L 3737:localhost:3737 -L 3738:localhost:3738 -L 3739:localhost:3739 "$host"
       '')
     ];
+
+    programs.zsh.initContent = ''
+      asso() {
+        local creds
+        creds="$(command asso "$@")" || return
+        eval "$creds"
+      }
+    '';
 
     mine.claude.extraMcpServers = {
       sentry = {
