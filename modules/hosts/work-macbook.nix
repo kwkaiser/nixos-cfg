@@ -50,6 +50,16 @@
       mine.ssh.server.enable = false;
       mine.docker.backend = "colima";
 
+      mine.aero.displayLayout = let
+        leftPortraitDell = "57D33AAE-DAF8-4556-9ED5-86FDCE8F28B7";
+        middleLandscapeDell = "FF43FD1C-0F60-4A49-9189-78928056144B";
+        builtIn = "37D8832A-2D66-02CA-B9F7-8F30A301B230";
+      in [
+        "id:${leftPortraitDell} res:1200x1920 hz:60 color_depth:8 enabled:true scaling:off origin:(-3120,-1200) degree:270"
+        "id:${middleLandscapeDell} res:1920x1200 hz:60 color_depth:8 enabled:true scaling:off origin:(-1920,-1200) degree:0"
+        "id:${builtIn} res:1512x982 hz:120 color_depth:8 enabled:true scaling:on origin:(0,0) degree:0"
+      ];
+
       documentation.doc.enable = false;
       system.tools.darwin-uninstaller.enable = false;
 
