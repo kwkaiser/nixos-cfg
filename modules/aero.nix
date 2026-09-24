@@ -1,26 +1,27 @@
-{ mkModuleOption, ... }:
-let
-  displayLayoutOption = { lib, ... }: {
+{mkModuleOption, ...}: let
+  displayLayoutOption = {lib, ...}: {
     options.mine.aero.displayLayout = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
-      example = [ "id:<persistent-id> res:1200x1920 hz:60 color_depth:8 enabled:true scaling:off origin:(0,0) degree:270" ];
+      default = [];
+      example = ["id:<persistent-id> res:1200x1920 hz:60 color_depth:8 enabled:true scaling:off origin:(0,0) degree:270"];
       description = "One displayplacer screen spec per screen, exactly as emitted by the command at the bottom of `displayplacer list`. Applied on activation and at login, so rotation and arrangement survive reconnecting the displays. Empty leaves the arrangement to macOS.";
     };
   };
-in
-{
-  options.darwin.modules.aero = mkModuleOption { };
+in {
+  options.darwin.modules.aero = mkModuleOption {};
 
-  config.darwin.modules.aero = { config, lib, pkgs, ... }:
-  let
-    hasDisplayLayout = config.mine.aero.displayLayout != [ ];
+  config.darwin.modules.aero = {
+    config,
+    lib,
+    pkgs,
+    ...
+  }: let
+    hasDisplayLayout = config.mine.aero.displayLayout != [];
     displayLayout = pkgs.writeShellScriptBin "display-layout" ''
       exec /opt/homebrew/bin/displayplacer ${lib.escapeShellArgs config.mine.aero.displayLayout}
     '';
-  in
-  {
-    imports = [ displayLayoutOption ];
+  in {
+    imports = [displayLayoutOption];
 
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
@@ -68,19 +69,21 @@ in
     };
 
     # Apply keyboard shortcut changes immediately without requiring logout
-    system.activationScripts.postActivation.text = ''
-      sudo -u ${config.mine.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-      rm -rf "${config.mine.homeDir}/Library/Saved Application State"/*.savedState
-    '' + lib.optionalString hasDisplayLayout ''
-      sudo -u ${config.mine.username} ${displayLayout}/bin/display-layout || true
-    '';
+    system.activationScripts.postActivation.text =
+      ''
+        sudo -u ${config.mine.username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+        rm -rf "${config.mine.homeDir}/Library/Saved Application State"/*.savedState
+      ''
+      + lib.optionalString hasDisplayLayout ''
+        sudo -u ${config.mine.username} ${displayLayout}/bin/display-layout || true
+      '';
 
-    homebrew.brews = lib.mkIf hasDisplayLayout [ "displayplacer" ];
-    environment.systemPackages = lib.mkIf hasDisplayLayout [ displayLayout ];
+    homebrew.brews = lib.mkIf hasDisplayLayout ["displayplacer"];
+    environment.systemPackages = lib.mkIf hasDisplayLayout [displayLayout];
 
     launchd.user.agents.display-layout = lib.mkIf hasDisplayLayout {
       serviceConfig = {
-        ProgramArguments = [ "${displayLayout}/bin/display-layout" ];
+        ProgramArguments = ["${displayLayout}/bin/display-layout"];
         RunAtLoad = true;
         StandardOutPath = "${config.mine.homeDir}/Library/Logs/display-layout.log";
         StandardErrorPath = "${config.mine.homeDir}/Library/Logs/display-layout.log";
@@ -88,10 +91,13 @@ in
     };
 
     services.aerospace.settings = {
-      workspace-to-monitor-force-assignment =
-        lib.genAttrs (map toString (lib.range 1 5)) (_: 1)
-        // lib.genAttrs (map toString (lib.range 6 10)) (_: 3)
-        // { "11" = "built-in"; };
+      workspace-to-monitor-force-assignment = let
+        leftPortrait = 1;
+        middleLandscape = 2;
+      in
+        lib.genAttrs (map toString (lib.range 1 5)) (_: leftPortrait)
+        // lib.genAttrs (map toString (lib.range 6 10)) (_: middleLandscape)
+        // {"11" = "built-in";};
 
       mode.main.binding = {
         cmd-h = "focus left --boundaries all-monitors-outer-frame";
