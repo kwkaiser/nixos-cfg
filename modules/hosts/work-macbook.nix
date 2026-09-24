@@ -1,7 +1,4 @@
-{
-  mkDarwinSystem,
-  ...
-} @ topArgs: {
+{mkDarwinSystem, ...} @ topArgs: {
   flake.darwinConfigurations."work-macbook" = mkDarwinSystem (
     {
       lib,
@@ -26,7 +23,6 @@
         node
         work
         secretspec
-        syncthing
         ssh
         docker
         claude
@@ -46,7 +42,7 @@
       mine.git.signCommits = true;
       mine.builder.enable = false;
       mine.git.signingKey = "RD6eqflf19EJJRF4Hj0NlpBq5Pzz9x7sq4mBe36lya8";
-      mine.syncthing.deviceName = "work-macbook";
+      # mine.syncthing.deviceName = "work-macbook";
       mine.ssh.server.enable = false;
       mine.docker.backend = "colima";
 
@@ -64,6 +60,7 @@
       system.tools.darwin-uninstaller.enable = false;
 
       homebrew.enable = true;
+      homebrew.casks = ["pgadmin4"];
 
       home-manager.users.${config.mine.username}.mine.claude.extraMcpServers.grafana = {
         command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
