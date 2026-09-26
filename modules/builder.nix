@@ -28,6 +28,12 @@
 
       nix.settings.trusted-users = [ config.mine.builder.sshUser ];
 
+      # Lets this x86_64 host also accept aarch64-linux build requests via
+      # qemu-user emulation (registers binfmt_misc handlers and adds
+      # aarch64-linux to nix.settings.extra-platforms), so aarch64 clients
+      # like personal-macbook can offload aarch64-linux builds here too.
+      boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
       nix.gc.options = lib.mkForce "--delete-older-than 1d";
 
       # min-free needs real headroom above k3s's kubelet ephemeral-storage
