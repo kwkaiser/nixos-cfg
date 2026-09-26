@@ -34,7 +34,7 @@
         tmux
         gh-dash
         rust
-        tailcat
+        tailscale
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";

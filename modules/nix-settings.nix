@@ -86,7 +86,7 @@
         sshKey = "/etc/nix/build-keys/builder";
         publicHostKey = config.mine.builder.publicHostKey;
         protocol = "ssh-ng";
-        systems = ["x86_64-linux"];
+        systems = ["x86_64-linux" "aarch64-linux"];
         maxJobs = 2;
         speedFactor = 1;
       }
