@@ -180,6 +180,13 @@ mkHmFeature "claude" (
       nodejs
 
       (writeShellScriptBin "ccp" ''
+        for f in .env .env.mcp; do
+          if [ -f "$f" ]; then
+            set -a
+            . "./$f"
+            set +a
+          fi
+        done
         ${claude-code}/bin/claude --dangerously-skip-permissions
       '')
 

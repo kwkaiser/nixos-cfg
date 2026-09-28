@@ -13,6 +13,7 @@ If I ask for comments or explanations in an area:
 - keep them terse and explain only subjects I wanted explanation on
 - do not use syntax or details that are duplicative with the languages type system
     - this means no JSDoc @links!
+- Never include ticket numbers in comments or deprecation warnings
 
 # Git & Pull requests
 
@@ -41,7 +42,7 @@ When writing pull request descriptions, use the following format to indicate all
 
 Replacing the ticket details if available (skip if not) and `foo`, `bar` with actual content. This provides important clarity to coworkers. 
 
-CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval.
+CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval. NEVER modify description outside of the `[!NOTE]` block, as this is human-written.
 
 Other rules:
 
@@ -50,7 +51,7 @@ Other rules:
 - When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes. Each bullet should be less than 100 characters
 - Reference other pull requests this pull request may have up / downstream for stacked PRs / base branches
 - Never include description of "verification steps" that are duplicative with basic CI. Only include description of verification steps if we did something separate from what CI is doing.
-- Never include "Generated with claude code"
+- NEVER include "Generated with claude code"
 - Do not include any other sections unless explicitly asked 
 
 ## Pull request feedback
