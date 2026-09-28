@@ -24,14 +24,14 @@ mkHmFeature "claude" (
 
     claude-mermaid = pkgs.buildNpmPackage {
       pname = "claude-mermaid";
-      version = "1.6.4";
+      version = "1.6.6";
       src = pkgs.fetchFromGitHub {
         owner = "veelenga";
         repo = "claude-mermaid";
-        rev = "f56a1b43b53e97c66a0b8afbb1ad0cd67da1afb3";
-        hash = "sha256-ZOavR51CTUaEUAOGItDNvHPcowgwJQTLXtpFt6oqnOA=";
+        rev = "c58713771f5f3b4632b8ce907743a050831a5fed";
+        hash = "sha256-ViqDL193NOaat526VGFqu4RxZFqvPVenjrq3WacnxcA=";
       };
-      npmDepsHash = "sha256-GN1bE+LS/DE5CARydzHkvPnE7doIP+WmNQllL9WSi+k=";
+      npmDepsHash = "sha256-FFHUkPgzDzegWPmk0v9/9OeLrfnS65APDpFKVSX/qAU=";
       npmBuildScript = "build";
       PUPPETEER_SKIP_DOWNLOAD = "true";
       nativeBuildInputs = [ pkgs.makeWrapper ];
