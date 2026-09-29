@@ -42,6 +42,7 @@
         homelab-hosts-file
         gh-dash
         rust
+        golang
         tailscale
         flyio
         codex
