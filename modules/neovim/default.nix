@@ -16,6 +16,7 @@ let
         fd
         fzf
         tree-sitter
+        imagemagick
       ];
 
       # Shell wrapper: opens neovim with git-based socket name for external RPC
@@ -390,6 +391,16 @@ let
                 };
               };
             };
+            utility.snacks-nvim = {
+              enable = true;
+              setupOpts = {
+                image = {
+                  enabled = true;
+                  doc.enabled = false;
+                };
+              };
+            };
+
             filetree.neo-tree = {
               enable = true;
               setupOpts = {
@@ -402,6 +413,16 @@ let
                 git_status_async = true;
                 enable_git_status = true;
                 enable_diagnostics = false;
+                window.mappings.P = lib.generators.mkLuaInline ''
+                  {
+                    "toggle_preview",
+                    config = {
+                      use_float = true,
+                      use_snacks_image = true,
+                      use_image_nvim = false,
+                    },
+                  }
+                '';
               };
             };
 
