@@ -77,6 +77,177 @@
       if pkgs.stdenv.hostPlatform.isDarwin
       then "${pkgs.google-chrome}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
       else "${pkgs.google-chrome}/bin/google-chrome-stable";
+
+    chromeMcpStateDir = "${config.home.homeDirectory}/.cache/chrome-devtools-mcp";
+    chromeMcpUserDataDir = "${chromeMcpStateDir}/chrome-profile";
+
+    cursorOverlayDaemon = pkgs.writeText "mcp-cursor-overlay.mjs" ''
+      import {readFileSync} from 'node:fs';
+
+      const portFile = process.argv[2];
+
+      function overlay() {
+        const ID = '__mcp_cursor__';
+
+        function disabled() {
+          try {
+            return window.localStorage.getItem('mcpCursor') === 'off';
+          } catch (err) {
+            return false;
+          }
+        }
+
+        function mount() {
+          if (disabled()) return true;
+          if (document.getElementById(ID)) return true;
+          if (!document.body) return false;
+
+          const dot = document.createElement('div');
+          dot.id = ID;
+          Object.assign(dot.style, {
+            position: 'fixed',
+            left: '0px',
+            top: '0px',
+            width: '26px',
+            height: '26px',
+            marginLeft: '-13px',
+            marginTop: '-13px',
+            borderRadius: '50%',
+            background: 'transparent',
+            border: '3px solid rgba(255,45,70,0.95)',
+            boxShadow: '0 0 0 1.5px rgba(255,255,255,0.9), 0 0 10px rgba(255,45,70,0.5)',
+            pointerEvents: 'none',
+            zIndex: '2147483647',
+            transition: 'transform 260ms cubic-bezier(0.22,0.61,0.36,1)',
+            transform: 'translate(-100px,-100px)'
+          });
+          document.body.appendChild(dot);
+
+          window.addEventListener('mousemove', function (e) {
+            dot.style.transform = 'translate(' + e.clientX + 'px, ' + e.clientY + 'px)';
+          }, {capture: true, passive: true});
+
+          window.addEventListener('mousedown', function (e) {
+            const ring = document.createElement('div');
+            Object.assign(ring.style, {
+              position: 'fixed',
+              left: e.clientX + 'px',
+              top: e.clientY + 'px',
+              width: '26px',
+              height: '26px',
+              marginLeft: '-13px',
+              marginTop: '-13px',
+              borderRadius: '50%',
+              border: '3px solid rgba(255,45,70,0.9)',
+              pointerEvents: 'none',
+              zIndex: '2147483646',
+              transition: 'transform 450ms ease-out, opacity 450ms ease-out'
+            });
+            document.body.appendChild(ring);
+            requestAnimationFrame(function () {
+              ring.style.transform = 'scale(3.2)';
+              ring.style.opacity = '0';
+            });
+            setTimeout(function () {
+              ring.remove();
+            }, 500);
+          }, {capture: true, passive: true});
+        }
+
+        const observer = new MutationObserver(function () {
+          if (mount()) observer.disconnect();
+        });
+        observer.observe(document, {childList: true, subtree: true});
+        if (mount()) observer.disconnect();
+      }
+
+      const source = '(' + overlay.toString() + ')()';
+
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      function readEndpoint() {
+        const [port, path] = readFileSync(portFile, 'utf8').split('\n');
+        if (!port || !path) return null;
+        return 'ws://127.0.0.1:' + port.trim() + path.trim();
+      }
+
+      function log(...args) {
+        console.log(new Date().toISOString(), ...args);
+      }
+
+      function session(endpoint) {
+        return new Promise((resolve) => {
+          const ws = new WebSocket(endpoint);
+          let nextId = 1;
+
+          const send = (method, params, sessionId) =>
+            ws.send(JSON.stringify({id: nextId++, method, params, sessionId}));
+
+          const inject = (sessionId, targetId) => {
+            send('Page.enable', {}, sessionId);
+            send('Page.addScriptToEvaluateOnNewDocument', {source}, sessionId);
+            send('Runtime.evaluate', {expression: source}, sessionId);
+            log('injected overlay into', targetId);
+          };
+
+          ws.addEventListener('open', () => {
+            log('connected', endpoint);
+            send('Target.setDiscoverTargets', {discover: true});
+            send('Target.setAutoAttach', {
+              autoAttach: true,
+              waitForDebuggerOnStart: false,
+              flatten: true
+            });
+            send('Target.getTargets', {});
+          });
+
+          ws.addEventListener('message', (event) => {
+            const msg = JSON.parse(event.data);
+
+            if (msg.method === 'Target.attachedToTarget') {
+              const {sessionId, targetInfo} = msg.params;
+              if (targetInfo.type === 'page') inject(sessionId, targetInfo.targetId);
+              return;
+            }
+
+            if (msg.result?.targetInfos) {
+              for (const info of msg.result.targetInfos) {
+                if (info.type === 'page' && !info.attached) {
+                  send('Target.attachToTarget', {targetId: info.targetId, flatten: true});
+                }
+              }
+            }
+          });
+
+          ws.addEventListener('close', () => {
+            log('disconnected');
+            resolve();
+          });
+          ws.addEventListener('error', () => resolve());
+        });
+      }
+
+      while (true) {
+        let endpoint = null;
+        try {
+          endpoint = readEndpoint();
+        } catch (err) {
+          endpoint = null;
+        }
+        if (endpoint) await session(endpoint);
+        await delay(1000);
+      }
+    '';
+
+    chromeDevtoolsMcpWithOverlay = pkgs.writeShellScriptBin "chrome-devtools-mcp-with-overlay" ''
+      mkdir -p ${lib.escapeShellArg chromeMcpStateDir}
+      ${pkgs.nodejs}/bin/node ${cursorOverlayDaemon} \
+        ${lib.escapeShellArg "${chromeMcpUserDataDir}/DevToolsActivePort"} \
+        < /dev/null >> ${lib.escapeShellArg "${chromeMcpStateDir}/cursor-overlay.log"} 2>&1 &
+      overlay_pid=$!
+      trap 'kill "$overlay_pid" 2>/dev/null' EXIT
+      ${chrome-devtools-mcp}/bin/chrome-devtools-mcp "$@"
+    '';
   in {
     home.packages = with pkgs; [
       devbox
@@ -134,12 +305,13 @@
       };
 
       chrome-devtools = {
-        command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
+        command = "${chromeDevtoolsMcpWithOverlay}/bin/chrome-devtools-mcp-with-overlay";
         args = [
           "--executablePath=${chromeExecutable}"
-          "--userDataDir=${config.home.homeDirectory}/.cache/chrome-devtools-mcp/chrome-profile"
+          "--userDataDir=${chromeMcpUserDataDir}"
           "--no-usage-statistics"
           "--no-performance-crux"
+          "--chromeArg=--remote-debugging-port=0"
         ];
       };
 
