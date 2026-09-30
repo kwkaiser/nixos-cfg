@@ -40,6 +40,43 @@
         callbackPort = 8080;
       };
     };
+
+    chrome-devtools-mcp = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+      pname = "chrome-devtools-mcp";
+      version = "1.10.1";
+
+      src = pkgs.fetchurl {
+        url = "https://registry.npmjs.org/chrome-devtools-mcp/-/chrome-devtools-mcp-${finalAttrs.version}.tgz";
+        hash = "sha256-ASy89ugy1PZwna0MIde+8XCJ6Ure6c8zF50V6gqa3ys=";
+      };
+
+      nativeBuildInputs = [pkgs.makeWrapper];
+      dontBuild = true;
+
+      installPhase = ''
+        runHook preInstall
+
+        mkdir -p $out/lib/chrome-devtools-mcp
+        cp -r build skills package.json $out/lib/chrome-devtools-mcp/
+
+        makeWrapper ${pkgs.nodejs}/bin/node $out/bin/chrome-devtools-mcp \
+          --add-flags $out/lib/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js
+
+        runHook postInstall
+      '';
+
+      meta = {
+        description = "MCP server giving coding agents control over Chrome via the DevTools Protocol";
+        homepage = "https://github.com/ChromeDevTools/chrome-devtools-mcp";
+        license = lib.licenses.asl20;
+        mainProgram = "chrome-devtools-mcp";
+      };
+    });
+
+    chromeExecutable =
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then "${pkgs.google-chrome}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+      else "${pkgs.google-chrome}/bin/google-chrome-stable";
   in {
     home.packages = with pkgs; [
       devbox
@@ -94,6 +131,16 @@
       sentry = {
         type = "http";
         url = "https://mcp.sentry.dev/mcp";
+      };
+
+      chrome-devtools = {
+        command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
+        args = [
+          "--executablePath=${chromeExecutable}"
+          "--userDataDir=${config.home.homeDirectory}/.cache/chrome-devtools-mcp/chrome-profile"
+          "--no-usage-statistics"
+          "--no-performance-crux"
+        ];
       };
 
       lims-dev = mkLimsMcp "https://lims-mcp-dev.solo.lilasci.io/mcp";

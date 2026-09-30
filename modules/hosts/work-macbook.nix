@@ -60,7 +60,10 @@
       system.tools.darwin-uninstaller.enable = false;
 
       homebrew.enable = true;
-      homebrew.casks = ["pgadmin4"];
+      homebrew.casks = [
+        "pgadmin4"
+        "loom"
+      ];
 
       home-manager.users.${config.mine.username}.mine.claude.extraMcpServers.grafana = {
         command = "${pkgs.mcp-grafana}/bin/mcp-grafana";
