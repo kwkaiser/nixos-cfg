@@ -451,6 +451,13 @@ let
                 desc = "Find buffers";
               }
 
+              {
+                key = "<leader>fm";
+                mode = "n";
+                action = "<cmd>lua require('fzf-lua').marks()<CR>";
+                desc = "Find marks";
+              }
+
               # Search
               {
                 key = "<leader>fs";

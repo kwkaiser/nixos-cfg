@@ -91,7 +91,7 @@ in {
     };
 
     services.aerospace.settings = {
-      focus-follows-mouse.enabled = true;
+      focus-follows-mouse.enabled = false;
       on-focus-changed = ["move-mouse window-lazy-center"];
       on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
 
