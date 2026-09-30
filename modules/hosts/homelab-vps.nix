@@ -24,6 +24,7 @@
           borgmatic
           builder
           wireguard
+          neovim
         ]
         ++ [
           ./_homelab-vps/disks.nix
