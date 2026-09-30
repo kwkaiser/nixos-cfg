@@ -38,6 +38,9 @@ When writing pull request descriptions, use the following format to indicate all
 > [<Ticket name or ID>](<link to ticket>)
 > foo
 > bar
+>
+> **Demos**:
+> - [description](<link to recording if applicable>) @ `<commit tag>`
 ```
 
 Replacing the ticket details if available (skip if not) and `foo`, `bar` with actual content. This provides important clarity to coworkers. 
@@ -46,6 +49,8 @@ CRUCIAL: NEVER provide your own generated description outside of that generated 
 
 Other rules:
 
+- Only attach demos to the description if one is EXPLICITLY provided to the session
+- If demos are re-created, leave the original demo link in place and list the new one with respect to commit
 - If you find additions outside of the `Generated content` block, leave them alone
 - Do not use unbulleted descriptions of changes
 - When describing branch changes for pull requests, use a maximum of 3 bullet points to describe changes. Each bullet should be less than 100 characters
