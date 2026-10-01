@@ -129,11 +129,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1790740952,
-        "narHash": "sha256-k7xoqjIwzLAD2Dl6ZhX1FfAXcN38ufkZItV6EOGNxMQ=",
+        "lastModified": 1790827361,
+        "narHash": "sha256-cwzrNDxP3JWVNozUeCHoRf3boUAWh3MhVk1cR335oZU=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "426c68be8803a0dda7c7564f23206ec04396ba46",
+        "rev": "0c432f881aec4024a22759c00a783efd8bbc957c",
         "type": "gitlab"
       },
       "original": {
@@ -274,11 +274,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790774594,
-        "narHash": "sha256-ERhz5CSq098j7oYaH8Dr7Nfk50PwewCesHL877p5gJs=",
+        "lastModified": 1790819692,
+        "narHash": "sha256-rvubAPbh3QCliic3sAK+CXTrPCGgJstY52OTs/5H1J4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d4941d9c8d90ea77e812a957206ec5b6b108391e",
+        "rev": "c8ecc29e5175452bee4a2aa1ba2383856d795338",
         "type": "github"
       },
       "original": {
@@ -727,11 +727,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1790738606,
-        "narHash": "sha256-mTMJepu6hxBFXQbAWrBWc5tmUA6Plz6h/j/lkJTvsjQ=",
+        "lastModified": 1790825374,
+        "narHash": "sha256-0AxuyM7zZqb9yBJizOljlgDGy8k+hdyg3xYQFZkXiT8=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "de4bcccd7036159288f56acc6bcd15e831fde808",
+        "rev": "45f143d8aa9efc4b0873d5f9c81328d057129d2f",
         "type": "github"
       },
       "original": {
@@ -742,11 +742,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1790689126,
-        "narHash": "sha256-ilerN1WLSvF+HMjziC/Wv99J5y02maDH+6hZPwsORKg=",
+        "lastModified": 1790822859,
+        "narHash": "sha256-69xHQhAeMAD2wDXO7T2pcOZIF9Sga2W+JkmY2a11Ops=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b4fd65b198c599cbe814fcb9f42d25d021595ec9",
+        "rev": "c59305bab2065cfecc4944690d9eedbb56f3a9fa",
         "type": "github"
       },
       "original": {
@@ -806,11 +806,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790770309,
-        "narHash": "sha256-2fYwDJaUy5V3BPEL3ryKBj+/m/p04ErKFzGUAZxIYPo=",
+        "lastModified": 1790797021,
+        "narHash": "sha256-H2vA5yUaS58Wtdp46piMbRqSQe3Qn716i/oZPYoyhp8=",
         "owner": "NotAShelf",
         "repo": "nvf",
-        "rev": "755bdd325432b4eee7067ebe7ae104e7aeb9ea52",
+        "rev": "2477cb0a5f394df36ddc72867c2657225d93d157",
         "type": "github"
       },
       "original": {
