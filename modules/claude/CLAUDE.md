@@ -45,7 +45,7 @@ When writing pull request descriptions, use the following format to indicate all
 
 Replacing the ticket details if available (skip if not) and `foo`, `bar` with actual content. This provides important clarity to coworkers. 
 
-CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval. NEVER modify description outside of the `[!NOTE]` block, as this is human-written.
+CRUCIAL: NEVER provide your own generated description outside of that generated summary block. That means that you should not put ANY text outside the `>` backticks, nor edit existing text without explicit approval. NEVER modify description outside of the `[!NOTE]` block, as this is human-written. The means any time you're asked to modify the annotated text, you MUST retrieve the latest version of that text, which may have been edited since you last saw it.
 
 Other rules:
 
@@ -63,6 +63,7 @@ Other rules:
 
 - NEVER reply to pull comments without explicit approval from myself
 - When you reply, use an equivalent reply format to distinguish a generated response from my own responses:
+- Continue following the same conventions around brevity (i.e. do not spam out the commenter in the reply)
 
 ```
 > [!NOTE]
