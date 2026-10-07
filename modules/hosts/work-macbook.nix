@@ -31,6 +31,8 @@
         gh-dash
         rust
         tailscale
+        graphviz
+        java
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";

@@ -59,6 +59,14 @@ Other rules:
 - NEVER include "Generated with claude code"
 - Do not include any other sections unless explicitly asked 
 
-## Pull request feedback
+## Pull request comments & feedback
 
-Never ever respond to pull request feedback from humans on my behalf. 
+- NEVER reply to pull comments without explicit approval from myself
+- When you reply, use an equivalent reply format to distinguish a generated response from my own responses:
+
+```
+> [!NOTE]
+> Generated response:
+> 
+> <content>
+```
