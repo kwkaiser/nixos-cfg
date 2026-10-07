@@ -25,6 +25,9 @@ in {
 
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
+    system.defaults.dock.persistent-apps = ["${config.mine.homeDir}/Applications/Home Manager Apps/Firefox.app"];
+    system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
+    system.defaults.WindowManager.GloballyEnabled = false;
     system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
 
     # Disable macOS shortcuts that conflict with aerospace bindings
@@ -104,15 +107,16 @@ in {
         // {"11" = "built-in";};
 
       mode.main.binding = {
-        cmd-h = "focus left --boundaries all-monitors-outer-frame";
+        cmd-h = ["focus left --boundaries workspace --boundaries-action fail" "focus-monitor left"];
         cmd-j = "focus down";
         cmd-k = "focus up";
-        cmd-l = "focus right --boundaries all-monitors-outer-frame";
+        cmd-l = ["focus right --boundaries workspace --boundaries-action fail" "focus-monitor right"];
         cmd-shift-q = "close"; # Close window (like hyprland mod+shift+q)
         cmd-shift-h = "move left --boundaries all-monitors-outer-frame --boundaries-action stop";
         cmd-shift-j = "move down";
         cmd-shift-k = "move up";
         cmd-shift-l = "move right --boundaries all-monitors-outer-frame --boundaries-action stop";
+        ctrl-shift-c = "exec-and-forget /usr/sbin/screencapture -i -c";
         cmd-comma = "layout h_tiles";
         cmd-shift-comma = "layout v_tiles";
 
