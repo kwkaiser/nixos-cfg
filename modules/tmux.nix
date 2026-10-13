@@ -68,7 +68,7 @@ mkHmFeature "tmux" (
 
         # Extended keys for Shift+Enter etc.
         set -s extended-keys on
-        set -as terminal-features 'xterm-kitty:extkeys:clipboard:RGB:sync'
+        set -as terminal-features 'xterm-kitty:extkeys:clipboard:RGB:sync:hyperlinks'
 
         # Allow passthrough for escape sequences
         set -g allow-passthrough on
