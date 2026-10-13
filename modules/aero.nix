@@ -25,7 +25,6 @@ in {
 
     services.aerospace.enable = true;
     system.defaults.dock.autohide = true;
-    system.defaults.dock.persistent-apps = ["${config.mine.homeDir}/Applications/Home Manager Apps/Firefox.app"];
     system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
     system.defaults.WindowManager.GloballyEnabled = false;
     system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;

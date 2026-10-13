@@ -1,12 +1,11 @@
-{
-  config,
-  mkDarwinSystem,
-  lib,
-  ...
-}: {
+{mkDarwinSystem, ...} @ topArgs: {
   flake.darwinConfigurations."personal-macbook" = mkDarwinSystem (
-    {lib, ...}: {
-      imports = with config.darwin.modules; [
+    {
+      lib,
+      config,
+      ...
+    }: {
+      imports = with topArgs.config.darwin.modules; [
         identity
         base
         git
@@ -72,7 +71,7 @@
       homebrew.enable = true;
       homebrew.onActivation.cleanup = "zap";
 
-      system.defaults.dock.persistent-apps = [];
+      system.defaults.dock.persistent-apps = ["${config.mine.homeDir}/Applications/Home Manager Apps/Firefox.app"];
     }
   );
 }
