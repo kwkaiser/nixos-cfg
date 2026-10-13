@@ -61,6 +61,8 @@
       documentation.doc.enable = false;
       system.tools.darwin-uninstaller.enable = false;
 
+      system.defaults.dock.persistent-apps = map (app: "${config.mine.homeDir}/Applications/Home Manager Apps/${app}.app") ["Firefox" "kitty"];
+
       homebrew.enable = true;
       homebrew.casks = [
         "pgadmin4"
