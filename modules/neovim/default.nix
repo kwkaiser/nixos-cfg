@@ -523,6 +523,12 @@ let
                 action = "<cmd>lua vim.lsp.buf.hover()<CR>";
                 desc = "Type description";
               }
+              {
+                key = "<leader>rs";
+                mode = "n";
+                action = "<cmd>lsp restart<CR>";
+                desc = "Restart LSP";
+              }
 
               # Git
               {
