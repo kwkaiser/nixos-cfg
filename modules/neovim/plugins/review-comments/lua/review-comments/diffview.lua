@@ -6,16 +6,21 @@ local side_map = { a = "old", b = "new" }
 --- Get cursor context from the current diffview buffer.
 --- Returns nil if not in a diffview diff pane.
 ---@return { file: string, side: "old"|"new", line_start: integer, line_end: integer, bufnr: integer }|nil
-function M.get_cursor_context()
+function M.get_cursor_context(opts)
+  local quiet = opts and opts.quiet
+  local function warn(msg, level)
+    if not quiet then vim.notify(msg, level or vim.log.levels.WARN) end
+  end
+
   local ok, lib = pcall(require, "diffview.lib")
   if not ok then
-    vim.notify("diffview not available", vim.log.levels.ERROR)
+    warn("diffview not available", vim.log.levels.ERROR)
     return nil
   end
 
   local view = lib.get_current_view()
   if not view or not view.cur_layout then
-    vim.notify("No active diffview", vim.log.levels.WARN)
+    warn("No active diffview")
     return nil
   end
 
@@ -28,13 +33,13 @@ function M.get_cursor_context()
   elseif layout.b and layout.b.id == curwin then
     side_symbol = "b"
   else
-    vim.notify("Place cursor in a diff pane to add a comment", vim.log.levels.WARN)
+    warn("Place cursor in a diff pane to add a comment")
     return nil
   end
 
   local file_entry = view:infer_cur_file()
   if not file_entry or not file_entry.path then
-    vim.notify("Could not determine file", vim.log.levels.WARN)
+    warn("Could not determine file")
     return nil
   end
 

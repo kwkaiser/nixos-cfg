@@ -39,6 +39,28 @@ function M.add(comment)
   place_signs(comment)
 end
 
+function M.remove(comment)
+  for i, c in ipairs(comments) do
+    if c == comment then
+      table.remove(comments, i)
+      break
+    end
+  end
+  vim.fn.sign_unplace(sign_group)
+  for _, c in ipairs(comments) do
+    place_signs(c)
+  end
+end
+
+function M.find(file, side, line)
+  for i = #comments, 1, -1 do
+    local c = comments[i]
+    if c.file == file and c.side == side and line >= c.line_start and line <= c.line_end then
+      return c
+    end
+  end
+end
+
 --- Get all comments
 ---@return ReviewComment[]
 function M.get_all()

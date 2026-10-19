@@ -1,47 +1,54 @@
 local M = {}
 
 local state = require("review-comments.state")
-local float = require("review-comments.float")
 local diffview_ctx = require("review-comments.diffview")
+local panel = require("review-comments.panel")
 
 function M.setup()
-  -- Sign definition is lazy (on first comment), nothing else needed
+  panel.setup()
 end
 
 --- Add a comment at the current cursor position in a diffview pane.
---- Opens a floating input. Works in normal and visual mode.
 function M.add_comment()
   local ctx = diffview_ctx.get_cursor_context()
   if not ctx then return end
 
-  local title
-  if ctx.line_start == ctx.line_end then
-    title = string.format("%s:%d (%s)", ctx.file, ctx.line_start, ctx.side)
-  else
-    title = string.format("%s:%d-%d (%s)", ctx.file, ctx.line_start, ctx.line_end, ctx.side)
-  end
-
-  -- Exit visual mode before opening float
   local mode = vim.fn.mode()
   if mode ~= "n" then
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
   end
 
-  float.open({
-    title = title,
-    on_confirm = function(text)
-      state.add({
-        file = ctx.file,
-        side = ctx.side,
-        line_start = ctx.line_start,
-        line_end = ctx.line_end,
-        comment = text,
-        bufnr = ctx.bufnr,
-      })
-      vim.notify(string.format("Comment added: %s:%d", ctx.file, ctx.line_start), vim.log.levels.INFO)
-    end,
-    on_cancel = function() end,
-  })
+  local comment = {
+    file = ctx.file,
+    side = ctx.side,
+    line_start = ctx.line_start,
+    line_end = ctx.line_end,
+    comment = "",
+    bufnr = ctx.bufnr,
+  }
+  state.add(comment)
+  panel.focus(comment)
+end
+
+function M.delete_comment()
+  local ctx = diffview_ctx.get_cursor_context()
+  if not ctx then return end
+
+  local comment = state.find(ctx.file, ctx.side, ctx.line_start)
+  if not comment then
+    vim.notify("No comment on this line", vim.log.levels.WARN)
+    return
+  end
+
+  state.remove(comment)
+  panel.refresh()
+  vim.notify(string.format("Comment deleted: %s:%d", comment.file, comment.line_start), vim.log.levels.INFO)
+end
+
+function M.focus_panel()
+  if not panel.enter() then
+    vim.cmd("wincmd j")
+  end
 end
 
 --- Flush all comments to clipboard as JSON and clear state.
@@ -67,6 +74,7 @@ function M.flush()
   vim.fn.setreg("+", json)
   local count = #comments
   state.clear()
+  panel.hide()
   vim.notify(string.format("Flushed %d comment(s) to clipboard", count), vim.log.levels.INFO)
 end
 
@@ -80,6 +88,7 @@ end
 function M.abort()
   local count = #state.get_all()
   state.clear()
+  panel.hide()
   vim.cmd("DiffviewClose")
   if count > 0 then
     vim.notify(string.format("Discarded %d comment(s)", count), vim.log.levels.INFO)

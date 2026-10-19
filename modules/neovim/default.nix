@@ -297,6 +297,24 @@
                   ]
                   [
                     "n"
+                    "<leader>rd"
+                    "<Cmd>lua require('review-comments').delete_comment()<CR>"
+                    {desc = "Delete review comment";}
+                  ]
+                  [
+                    "n"
+                    "<C-w>j"
+                    "<Cmd>lua require('review-comments').focus_panel()<CR>"
+                    {desc = "Focus review comment or window below";}
+                  ]
+                  [
+                    "n"
+                    "<leader>b"
+                    "<Cmd>lua require('diffview.lib').get_current_view().panel:toggle(false)<CR>"
+                    {desc = "Toggle the file panel";}
+                  ]
+                  [
+                    "n"
                     "<leader>rC"
                     "<Cmd>lua require('review-comments').flush()<CR>"
                     {desc = "Flush comments to clipboard";}
@@ -316,6 +334,12 @@
                   [
                     "n"
                     "R"
+                    "<Cmd>DiffviewRefresh<CR>"
+                    {desc = "Refresh diffview";}
+                  ]
+                  [
+                    "n"
+                    "<leader>rr"
                     "<Cmd>DiffviewRefresh<CR>"
                     {desc = "Refresh diffview";}
                   ]
@@ -323,6 +347,12 @@
                 file_panel = [
                   [
                     "n"
+                    "<leader>b"
+                    "<Cmd>lua require('diffview.lib').get_current_view().panel:toggle(false)<CR>"
+                    {desc = "Toggle the file panel";}
+                  ]
+                  [
+                    "n"
                     "<leader>rC"
                     "<Cmd>lua require('review-comments').flush()<CR>"
                     {desc = "Flush comments to clipboard";}
@@ -345,8 +375,20 @@
                     "<Cmd>DiffviewRefresh<CR>"
                     {desc = "Refresh diffview";}
                   ]
+                  [
+                    "n"
+                    "<leader>rr"
+                    "<Cmd>DiffviewRefresh<CR>"
+                    {desc = "Refresh diffview";}
+                  ]
                 ];
                 file_history_panel = [
+                  [
+                    "n"
+                    "<leader>b"
+                    "<Cmd>lua require('diffview.lib').get_current_view().panel:toggle(false)<CR>"
+                    {desc = "Toggle the file panel";}
+                  ]
                   [
                     "n"
                     "<leader>gc"
@@ -606,6 +648,7 @@
           luaConfigRC.review-main = builtins.readFile ./review-main.lua;
           luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
           luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
+          luaConfigRC.diffview-statusline = builtins.readFile ./diffview-statusline.lua;
           luaConfigRC.git-blame = builtins.readFile ./git-blame.lua;
           luaConfigRC.github-url = builtins.readFile ./github-url.lua;
           luaConfigRC.file-location = builtins.readFile ./file-location.lua;
