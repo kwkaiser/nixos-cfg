@@ -385,7 +385,7 @@
                   ]
                   [
                     "n"
-                    "<C-i>"
+                    "<M-i>"
                     "<Cmd>lua diffview_jump_newer()<CR>"
                     {desc = "Jump to newer position in the diff";}
                   ]
@@ -612,6 +612,12 @@
               mode = "n";
               action = "<cmd>lua vim.fn.setreg('+', vim.diagnostic.get(0, {lnum = vim.fn.line('.') - 1})[1].message)<CR>";
               desc = "Copy diagnostic";
+            }
+            {
+              key = "<M-i>";
+              mode = "n";
+              action = "<C-i>";
+              desc = "Jump to newer position";
             }
             {
               key = "<leader>lt";
