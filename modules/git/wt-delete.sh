@@ -10,7 +10,12 @@ for branch in "$@"; do
     /^worktree / { path = $2 }
     /^branch /   { if ($2 == b) { print path; exit } }
   ')"
-  if [[ -n "$path" ]] && [[ "$(cd "$path" && pwd -P)" != "$here" ]]; then
+  [[ -n "$path" ]] || continue
+
+  home="$(basename "$path")"
+  if [[ "$home" != "$branch" ]] && git show-ref --verify --quiet "refs/heads/$home"; then
+    git -C "$path" switch --quiet "$home" && echo "switched worktree $path to '$home' (was on '$branch')" >&2
+  elif [[ "$(cd "$path" && pwd -P)" != "$here" ]]; then
     git worktree remove --force "$path" && echo "removed worktree $path (was on '$branch')" >&2
   fi
 done
