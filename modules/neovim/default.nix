@@ -712,6 +712,7 @@
           luaConfigRC.diffview-single-highlight = builtins.readFile ./diffview-single-highlight.lua;
           luaConfigRC.diffview-readonly = builtins.readFile ./diffview-readonly.lua;
           luaConfigRC.diffview-jump = builtins.readFile ./diffview-jump.lua;
+          luaConfigRC.diffview-fzf-preview = builtins.readFile ./diffview-fzf-preview.lua;
           luaConfigRC.git-blame = builtins.readFile ./git-blame.lua;
           luaConfigRC.github-url = builtins.readFile ./github-url.lua;
           luaConfigRC.file-location = builtins.readFile ./file-location.lua;

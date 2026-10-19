@@ -56,6 +56,11 @@ local function render(bufnr, old, winid)
   end
 end
 
+function diffview_mark_buffer(bufnr, entry, winid)
+  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+  if enabled and entry then render(bufnr, old_lines(entry), winid) end
+end
+
 local function decorate()
   local view = require('diffview.lib').get_current_view()
   if not view or not view.cur_layout then return end
