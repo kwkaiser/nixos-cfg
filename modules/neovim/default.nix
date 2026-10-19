@@ -2,8 +2,20 @@
   hmModule = {
     pkgs,
     lib,
+    config,
     ...
-  }: {
+  }: let
+    nvim-open = pkgs.writeShellApplication {
+      name = "nvim-open";
+      runtimeInputs = [
+        config.programs.nvf.finalPackage
+        config.programs.tmux.package
+        pkgs.git
+      ];
+      excludeShellChecks = ["SC2016"];
+      text = builtins.readFile ./nvim-open.sh;
+    };
+  in {
     imports = [./_ts.nix];
 
     home.sessionVariables.EDITOR = "nvim";
@@ -14,7 +26,17 @@
       fzf
       tree-sitter
       imagemagick
+      nvim-open
     ];
+
+    xdg.configFile."kitty/open-actions.conf".text = ''
+      protocol file
+      fragment_matches L?[0-9]+.*
+      action launch --type=background ${nvim-open}/bin/nvim-open ''${FILE_PATH} ''${FRAGMENT}
+
+      protocol file
+      action launch --type=background ${nvim-open}/bin/nvim-open ''${FILE_PATH}
+    '';
 
     # Shell wrapper: opens neovim with git-based socket name for external RPC
     programs.zsh.initContent = ''
@@ -343,6 +365,30 @@
                     "<Cmd>DiffviewRefresh<CR>"
                     {desc = "Refresh diffview";}
                   ]
+                  [
+                    "n"
+                    "<leader>rl"
+                    "<Cmd>lua diffview_toggle_layout()<CR>"
+                    {desc = "Toggle single/split layout";}
+                  ]
+                  [
+                    "n"
+                    "<leader>rh"
+                    "<Cmd>lua diffview_toggle_highlight()<CR>"
+                    {desc = "Toggle diff highlighting";}
+                  ]
+                  [
+                    "n"
+                    "<C-o>"
+                    "<Cmd>lua diffview_jump_older()<CR>"
+                    {desc = "Jump to older position in the diff";}
+                  ]
+                  [
+                    "n"
+                    "<C-i>"
+                    "<Cmd>lua diffview_jump_newer()<CR>"
+                    {desc = "Jump to newer position in the diff";}
+                  ]
                 ];
                 file_panel = [
                   [
@@ -380,6 +426,18 @@
                     "<leader>rr"
                     "<Cmd>DiffviewRefresh<CR>"
                     {desc = "Refresh diffview";}
+                  ]
+                  [
+                    "n"
+                    "<leader>rl"
+                    "<Cmd>lua diffview_toggle_layout()<CR>"
+                    {desc = "Toggle single/split layout";}
+                  ]
+                  [
+                    "n"
+                    "<leader>rh"
+                    "<Cmd>lua diffview_toggle_highlight()<CR>"
+                    {desc = "Toggle diff highlighting";}
                   ]
                 ];
                 file_history_panel = [
@@ -649,6 +707,11 @@
           luaConfigRC.diff-status = builtins.readFile ./diff-status.lua;
           luaConfigRC.diff-commit = builtins.readFile ./diff-commit.lua;
           luaConfigRC.diffview-statusline = builtins.readFile ./diffview-statusline.lua;
+          luaConfigRC.diffview-untracked = builtins.readFile ./diffview-untracked.lua;
+          luaConfigRC.diffview-single-layout = builtins.readFile ./diffview-single-layout.lua;
+          luaConfigRC.diffview-single-highlight = builtins.readFile ./diffview-single-highlight.lua;
+          luaConfigRC.diffview-readonly = builtins.readFile ./diffview-readonly.lua;
+          luaConfigRC.diffview-jump = builtins.readFile ./diffview-jump.lua;
           luaConfigRC.git-blame = builtins.readFile ./git-blame.lua;
           luaConfigRC.github-url = builtins.readFile ./github-url.lua;
           luaConfigRC.file-location = builtins.readFile ./file-location.lua;

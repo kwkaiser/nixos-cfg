@@ -2,6 +2,8 @@
 
 Never use shortlinks
 
+When referencing files or code locations, always write them as markdown links with an absolute `file://` URL and a `#L<line>` fragment, keeping the repo-relative path as the link text. For example: `[modules/tmux.nix:12](file:///abs/path/to/repo/modules/tmux.nix#L12)`. Omit the fragment when there is no specific line.
+
 # Code
 
 ## Code comments
