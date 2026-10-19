@@ -9,3 +9,11 @@ function git_root_for_buf()
   end
   return vim.fn.systemlist('git rev-parse --show-toplevel')[1]
 end
+
+function diffview_range(root, base, branch)
+  local current = vim.fn.systemlist('git -C ' .. vim.fn.shellescape(root) .. ' rev-parse --abbrev-ref HEAD')[1]
+  if branch == current then
+    return base
+  end
+  return base .. '..' .. branch
+end

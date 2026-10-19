@@ -17,7 +17,7 @@ function review_compare_branches()
           actions = {
             ['default'] = function(selected2)
               if not selected2[1] then return end
-              vim.cmd('DiffviewOpen ' .. base .. '..' .. selected2[1])
+              vim.cmd('DiffviewOpen ' .. diffview_range(root, base, selected2[1]))
             end,
           },
         })

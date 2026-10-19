@@ -7,7 +7,7 @@ function review_branch_against_main()
     actions = {
       ['default'] = function(selected)
         if not selected[1] then return end
-        vim.cmd('DiffviewOpen main..' .. selected[1])
+        vim.cmd('DiffviewOpen ' .. diffview_range(root, 'main', selected[1]))
       end,
     },
   })
