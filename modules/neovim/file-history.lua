@@ -34,6 +34,19 @@ function open_file_history()
 
   view:open()
 
+  view.emitter:once('file_open_post', function()
+    vim.schedule(function()
+      local entry = view.panel.cur_item and view.panel.cur_item[1]
+      if not entry then return end
+      view.panel:focus()
+      for _, c in ipairs(view.panel.components.log.entries) do
+        if c.comp.context == entry then
+          pcall(vim.api.nvim_win_set_cursor, view.panel.winid, { c.comp.lstart + 1, 0 })
+        end
+      end
+    end)
+  end)
+
   if not target_sha then
     return
   end
