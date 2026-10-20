@@ -1,9 +1,9 @@
 { lib, ... }:
 let
-  inherit (import ../dendritic-lib.nix { inherit lib; }) mkHmFeature;
+  inherit (import ../../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
 mkHmFeature "tmux" (
-  { pkgs, ... }:
+  { pkgs, config, ... }:
   let
     yaml = pkgs.formats.yaml { };
 
@@ -44,9 +44,23 @@ mkHmFeature "tmux" (
 
       ${pkgs.tmuxinator}/bin/tmuxinator start --project-config "$config" --no-attach
     '';
+
+    tmt = pkgs.writeShellApplication {
+      name = "tmt";
+      runtimeInputs = [
+        config.programs.tmux.package
+        pkgs.git
+        pkgs.fzf
+        pkgs.gh
+      ];
+      text = builtins.readFile ./tmt.sh;
+    };
   in
   {
-    home.packages = [ tma ];
+    home.packages = [
+      tma
+      tmt
+    ];
 
     programs.tmux = {
       enable = true;
@@ -96,6 +110,8 @@ mkHmFeature "tmux" (
 
         # Jump back to the previously attached session
         bind-key p switch-client -l
+
+        bind-key g display-popup -E -w 70% -h 50% -d "#{pane_current_path}" "${tmt}/bin/tmt pick || { echo 'press enter'; read _; }"
 
         # Select window 1-10, auto-create if doesn't exist
         bind-key 1 run-shell 'tmux select-window -t :1 2>/dev/null || tmux new-window -t :1'

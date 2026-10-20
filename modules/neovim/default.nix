@@ -42,15 +42,16 @@
     programs.zsh.initContent = ''
       nvim() {
         if git rev-parse --show-toplevel &>/dev/null; then
-          local repo_name=$(basename "$(git rev-parse --show-toplevel)")
-          local socket_path="/tmp/nvim-''${repo_name}.sock"
+          local repo_root=$(git rev-parse --show-toplevel)
+          local repo_id=$(printf %s "$repo_root" | cksum | cut -d' ' -f1)
+          local socket_path="/tmp/nvim-$(basename "$repo_root")-''${repo_id}.sock"
 
           # Clean up stale socket if it exists but no process is listening
           if [[ -S "$socket_path" ]] && ! command nvim --server "$socket_path" --remote-expr "1" &>/dev/null; then
             rm -f "$socket_path"
           fi
 
-          command nvim --listen "$socket_path" --cmd "cd $(git rev-parse --show-toplevel)" "$@"
+          command nvim --listen "$socket_path" --cmd "cd $repo_root" "$@"
         else
           command nvim "$@"
         fi

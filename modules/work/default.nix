@@ -290,6 +290,8 @@
       '')
     ];
 
+    home.sessionVariables.TMT_BASE = "${config.home.homeDirectory}/Documents/lila";
+
     programs.zsh.initContent = ''
       asso() {
         local creds
