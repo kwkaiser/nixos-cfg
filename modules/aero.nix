@@ -17,6 +17,7 @@ in {
     ...
   }: let
     hasDisplayLayout = config.mine.aero.displayLayout != [];
+    workspaceKeys = lib.listToAttrs (lib.imap1 (i: key: lib.nameValuePair key i) ["1" "2" "3" "4" "5" "6" "7" "8" "9" "0"]);
     displayLayout = pkgs.writeShellScriptBin "display-layout" ''
       exec /opt/homebrew/bin/displayplacer ${lib.escapeShellArgs config.mine.aero.displayLayout}
     '';
@@ -54,6 +55,13 @@ in {
           "57" = {
             enabled = false;
           }; # Cmd+H (hide others)
+          "64" = {
+            enabled = true;
+            value = {
+              parameters = [32 49 524288];
+              type = "standard";
+            };
+          };
         };
       };
       # Remap logout menu item to Ctrl+Opt+Cmd+Shift+Q to free up Cmd+Shift+Q
@@ -101,9 +109,24 @@ in {
         leftPortrait = 1;
         middleLandscape = 2;
       in
-        lib.genAttrs (map toString (lib.range 1 5)) (_: leftPortrait)
-        // lib.genAttrs (map toString (lib.range 6 10)) (_: middleLandscape)
-        // {"11" = "built-in";};
+        lib.genAttrs (map toString (lib.range 1 10)) (_: "built-in")
+        // lib.genAttrs (map toString (lib.range 11 15)) (_: leftPortrait)
+        // lib.genAttrs (map toString (lib.range 16 20)) (_: middleLandscape);
+
+      mode.external.binding =
+        lib.concatMapAttrs (key: n: let
+          ws = toString (n + 10);
+        in {
+          ${key} = ["workspace ${ws}" "mode main"];
+          "cmd-${key}" = ["workspace ${ws}" "mode main"];
+          "shift-${key}" = ["move-node-to-workspace ${ws}" "mode main"];
+          "cmd-shift-${key}" = ["move-node-to-workspace ${ws}" "mode main"];
+        })
+        workspaceKeys
+        // {
+          esc = "mode main";
+          cmd-space = "mode main";
+        };
 
       mode.main.binding = {
         cmd-h = ["focus left --boundaries workspace --boundaries-action fail" "focus-monitor left"];
@@ -141,7 +164,7 @@ in {
         cmd-8 = "workspace 8";
         cmd-9 = "workspace 9";
         cmd-0 = "workspace 10";
-        cmd-backtick = "workspace 11";
+        cmd-space = "mode external";
         cmd-shift-1 = "move-node-to-workspace 1";
         cmd-shift-2 = "move-node-to-workspace 2";
         cmd-shift-3 = "move-node-to-workspace 3";
@@ -152,7 +175,6 @@ in {
         cmd-shift-8 = "move-node-to-workspace 8";
         cmd-shift-9 = "move-node-to-workspace 9";
         cmd-shift-0 = "move-node-to-workspace 10";
-        cmd-shift-backtick = "move-node-to-workspace 11";
       };
     };
   };
