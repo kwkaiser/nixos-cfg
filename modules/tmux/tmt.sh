@@ -10,16 +10,35 @@ die() {
 usage() {
   cat <<EOF
 usage:
-  tmt new [-b base] [-B branch] <topic> [repo...]
+  tmt new [-B branch] <base> <topic> [repo...]
   tmt add [-t topic] <repo...>
   tmt open [topic]
   tmt ls
+  tmt fresh [base]
   tmt done [-f] [-y] [topic]
   tmt gc
   tmt pick
 
-base defaults to \$TMT_BASE; tasks live under $root/<base name>/<topic>
+base is a directory or zoxide query; tasks live under $root/<base name>/<topic>
 EOF
+}
+
+tabulate() {
+  awk -F '\t' '
+    {
+      rows[NR] = NF
+      for (i = 1; i <= NF; i++) {
+        cell[NR, i] = $i
+        if (length($i) > width[i]) width[i] = length($i)
+      }
+    }
+    END {
+      for (r = 1; r <= NR; r++) {
+        line = ""
+        for (i = 1; i < rows[r]; i++) line = line sprintf("%-" width[i] "s  ", cell[r, i])
+        print line cell[r, rows[r]]
+      }
+    }'
 }
 
 meta() {
@@ -93,6 +112,10 @@ start_ref() {
 clone_path() {
   mkdir -p "$(dirname "$2")"
   if [ "$(uname)" = Darwin ]; then
+    if command -v clonedir >/dev/null && clonedir "$1" "$2" 2>/dev/null; then
+      return 0
+    fi
+    rm -rf "$2"
     /bin/cp -cR "$1" "$2"
   else
     cp -R --reflink=auto "$1" "$2"
@@ -110,6 +133,7 @@ clone_untracked() {
   while IFS= read -r p; do
     rel="${p#"$src"/}"
     if [ ! -e "$dst/$rel" ]; then
+      echo "tmt:   copying $(basename "$src")/$rel"
       clone_path "$p" "$dst/$rel"
     fi
   done < <(find "$src" -name .git -prune -o \( "${args[@]}" \) -prune -print)
@@ -138,6 +162,61 @@ window_id() {
     awk -v n="$2" '$2 == n { print $1; exit }'
 }
 
+check_repos() {
+  local base="$1" r missing=()
+  shift
+  for r in "$@"; do
+    if [ ! -e "$base/$r/.git" ]; then
+      missing+=("$r")
+    fi
+  done
+  [ "${#missing[@]}" -eq 0 ] || die "not a git repo under $base: ${missing[*]}"
+}
+
+trash_root="$root/.trash"
+
+discard_worktree() {
+  local src="$1" wt="$2" force="$3" bin p i=0
+  bin="$trash_root/$(date +%s)-$$-$RANDOM"
+  mkdir -p "$bin"
+  while IFS= read -r p; do
+    i=$((i + 1))
+    mv "$p" "$bin/$i"
+  done < <(find "$wt" -name .git -prune -o -type d -name node_modules -prune -print)
+  if [ "$force" -eq 1 ]; then
+    git -C "$src" worktree remove --force "$wt"
+  else
+    git -C "$src" worktree remove "$wt"
+  fi
+}
+
+empty_trash() {
+  local doomed="$trash_root.$$"
+  if [ -d "$trash_root" ] && mv "$trash_root" "$doomed"; then
+    nohup rm -rf "$doomed" >/dev/null 2>&1 &
+  fi
+}
+
+rollback_dir=""
+created_branches=()
+
+rollback_new() {
+  [ -n "$rollback_dir" ] || return 0
+  local r entry
+  echo "tmt: rolling back $rollback_dir" >&2
+  while IFS= read -r r; do
+    discard_worktree "$(meta "$rollback_dir" base)/$r" "$rollback_dir/$r" 1 || true
+  done < <(worktrees "$rollback_dir")
+  empty_trash
+  for entry in "${created_branches[@]}"; do
+    git -C "${entry%%|*}" branch -D "${entry#*|}" >/dev/null || true
+  done
+  if [ -z "$(worktrees "$rollback_dir")" ]; then
+    rm -rf "$rollback_dir"
+    rmdir "$(dirname "$rollback_dir")" 2>/dev/null || true
+  fi
+}
+
 add_repo() {
   local dir="$1" repo="$2"
   local base branch session src target start
@@ -161,8 +240,10 @@ add_repo() {
     git -C "$src" worktree add --quiet "$target" "$branch"
   elif git -C "$src" show-ref --verify --quiet "refs/remotes/origin/$branch"; then
     git -C "$src" worktree add --quiet --track -b "$branch" "$target" "origin/$branch"
+    created_branches+=("$src|$branch")
   else
     git -C "$src" worktree add --quiet --no-track -b "$branch" "$target" "$start"
+    created_branches+=("$src|$branch")
   fi
 
   clone_untracked "$src" "$target"
@@ -197,30 +278,40 @@ attach() {
   fi
 }
 
+resolve_base() {
+  local query="$1"
+  query="${query/#\~/$HOME}"
+  if [ -d "$query" ]; then
+    (cd "$query" && pwd)
+  else
+    zoxide query -- "$query" 2>/dev/null
+  fi
+}
+
 cmd_new() {
-  local base="${TMT_BASE:-}" branch="" opt
-  while getopts "b:B:" opt; do
+  local branch="" opt
+  while getopts "B:" opt; do
     case "$opt" in
-      b) base="$OPTARG" ;;
       B) branch="$OPTARG" ;;
       *) usage >&2; exit 1 ;;
     esac
   done
   shift $((OPTIND - 1))
 
-  local topic="${1:-}"
-  [ -n "$topic" ] || die "usage: tmt new [-b base] [-B branch] <topic> [repo...]"
+  [ "$#" -ge 2 ] || die "usage: tmt new [-B branch] <base> <topic> [repo...]"
+  local base topic="$2"
+  base="$(resolve_base "$1")" || die "could not resolve '$1' to a directory"
   [[ "$topic" =~ ^[A-Za-z0-9_-]+$ ]] || die "topic must match [A-Za-z0-9_-]+"
-  shift
-  [ -n "$base" ] || die "no base directory; set TMT_BASE or pass -b"
-  base="${base/#\~/$HOME}"
-  [ -d "$base" ] || die "$base is not a directory"
-  base="$(cd "$base" && pwd)"
+  shift 2
+  check_repos "$base" "$@"
 
   local dir
   dir="$root/$(basename "$base")/$topic"
   [ ! -e "$dir" ] || die "$dir already exists"
   mkdir -p "$dir"
+  rollback_dir="$dir"
+  trap rollback_new EXIT
+  trap 'exit 130' INT TERM HUP
 
   {
     echo "topic=$topic"
@@ -243,6 +334,7 @@ cmd_new() {
   write_claude_md "$dir"
   local session
   session="$(ensure_session "$dir")"
+  rollback_dir=""
   attach "$session"
 }
 
@@ -259,6 +351,7 @@ cmd_add() {
 
   local dir r
   dir="$(resolve_task "$topic")"
+  check_repos "$(meta "$dir" base)" "$@"
   for r in "$@"; do
     add_repo "$dir" "$r"
   done
@@ -293,27 +386,39 @@ is_safe() {
 }
 
 cmd_ls() {
-  local dir state r dirty unpushed own pr b
-  while IFS= read -r dir; do
-    state="session up"
-    tmux has-session -t "=$(meta "$dir" session)" 2>/dev/null || state="no session"
-    printf '%s  (%s, %s)\n' "$(meta "$dir" topic)" "$(basename "$(meta "$dir" base)")" "$state"
-    while IFS= read -r r; do
-      read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$(meta "$dir" base)/$r")
-      printf '  %-24s %-40s dirty:%-3s commits:%-3s unpushed:%-3s pr:%s\n' "$r" "$b" "$dirty" "$own" "$unpushed" "$pr"
-    done < <(worktrees "$dir")
-  done < <(all_tasks)
+  local dir task base session r dirty unpushed own pr b
+  {
+    printf 'TASK\tBASE\tSESSION\tREPO\tBRANCH\tDIRTY\tCOMMITS\tUNPUSHED\tPR\n'
+    while IFS= read -r dir; do
+      task="$(meta "$dir" topic)"
+      base="$(basename "$(meta "$dir" base)")"
+      session=up
+      tmux has-session -t "=$(meta "$dir" session)" 2>/dev/null || session=down
+      if [ -z "$(worktrees "$dir")" ]; then
+        printf '%s\t%s\t%s\t-\t-\t-\t-\t-\t-\n' "$task" "$base" "$session"
+      fi
+      while IFS= read -r r; do
+        read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$(meta "$dir" base)/$r")
+        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$task" "$base" "$session" "$r" "$b" "$dirty" "$own" "$unpushed" "$pr"
+        task=""
+        base=""
+        session=""
+      done < <(worktrees "$dir")
+    done < <(all_tasks)
+  } | tabulate
 }
 
 remove_task() {
   local dir="$1" force="$2" assume_yes="$3"
   local base session topic r dirty unpushed own pr b blocked=0
+  local -A status_of=()
   base="$(meta "$dir" base)"
   session="$(meta "$dir" session)"
   topic="$(meta "$dir" topic)"
 
   while IFS= read -r r; do
-    read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$base/$r")
+    status_of[$r]="$(repo_status "$dir/$r" "$base/$r")"
+    read -r dirty unpushed own pr b <<< "${status_of[$r]}"
     if ! is_safe "$dirty" "$unpushed" "$pr"; then
       echo "tmt: $r has dirty:$dirty unpushed:$unpushed pr:$pr" >&2
       blocked=1
@@ -330,12 +435,8 @@ remove_task() {
   fi
 
   while IFS= read -r r; do
-    read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$base/$r")
-    if [ "$force" -eq 1 ]; then
-      git -C "$base/$r" worktree remove --force "$dir/$r"
-    else
-      git -C "$base/$r" worktree remove "$dir/$r"
-    fi
+    read -r dirty unpushed own pr b <<< "${status_of[$r]}"
+    discard_worktree "$base/$r" "$dir/$r" "$force"
     if [ "$own" -eq 0 ] || [ "$pr" = MERGED ] || [ "$pr" = CLOSED ]; then
       git -C "$base/$r" branch -D "$b" >/dev/null
       echo "tmt: removed $r worktree and branch $b"
@@ -344,6 +445,7 @@ remove_task() {
     fi
   done < <(worktrees "$dir")
 
+  empty_trash
   [ -z "$(worktrees "$dir")" ] || die "worktrees remain in $dir, not deleting it"
   rm -rf "$dir"
   rmdir "$(dirname "$dir")" 2>/dev/null || true
@@ -386,7 +488,9 @@ cmd_gc() {
     return 0
   fi
   echo "tasks whose PRs are all merged or closed:"
-  printf '  %s\n' "${candidates[@]}"
+  for dir in "${candidates[@]}"; do
+    printf '  %s\t%s\t%s\n' "$(meta "$dir" topic)" "$(basename "$(meta "$dir" base)")" "$(worktrees "$dir" | tr '\n' ' ')"
+  done | tabulate
   local reply
   read -r -p "Remove all of these? [y/N] " reply
   [ "$reply" = y ] || [ "$reply" = Y ] || die "aborted"
@@ -395,14 +499,60 @@ cmd_gc() {
   done
 }
 
+paint() {
+  printf '\033[%sm%s\033[0m' "$1" "$2"
+}
+
+fzf_pick() {
+  local label="$1" preview="$2"
+  shift 2
+  fzf --ansi --layout=reverse --info=inline-right --highlight-line \
+    --border=rounded --border-label=" $label " --padding=0,1 \
+    --prompt='❯ ' --pointer='▌' --gutter=' ' --marker='▍' --separator='─' --scrollbar='│' \
+    --color="$fzf_colors" \
+    --delimiter='\t' --with-nth=2.. \
+    --preview="$preview" --preview-window='right,55%,border-left,<60(down,50%,border-top)' \
+    "$@"
+}
+
+cmd_preview() {
+  local kind="$1" dir="$2" name="$3" r
+  case "$kind" in
+    task)
+      paint "$sgr_accent" "$(meta "$dir" topic)"
+      printf '  %s\n\n' "$(paint "$sgr_dim" "$(meta "$dir" base)")"
+      while IFS= read -r r; do
+        printf '%s %s\n' "$(paint "$sgr_worktree" "")" "$r"
+        git -C "$dir/$r" -c color.status=always status -sb | sed 's/^/  /'
+        echo
+      done < <(worktrees "$dir")
+      ;;
+    root)
+      cat "$dir/CLAUDE.md"
+      ;;
+    repo)
+      git -C "$dir/$name" -c color.status=always status -sb
+      echo
+      git -C "$dir/$name" log --color=always --graph --oneline --decorate -n 40
+      ;;
+  esac
+}
+
 pick_task() {
-  local choice d session
+  local choice d session w=0 t
+  while IFS= read -r d; do
+    t="$(meta "$d" topic)"
+    [ "${#t}" -le "$w" ] || w="${#t}"
+  done < <(all_tasks)
   choice="$(
     while IFS= read -r d; do
-      printf '%s\t%s\n' "$(meta "$d" topic)" "$(basename "$(meta "$d" base)")"
-    done < <(all_tasks) | fzf --delimiter='\t' --prompt='task> '
+      printf "%s\t%s %-${w}s  %s\n" "$d" "$(paint "$sgr_root" "")" "$(meta "$d" topic)" \
+        "$(paint "$sgr_dim" "$(basename "$(meta "$d" base)")")"
+    done < <(all_tasks) |
+      fzf_pick "Tasks" "$0 _preview task {1} ''" \
+        --header=":: $(paint "$sgr_accent" "<enter>") open task"
   )" || return 0
-  d="$(resolve_task "${choice%%$'\t'*}")"
+  d="${choice%%$'\t'*}"
   session="$(ensure_session "$d")"
   attach "$session"
 }
@@ -414,20 +564,27 @@ cmd_pick() {
     return 0
   fi
 
-  local session out key repo e id
+  local session out key repo e name id w=6
   session="$(meta "$dir" session)"
+  for e in "$dir"/*; do
+    name="$(basename "$e")"
+    [ "${#name}" -le "$w" ] || w="${#name}"
+  done
   out="$(
     {
-      printf 'claude\t(task root)\n'
+      printf "claude\t%s %-${w}s  %s\n" "$(paint "$sgr_root" "")" claude "$(paint "$sgr_dim" "task root")"
       for e in "$dir"/*; do
+        name="$(basename "$e")"
         if [ -L "$e" ]; then
-          printf '%s\t(main checkout)\n' "$(basename "$e")"
+          printf "%s\t%s %-${w}s  %s\n" "$name" "$(paint "$sgr_main" "")" "$name" "$(paint "$sgr_dim" "main checkout")"
         elif [ -d "$e" ]; then
-          printf '%s\t%s\n' "$(basename "$e")" "$(git -C "$e" branch --show-current)"
+          printf "%s\t%s %-${w}s  %s\n" "$name" "$(paint "$sgr_worktree" "")" "$name" \
+            "$(paint "$sgr_worktree" "$(git -C "$e" branch --show-current)")"
         fi
       done
-    } | fzf --expect=ctrl-a --delimiter='\t' --prompt="$(meta "$dir" topic)> " \
-      --header='enter: jump   ctrl-a: make worktree'
+    } | fzf_pick "$(meta "$dir" topic)" "$0 _preview \"\$([ {1} = claude ] && echo root || echo repo)\" $(printf '%q' "$dir") {1}" \
+      --expect=ctrl-a \
+      --header=":: $(paint "$sgr_accent" "<enter>") jump  $(paint "$sgr_accent" "<ctrl-a>") make worktree"
   )" || return 0
 
   key="$(sed -n 1p <<< "$out")"
@@ -447,6 +604,99 @@ cmd_pick() {
   tmux select-window -t "$id"
 }
 
+fresh_repo() {
+  local src="$1" name def where before after n
+  name="$(basename "$src")"
+  if ! git -C "$src" fetch --quiet --prune origin 2>/dev/null; then
+    printf '%s\t-\tfetch failed\n' "$name"
+    return 0
+  fi
+  def="$(start_ref "$src")"
+  if [ "$def" = HEAD ]; then
+    printf '%s\t-\tfetched, no origin default branch\n' "$name"
+    return 0
+  fi
+  def="${def#origin/}"
+  if ! git -C "$src" show-ref --verify --quiet "refs/heads/$def"; then
+    printf '%s\t%s\tfetched, no local branch\n' "$name" "$def"
+    return 0
+  fi
+
+  before="$(git -C "$src" rev-parse "$def")"
+  where="$(git -C "$src" worktree list --porcelain |
+    awk -v b="branch refs/heads/$def" '/^worktree / { w = substr($0, 10) } $0 == b { print w }')"
+  if [ -z "$where" ]; then
+    if ! git -C "$src" fetch --quiet . "origin/$def:$def" 2>/dev/null; then
+      printf '%s\t%s\tskipped: diverged from origin/%s\n' "$name" "$def" "$def"
+      return 0
+    fi
+  elif [ -n "$(git -C "$where" status --porcelain --untracked-files=no)" ]; then
+    printf '%s\t%s\tskipped: checked out with uncommitted changes\n' "$name" "$def"
+    return 0
+  elif ! git -C "$where" merge --quiet --ff-only "origin/$def" >/dev/null 2>&1; then
+    printf '%s\t%s\tskipped: diverged from origin/%s\n' "$name" "$def" "$def"
+    return 0
+  fi
+  after="$(git -C "$src" rev-parse "$def")"
+
+  n="$(git -C "$src" rev-list --count "$before..$after")"
+  case "$n" in
+    0) printf '%s\t%s\tup to date\n' "$name" "$def" ;;
+    1) printf '%s\t%s\t+1 commit\n' "$name" "$def" ;;
+    *) printf '%s\t%s\t+%s commits\n' "$name" "$def" "$n" ;;
+  esac
+}
+
+cmd_fresh() {
+  local base dir r out
+  if [ -n "${1:-}" ]; then
+    base="$(resolve_base "$1")" || die "could not resolve '$1' to a directory"
+  elif dir="$(current_task)"; then
+    base="$(meta "$dir" base)"
+  else
+    die "usage: tmt fresh [base]"
+  fi
+
+  out="$(mktemp -d)"
+  for r in "$base"/*/; do
+    r="${r%/}"
+    if [ -e "$r/.git" ]; then
+      fresh_repo "$r" > "$out/$(basename "$r")" 2>&1 &
+    fi
+  done
+  wait
+  cat "$out"/* | tabulate
+  rm -rf "$out"
+}
+
+cmd_complete() {
+  local base dir r e
+  case "${1:-}" in
+    tasks)
+      while IFS= read -r dir; do
+        meta "$dir" topic
+      done < <(all_tasks)
+      ;;
+    base-repos)
+      base="$(resolve_base "${2:-}")" || return 0
+      for r in "$base"/*/; do
+        r="${r%/}"
+        if [ -e "$r/.git" ]; then
+          basename "$r"
+        fi
+      done
+      ;;
+    task-repos)
+      dir="$(resolve_task "${2:-}")"
+      for e in "$dir"/*; do
+        if [ -L "$e" ]; then
+          basename "$e"
+        fi
+      done
+      ;;
+  esac
+}
+
 cmd="${1:-}"
 if [ "$#" -gt 0 ]; then
   shift
@@ -456,9 +706,12 @@ case "$cmd" in
   add) cmd_add "$@" ;;
   open) cmd_open "$@" ;;
   ls) cmd_ls ;;
+  fresh) cmd_fresh "$@" ;;
   done) cmd_done "$@" ;;
   gc) cmd_gc ;;
   pick) cmd_pick ;;
+  _preview) cmd_preview "$@" ;;
+  _complete) cmd_complete "$@" ;;
   -h | --help | help) usage ;;
   *) usage >&2; exit 1 ;;
 esac

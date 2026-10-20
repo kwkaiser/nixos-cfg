@@ -45,6 +45,50 @@ mkHmFeature "tmux" (
       ${pkgs.tmuxinator}/bin/tmuxinator start --project-config "$config" --no-attach
     '';
 
+    colors = config.lib.stylix.colors;
+    hex = colors.withHashtag;
+    sgr = base: "38;2;${colors."${base}-rgb-r"};${colors."${base}-rgb-g"};${colors."${base}-rgb-b"}";
+
+    fzfColors = lib.concatStringsSep "," [
+      "fg:${hex.base05}"
+      "bg:-1"
+      "hl:${hex.base09}"
+      "fg+:${hex.base06}"
+      "bg+:${hex.base01}"
+      "hl+:${hex.base09}"
+      "gutter:-1"
+      "query:${hex.base05}"
+      "info:${hex.base03}"
+      "prompt:${hex.base0D}"
+      "pointer:${hex.base09}"
+      "marker:${hex.base0B}"
+      "spinner:${hex.base0C}"
+      "header:${hex.base03}"
+      "border:${hex.base02}"
+      "separator:${hex.base02}"
+      "scrollbar:${hex.base02}"
+      "label:${hex.base0A}"
+      "preview-border:${hex.base02}"
+      "preview-label:${hex.base04}"
+    ];
+
+    clonedir = pkgs.writeCBin "clonedir" ''
+      #include <stdio.h>
+      #include <sys/clonefile.h>
+
+      int main(int argc, char **argv) {
+        if (argc != 3) {
+          fprintf(stderr, "usage: clonedir <src> <dst>\n");
+          return 2;
+        }
+        if (clonefile(argv[1], argv[2], CLONE_NOFOLLOW) != 0) {
+          perror("clonefile");
+          return 1;
+        }
+        return 0;
+      }
+    '';
+
     tmt = pkgs.writeShellApplication {
       name = "tmt";
       runtimeInputs = [
@@ -52,14 +96,26 @@ mkHmFeature "tmux" (
         pkgs.git
         pkgs.fzf
         pkgs.gh
-      ];
-      text = builtins.readFile ./tmt.sh;
+        pkgs.zoxide
+        pkgs.gawk
+      ]
+      ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin clonedir;
+      text = ''
+        fzf_colors=${lib.escapeShellArg fzfColors}
+        sgr_worktree=${lib.escapeShellArg (sgr "base0B")}
+        sgr_main=${lib.escapeShellArg (sgr "base03")}
+        sgr_root=${lib.escapeShellArg (sgr "base0D")}
+        sgr_accent=${lib.escapeShellArg (sgr "base0A")}
+        sgr_dim=${lib.escapeShellArg (sgr "base04")}
+      ''
+      + builtins.readFile ./tmt.sh;
     };
   in
   {
     home.packages = [
       tma
       tmt
+      (pkgs.writeTextDir "share/zsh/site-functions/_tmt" (builtins.readFile ./_tmt.zsh))
     ];
 
     programs.tmux = {
@@ -111,7 +167,7 @@ mkHmFeature "tmux" (
         # Jump back to the previously attached session
         bind-key p switch-client -l
 
-        bind-key g display-popup -E -w 70% -h 50% -d "#{pane_current_path}" "${tmt}/bin/tmt pick || { echo 'press enter'; read _; }"
+        bind-key g display-popup -E -B -w 80% -h 70% -d "#{pane_current_path}" "${tmt}/bin/tmt pick || { echo 'press enter'; read _; }"
 
         # Select window 1-10, auto-create if doesn't exist
         bind-key 1 run-shell 'tmux select-window -t :1 2>/dev/null || tmux new-window -t :1'
