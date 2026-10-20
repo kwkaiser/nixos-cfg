@@ -6,12 +6,7 @@ function resolve_commit_context()
   if ok then
     local view = lib.get_current_view()
     if view and view.panel then
-      local item
-      if vim.api.nvim_get_current_win() == view.panel.winid then
-        item = view.panel:get_item_at_cursor()
-      elseif view.panel.cur_item then
-        item = view.panel.cur_item[1]
-      end
+      local item = view.panel:get_item_at_cursor()
       if item and item.commit then
         hash = item.commit.hash
       end

@@ -389,36 +389,6 @@
                     "<Cmd>lua diffview_jump_newer()<CR>"
                     {desc = "Jump to newer position in the diff";}
                   ]
-                  [
-                    "n"
-                    "<leader>gc"
-                    "<Cmd>lua diff_commit_at_cursor()<CR>"
-                    {desc = "View full commit diff";}
-                  ]
-                  [
-                    "n"
-                    "<leader>gp"
-                    "<Cmd>lua copy_commit_pr_url()<CR>"
-                    {desc = "Copy PR URL for commit";}
-                  ]
-                  [
-                    "n"
-                    "<leader>gP"
-                    "<Cmd>lua open_commit_pr()<CR>"
-                    {desc = "Open PR for commit";}
-                  ]
-                  [
-                    "n"
-                    "<leader>gr"
-                    "<Cmd>lua copy_commit_release_url()<CR>"
-                    {desc = "Copy release URL for commit";}
-                  ]
-                  [
-                    "n"
-                    "<leader>gR"
-                    "<Cmd>lua open_commit_release()<CR>"
-                    {desc = "Open release for commit";}
-                  ]
                 ];
                 file_panel = [
                   [
