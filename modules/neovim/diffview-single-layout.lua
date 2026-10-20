@@ -38,6 +38,20 @@ do
         local entry = view.cur_entry or (view.cur_file and view:cur_file())
         if not entry or entry.kind == 'conflicting' then return end
 
+        local main = view.cur_layout:get_main_win()
+        local cursor = main and main.id and vim.api.nvim_win_is_valid(main.id) and vim.api.nvim_win_get_cursor(main.id)
+        if cursor then
+          view.emitter:once('file_open_post', function()
+            vim.schedule(function()
+              local w = view.cur_layout:get_main_win()
+              if not w or not w.id or not vim.api.nvim_win_is_valid(w.id) then return end
+              local last = vim.api.nvim_buf_line_count(vim.api.nvim_win_get_buf(w.id))
+              pcall(vim.api.nvim_win_set_cursor, w.id, { math.min(cursor[1], last), cursor[2] })
+              vim.api.nvim_win_call(w.id, function() vim.cmd('normal! zvzz') end)
+            end)
+          end)
+        end
+
         if entry.layout:instanceof(Diff1) then
           entry:convert_layout(view.get_default_layout())
         else
