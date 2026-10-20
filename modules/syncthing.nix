@@ -18,7 +18,7 @@
 
   allDevices = builtins.mapAttrs (name: id: {inherit id;}) deviceIds;
 
-  # Who each device is allowed to connect to. pallet-macbook (work laptop,
+  # Who each device is allowed to connect to. work-macbook (work laptop,
   # employer-controlled) only talks to server, so cutting it off is a single
   # edit here rather than something enforced per-device.
   topology = {

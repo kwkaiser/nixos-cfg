@@ -71,7 +71,6 @@ in {
     nodejs_24
     uv
     pnpm
-    inputs.nixpkgs-devbox.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devbox
     tma
   ];
 }

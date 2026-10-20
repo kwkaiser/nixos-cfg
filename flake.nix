@@ -7,10 +7,6 @@
     # Pinned nixpkgs for claude-code (2.1.88 was yanked from npm)
     #nixpkgs-claude-code.url = "github:nixos/nixpkgs/55f3084e5d0eb14522f5be012562f80681f50886";
 
-    # Pinned nixpkgs for devbox — must match the copallet repo's CI pin
-    # (devbox-version: 0.17.3) so devbox.lock's nodejs plugin_version stops churning.
-    nixpkgs-devbox.url = "github:nixos/nixpkgs/3e41b24abd260e8f71dbe2f5737d24122f972158";
-
     # Pinned nixpkgs for Darwin packages that crash the linker on current
     # nixos-unstable: its ld64/libclang_rt combo crashes (Trace/BPT trap: 5)
     # linking large natively-built binaries (kitty, livekit-libwebrtc/codex).
