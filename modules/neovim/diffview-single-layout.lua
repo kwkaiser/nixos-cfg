@@ -25,16 +25,46 @@ do
       return false
     end
 
+    local single = true
+
     FileEntry.with_layout = function(layout_class, opt)
+      if not single then return with_layout(layout_class, opt) end
       local ok, swap = pcall(is_diff2, layout_class)
       if not ok then warn('layout check failed: ' .. tostring(swap)) end
       return with_layout(ok and swap and Diff1 or layout_class, opt)
+    end
+
+    local function view_entries(view)
+      local entries = {}
+      if view.files and view.files.iter then
+        for _, f in view.files:iter() do table.insert(entries, f) end
+      elseif view.panel and view.panel.entries then
+        for _, log in ipairs(view.panel.entries) do
+          for _, f in ipairs(log.files or {}) do table.insert(entries, f) end
+        end
+      end
+      return entries
+    end
+
+    local function apply_layout(view)
+      local target = single and Diff1 or view.get_default_layout()
+      for _, f in ipairs(view_entries(view)) do
+        if f.kind ~= 'conflicting' and f.layout and is_diff2(f.layout.class) ~= is_diff2(target) then
+          f:convert_layout(target)
+        end
+      end
     end
 
     function diffview_toggle_layout()
       local ok, err = pcall(function()
         local view = require('diffview.lib').get_current_view()
         if not view then return end
+        single = not single
+        for _, v in ipairs(require('diffview.lib').views) do
+          if v ~= view then pcall(apply_layout, v) end
+        end
+        apply_layout(view)
+
         local entry = view.cur_entry or (view.cur_file and view:cur_file())
         if not entry or entry.kind == 'conflicting' then return end
 
@@ -50,12 +80,6 @@ do
               vim.api.nvim_win_call(w.id, function() vim.cmd('normal! zvzz') end)
             end)
           end)
-        end
-
-        if entry.layout:instanceof(Diff1) then
-          entry:convert_layout(view.get_default_layout())
-        else
-          entry:convert_layout(Diff1)
         end
 
         local was_focused = view.cur_layout:is_focused()
