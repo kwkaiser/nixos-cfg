@@ -58,6 +58,9 @@ _tmt() {
     fresh)
       _arguments '1:base (directory or zoxide query):_directories'
       ;;
+    ls)
+      _arguments '-p[include GitHub PR state]'
+      ;;
     done)
       _arguments -s \
         '-f[remove even with uncommitted or unpushed work]' \

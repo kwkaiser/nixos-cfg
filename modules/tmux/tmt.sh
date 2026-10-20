@@ -13,7 +13,7 @@ usage:
   tmt new [-B branch] <base> <topic> [repo...]
   tmt add [-t topic] <repo...>
   tmt open [topic]
-  tmt ls
+  tmt ls [-p]
   tmt fresh [base]
   tmt done [-f] [-y] [topic]
   tmt gc
@@ -366,7 +366,7 @@ cmd_open() {
 }
 
 repo_status() {
-  local wt="$1" src="$2" dirty b unpushed own pr
+  local wt="$1" src="$2" with_pr="${3:-1}" dirty b unpushed own pr=-
   dirty="$(git -C "$wt" status --porcelain | wc -l | tr -d ' ')"
   b="$(git -C "$wt" branch --show-current)"
   own="$(git -C "$wt" rev-list --count "$(start_ref "$src")..HEAD")"
@@ -375,7 +375,9 @@ repo_status() {
   else
     unpushed="$own"
   fi
-  pr="$(cd "$wt" && gh pr view "$b" --json state -q .state 2>/dev/null || echo NONE)"
+  if [ "$with_pr" -eq 1 ]; then
+    pr="$(cd "$wt" && gh pr view "$b" --json state -q .state 2>/dev/null || echo NONE)"
+  fi
   echo "$dirty $unpushed $own $pr $b"
 }
 
@@ -386,26 +388,60 @@ is_safe() {
 }
 
 cmd_ls() {
-  local dir task base session r dirty unpushed own pr b
+  local with_pr=0 opt
+  while getopts "p" opt; do
+    case "$opt" in
+      p) with_pr=1 ;;
+      *) usage >&2; exit 1 ;;
+    esac
+  done
+
+  local tmp dir r i dirs=() repos=()
+  tmp="$(mktemp -d)"
+  while IFS= read -r dir; do
+    if [ -z "$(worktrees "$dir")" ]; then
+      dirs+=("$dir")
+      repos+=("")
+    fi
+    while IFS= read -r r; do
+      i="${#repos[@]}"
+      dirs+=("$dir")
+      repos+=("$r")
+      repo_status "$dir/$r" "$(meta "$dir" base)/$r" "$with_pr" > "$tmp/$i" &
+    done < <(worktrees "$dir")
+  done < <(all_tasks)
+  wait
+
+  local task base session prev="" dirty unpushed own pr b
   {
-    printf 'TASK\tBASE\tSESSION\tREPO\tBRANCH\tDIRTY\tCOMMITS\tUNPUSHED\tPR\n'
-    while IFS= read -r dir; do
-      task="$(meta "$dir" topic)"
-      base="$(basename "$(meta "$dir" base)")"
-      session=up
-      tmux has-session -t "=$(meta "$dir" session)" 2>/dev/null || session=down
-      if [ -z "$(worktrees "$dir")" ]; then
-        printf '%s\t%s\t%s\t-\t-\t-\t-\t-\t-\n' "$task" "$base" "$session"
+    printf 'TASK\tBASE\tSESSION\tREPO\tBRANCH\tDIRTY\tCOMMITS\tUNPUSHED'
+    [ "$with_pr" -eq 0 ] || printf '\tPR'
+    printf '\n'
+    for i in "${!dirs[@]}"; do
+      dir="${dirs[$i]}"
+      r="${repos[$i]}"
+      task=""
+      base=""
+      session=""
+      if [ "$dir" != "$prev" ]; then
+        task="$(meta "$dir" topic)"
+        base="$(basename "$(meta "$dir" base)")"
+        session=up
+        tmux has-session -t "=$(meta "$dir" session)" 2>/dev/null || session=down
+        prev="$dir"
       fi
-      while IFS= read -r r; do
-        read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$(meta "$dir" base)/$r")
-        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$task" "$base" "$session" "$r" "$b" "$dirty" "$own" "$unpushed" "$pr"
-        task=""
-        base=""
-        session=""
-      done < <(worktrees "$dir")
-    done < <(all_tasks)
+      if [ -z "$r" ]; then
+        printf '%s\t%s\t%s\t-\t-\t-\t-\t-' "$task" "$base" "$session"
+        pr=-
+      else
+        read -r dirty unpushed own pr b < "$tmp/$i"
+        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' "$task" "$base" "$session" "$r" "$b" "$dirty" "$own" "$unpushed"
+      fi
+      [ "$with_pr" -eq 0 ] || printf '\t%s' "$pr"
+      printf '\n'
+    done
   } | tabulate
+  rm -rf "$tmp"
 }
 
 remove_task() {
@@ -705,7 +741,7 @@ case "$cmd" in
   new) cmd_new "$@" ;;
   add) cmd_add "$@" ;;
   open) cmd_open "$@" ;;
-  ls) cmd_ls ;;
+  ls) cmd_ls "$@" ;;
   fresh) cmd_fresh "$@" ;;
   done) cmd_done "$@" ;;
   gc) cmd_gc ;;
