@@ -1,12 +1,17 @@
 -- Shared: resolve commit hash and git root from diffview context
-local function resolve_commit_context()
+function resolve_commit_context()
   local hash
 
   local ok, lib = pcall(require, 'diffview.lib')
   if ok then
     local view = lib.get_current_view()
     if view and view.panel then
-      local item = view.panel:get_item_at_cursor()
+      local item
+      if vim.api.nvim_get_current_win() == view.panel.winid then
+        item = view.panel:get_item_at_cursor()
+      elseif view.panel.cur_item then
+        item = view.panel.cur_item[1]
+      end
       if item and item.commit then
         hash = item.commit.hash
       end
