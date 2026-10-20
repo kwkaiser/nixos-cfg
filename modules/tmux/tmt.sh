@@ -502,34 +502,126 @@ cmd_done() {
   remove_task "$dir" "$force" "$assume_yes"
 }
 
+merged_branches() {
+  local src="$1" busy b oid
+  busy="$(git -C "$src" worktree list --porcelain | sed -n 's|^branch refs/heads/||p')"
+  (cd "$src" && gh pr list --state merged --author @me --limit 200 \
+    --json headRefName,headRefOid -q '.[] | "\(.headRefName) \(.headRefOid)"' 2>/dev/null) |
+    while read -r b oid; do
+      if ! grep -qxF "$b" <<< "$busy" &&
+        [ "$(git -C "$src" rev-parse --verify --quiet "refs/heads/$b")" = "$oid" ]; then
+        printf '%s\t%s\n' "$src" "$b"
+      fi
+    done | sort -u
+}
+
+live_children() {
+  local src="$1" wt="$2" stale="$3" busy def c
+  busy="$(git -C "$src" worktree list --porcelain | sed -n 's|^branch refs/heads/||p')"
+  def="$(start_ref "$src")"
+  def="${def#origin/}"
+  git -C "$wt" for-each-ref --contains HEAD --format='%(refname:short)' refs/heads |
+    while IFS= read -r c; do
+      if [ "$c" != "$def" ] && ! grep -qxF "$c" <<< "$busy" && ! grep -qxF "$src"$'\t'"$c" <<< "$stale"; then
+        echo "$c"
+      fi
+    done
+}
+
+retire_worktree() {
+  local dir="$1" r="$2" b="$3" base session id
+  base="$(meta "$dir" base)"
+  session="$(meta "$dir" session)"
+  discard_worktree "$base/$r" "$dir/$r" 0
+  git -C "$base/$r" branch -D "$b" >/dev/null
+  ln -s "$base/$r" "$dir/$r"
+  id="$(window_id "$session" "$r")" || id=""
+  if [ -n "$id" ]; then
+    tmux kill-window -t "$id"
+  fi
+  write_claude_md "$dir"
+  echo "tmt: removed $(meta "$dir" topic)/$r worktree and branch $b"
+}
+
 cmd_gc() {
-  local dir r dirty unpushed own pr b ok n candidates=()
+  local dir r src srcs=()
   while IFS= read -r dir; do
-    ok=1
+    while IFS= read -r r; do
+      srcs+=("$(meta "$dir" base)/$r")
+    done < <(worktrees "$dir")
+  done < <(all_tasks)
+
+  local tmp i=0 stale_lines stale=()
+  tmp="$(mktemp -d)"
+  while IFS= read -r src; do
+    [ -n "$src" ] || continue
+    i=$((i + 1))
+    merged_branches "$src" > "$tmp/$i" &
+  done < <(printf '%s\n' "${srcs[@]}" | sort -u)
+  wait
+  stale_lines="$(cat "$tmp"/* 2>/dev/null || true)"
+  rm -rf "$tmp"
+  [ -z "$stale_lines" ] || mapfile -t stale <<< "$stale_lines"
+
+  local dirty unpushed own pr b n left wts candidates=() retired=()
+  while IFS= read -r dir; do
     n=0
+    left=0
+    wts=()
     while IFS= read -r r; do
       n=$((n + 1))
-      read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$(meta "$dir" base)/$r")
-      if [ "$dirty" -ne 0 ] || { [ "$pr" != MERGED ] && [ "$pr" != CLOSED ]; }; then
-        ok=0
+      src="$(meta "$dir" base)/$r"
+      read -r dirty unpushed own pr b < <(repo_status "$dir/$r" "$src")
+      if [ "$dirty" -eq 0 ] && { [ "$pr" = MERGED ] || [ "$pr" = CLOSED ]; } &&
+        [ -z "$(live_children "$src" "$dir/$r" "$stale_lines")" ]; then
+        wts+=("$dir"$'\t'"$r"$'\t'"$b")
+      else
+        left=$((left + 1))
       fi
     done < <(worktrees "$dir")
-    if [ "$ok" -eq 1 ] && [ "$n" -gt 0 ]; then
+    if [ "$n" -gt 0 ] && [ "$left" -eq 0 ]; then
       candidates+=("$dir")
+    else
+      retired+=("${wts[@]}")
     fi
   done < <(all_tasks)
 
-  if [ "${#candidates[@]}" -eq 0 ]; then
+  if [ "${#candidates[@]}" -eq 0 ] && [ "${#retired[@]}" -eq 0 ] && [ "${#stale[@]}" -eq 0 ]; then
     echo "tmt: nothing to clean up"
     return 0
   fi
-  echo "tasks whose PRs are all merged or closed:"
-  for dir in "${candidates[@]}"; do
-    printf '  %s\t%s\t%s\n' "$(meta "$dir" topic)" "$(basename "$(meta "$dir" base)")" "$(worktrees "$dir" | tr '\n' ' ')"
-  done | tabulate
+  if [ "${#candidates[@]}" -gt 0 ]; then
+    echo "tasks whose PRs are all merged or closed:"
+    for dir in "${candidates[@]}"; do
+      printf '  %s\t%s\t%s\n' "$(meta "$dir" topic)" "$(basename "$(meta "$dir" base)")" "$(worktrees "$dir" | tr '\n' ' ')"
+    done | tabulate
+  fi
+  local entry
+  if [ "${#retired[@]}" -gt 0 ]; then
+    echo "worktrees whose PRs are merged or closed:"
+    for entry in "${retired[@]}"; do
+      IFS=$'\t' read -r dir r b <<< "$entry"
+      printf '  %s\t%s\t%s\n' "$(meta "$dir" topic)" "$r" "$b"
+    done | tabulate
+  fi
+  if [ "${#stale[@]}" -gt 0 ]; then
+    echo "branches with merged PRs:"
+    for src in "${stale[@]}"; do
+      printf '  %s\t%s\n' "$(basename "${src%%$'\t'*}")" "${src#*$'\t'}"
+    done | tabulate
+  fi
   local reply
   read -r -p "Remove all of these? [y/N] " reply
   [ "$reply" = y ] || [ "$reply" = Y ] || die "aborted"
+  for src in "${stale[@]}"; do
+    git -C "${src%%$'\t'*}" branch -D "${src#*$'\t'}" >/dev/null
+    echo "tmt: removed $(basename "${src%%$'\t'*}") branch ${src#*$'\t'}"
+  done
+  for entry in "${retired[@]}"; do
+    IFS=$'\t' read -r dir r b <<< "$entry"
+    retire_worktree "$dir" "$r" "$b"
+  done
+  empty_trash
   for dir in "${candidates[@]}"; do
     remove_task "$dir" 0 1
   done
