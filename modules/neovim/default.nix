@@ -680,7 +680,7 @@
               desc = "Review branch against main";
             }
             {
-              key = "<leader>gdd";
+              key = "<leader>gdb";
               mode = "n";
               action = "<cmd>lua diff_working_changes()<CR>";
               desc = "Diff working changes against branch";
