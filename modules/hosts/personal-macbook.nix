@@ -14,7 +14,6 @@
 
         anki
         aero
-        spotify
         macos-minimal
         macos-snappy
         macos-perf
