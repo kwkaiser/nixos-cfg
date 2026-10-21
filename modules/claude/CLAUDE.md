@@ -17,6 +17,10 @@ If I ask for comments or explanations in an area:
     - this means no JSDoc @links!
 - Never include ticket numbers in comments or deprecation warnings
 
+## Iterating & Development
+
+- Prefer to solidify basic functionality, services, dataflow, etc *before* running tests for net-new functionality
+
 # Git & Pull requests
 
 ## Pull requests
@@ -28,6 +32,7 @@ If I ask for comments or explanations in an area:
 - Prefix branches with `u/kwkaiser/<topic>-<branch iter>`. For example:
     - `u/kwkaiser/foo-setup-1`
     - `u/kwkaiser/foo-setup-2`
+- Prefer to have consistent prefix across stacked branches
 
 ## Pull request descriptions
 
