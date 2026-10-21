@@ -1,3 +1,20 @@
+local function git_out(root, args)
+  local out = vim.fn.systemlist('git -C ' .. vim.fn.shellescape(root) .. ' ' .. args .. ' 2>/dev/null')
+  if vim.v.shell_error ~= 0 or not out[1] or out[1] == '' then return nil end
+  return out[1]
+end
+
+local function branch_pushed_commit(root)
+  local branch = git_out(root, 'symbolic-ref --short -q HEAD')
+  if not branch then return nil end
+
+  local default = git_out(root, 'symbolic-ref --short refs/remotes/origin/HEAD')
+  default = default and default:gsub('^origin/', '') or 'main'
+  if branch == default then return nil end
+
+  return git_out(root, 'merge-base HEAD @{upstream}')
+end
+
 function copy_github_url()
   local bufname = vim.api.nvim_buf_get_name(0)
   local line = vim.fn.line('.')
@@ -51,6 +68,10 @@ function copy_github_url()
   end
   if not git_root then
     git_root = git_root_for_buf()
+  end
+
+  if not commit then
+    commit = branch_pushed_commit(git_root)
   end
 
   local cmd = 'cd ' .. vim.fn.shellescape(git_root) .. ' && gh browse ' .. vim.fn.shellescape(target) .. ' --no-browser'
