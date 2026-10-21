@@ -43,7 +43,9 @@
       nvim() {
         if git rev-parse --show-toplevel &>/dev/null; then
           local repo_root=$(git rev-parse --show-toplevel)
-          local repo_id=$(printf %s "$repo_root" | cksum | cut -d' ' -f1)
+          local session=""
+          [[ -n "$TMUX" ]] && session=$(tmux display -p -t "$TMUX_PANE" '#S' 2>/dev/null)
+          local repo_id=$(printf %s "$session:$repo_root" | cksum | cut -d' ' -f1)
           local socket_path="/tmp/nvim-$(basename "$repo_root")-''${repo_id}.sock"
 
           # Clean up stale socket if it exists but no process is listening

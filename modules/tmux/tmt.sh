@@ -278,6 +278,19 @@ attach() {
   fi
 }
 
+link_repos() {
+  local dir="$1" base r name
+  base="$(meta "$dir" base)"
+  for r in "$base"/*/; do
+    r="${r%/}"
+    name="$(basename "$r")"
+    if [ -e "$r/.git" ] && [ ! -e "$dir/$name" ] && [ ! -L "$dir/$name" ]; then
+      ln -s "$r" "$dir/$name"
+      echo "$name"
+    fi
+  done
+}
+
 resolve_base() {
   local query="$1"
   query="${query/#\~/$HOME}"
@@ -320,14 +333,9 @@ cmd_new() {
     echo "session=$topic"
   } > "$dir/.tmt"
 
-  local r
-  for r in "$base"/*/; do
-    r="${r%/}"
-    if [ -e "$r/.git" ]; then
-      ln -s "$r" "$dir/$(basename "$r")"
-    fi
-  done
+  link_repos "$dir" >/dev/null
 
+  local r
   for r in "$@"; do
     add_repo "$dir" "$r"
   done
@@ -795,6 +803,14 @@ cmd_fresh() {
   wait
   cat "$out"/* | tabulate
   rm -rf "$out"
+
+  while IFS= read -r dir; do
+    if [ "$(meta "$dir" base)" = "$base" ]; then
+      while IFS= read -r r; do
+        echo "tmt: linked $r into $(meta "$dir" topic)"
+      done < <(link_repos "$dir")
+    fi
+  done < <(all_tasks)
 }
 
 cmd_complete() {

@@ -6,7 +6,8 @@ line="${line%%[!0-9]*}"
 dir="$target"
 [ -d "$dir" ] || dir="$(dirname "$target")"
 root="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)" || exit 0
-socket="/tmp/nvim-$(basename "$root")-$(printf %s "$root" | cksum | cut -d' ' -f1).sock"
+session="$(tmux list-clients -F '#{client_activity} #{client_session}' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2- || true)"
+socket="/tmp/nvim-$(basename "$root")-$(printf %s "$session:$root" | cksum | cut -d' ' -f1).sock"
 
 [ -S "$socket" ] && nvim --server "$socket" --remote-expr 1 >/dev/null 2>&1 || exit 0
 
