@@ -57,6 +57,13 @@ local function attr(value)
   return (tostring(value):gsub('"', "&quot;"))
 end
 
+local function indent(depth, lines)
+  local pad = string.rep("  ", depth)
+  return vim.tbl_map(function(line)
+    return line == "" and line or pad .. line
+  end, lines)
+end
+
 local function format_comment(c)
   local range = c.line_start == c.line_end and tostring(c.line_start)
     or string.format("%d-%d", c.line_start, c.line_end)
@@ -65,15 +72,15 @@ local function format_comment(c)
   if vim.api.nvim_buf_is_valid(c.bufnr) then
     local code = vim.api.nvim_buf_get_lines(c.bufnr, c.line_start - 1, c.line_end, false)
     if #code > 0 then
-      table.insert(lines, "<code>")
-      vim.list_extend(lines, code)
-      table.insert(lines, "</code>")
+      table.insert(lines, "  <code>")
+      vim.list_extend(lines, indent(2, code))
+      table.insert(lines, "  </code>")
     end
   end
 
-  table.insert(lines, "<feedback>")
-  vim.list_extend(lines, vim.split(vim.trim(c.comment), "\n"))
-  vim.list_extend(lines, { "</feedback>", "</comment>" })
+  table.insert(lines, "  <feedback>")
+  vim.list_extend(lines, indent(2, vim.split(vim.trim(c.comment), "\n")))
+  vim.list_extend(lines, { "  </feedback>", "</comment>" })
   return lines
 end
 
@@ -94,11 +101,11 @@ local function format_comments(comments)
       if a.side ~= b.side then return a.side == "old" end
       return a.line_start < b.line_start
     end)
-    table.insert(lines, string.format('<file path="%s">', attr(file)))
+    table.insert(lines, string.format('  <file path="%s">', attr(file)))
     for _, c in ipairs(group) do
-      vim.list_extend(lines, format_comment(c))
+      vim.list_extend(lines, indent(2, format_comment(c)))
     end
-    table.insert(lines, "</file>")
+    table.insert(lines, "  </file>")
   end
   table.insert(lines, "</review>")
 
