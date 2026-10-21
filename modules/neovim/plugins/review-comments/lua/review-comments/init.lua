@@ -51,7 +51,67 @@ function M.focus_panel()
   end
 end
 
---- Flush all comments to clipboard as JSON and clear state.
+local preamble = "This is a structured review block. Please address comments or answer questions."
+
+local function attr(value)
+  return (tostring(value):gsub('"', "&quot;"))
+end
+
+local function format_comment(c)
+  local range = c.line_start == c.line_end and tostring(c.line_start)
+    or string.format("%d-%d", c.line_start, c.line_end)
+  local lines = { string.format('<comment lines="%s" side="%s">', range, attr(c.side)) }
+
+  if vim.api.nvim_buf_is_valid(c.bufnr) then
+    local code = vim.api.nvim_buf_get_lines(c.bufnr, c.line_start - 1, c.line_end, false)
+    if #code > 0 then
+      table.insert(lines, "<code>")
+      vim.list_extend(lines, code)
+      table.insert(lines, "</code>")
+    end
+  end
+
+  table.insert(lines, "<feedback>")
+  vim.list_extend(lines, vim.split(vim.trim(c.comment), "\n"))
+  vim.list_extend(lines, { "</feedback>", "</comment>" })
+  return lines
+end
+
+local function format_comments(comments)
+  local by_file, order = {}, {}
+  for _, c in ipairs(comments) do
+    if not by_file[c.file] then
+      by_file[c.file] = {}
+      table.insert(order, c.file)
+    end
+    table.insert(by_file[c.file], c)
+  end
+
+  local lines = { "<review>" }
+  for _, file in ipairs(order) do
+    local group = by_file[file]
+    table.sort(group, function(a, b)
+      if a.side ~= b.side then return a.side == "old" end
+      return a.line_start < b.line_start
+    end)
+    table.insert(lines, string.format('<file path="%s">', attr(file)))
+    for _, c in ipairs(group) do
+      vim.list_extend(lines, format_comment(c))
+    end
+    table.insert(lines, "</file>")
+  end
+  table.insert(lines, "</review>")
+
+  local body = table.concat(lines, "\n")
+  local longest = 0
+  for run in body:gmatch("`+") do
+    longest = math.max(longest, #run)
+  end
+  local fence = string.rep("`", math.max(3, longest + 1))
+  return preamble .. "\n\n" .. fence .. "\n" .. body .. "\n" .. fence .. "\n"
+end
+
+--- Flush all comments to clipboard as XML and clear state.
 function M.flush()
   if state.is_empty() then
     vim.notify("No comments to flush", vim.log.levels.INFO)
@@ -59,19 +119,7 @@ function M.flush()
   end
 
   local comments = state.get_all()
-  local output = {}
-  for _, c in ipairs(comments) do
-    table.insert(output, {
-      file = c.file,
-      line_start = c.line_start,
-      line_end = c.line_end,
-      side = c.side,
-      comment = c.comment,
-    })
-  end
-
-  local json = vim.fn.json_encode({ comments = output })
-  vim.fn.setreg("+", json)
+  vim.fn.setreg("+", format_comments(comments))
   local count = #comments
   state.clear()
   panel.hide()
