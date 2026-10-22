@@ -31,6 +31,7 @@ let
           git-trim
           git-delete-merged-branches
           pre-commit
+          tea
         ]
         ++ [
           (writeShellScriptBin "git-wt-claim" (builtins.readFile ./wt-claim.sh))
