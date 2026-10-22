@@ -24,6 +24,7 @@
           borgmatic
           builder
           wireguard
+          tailscale
           neovim
         ]
         ++ [

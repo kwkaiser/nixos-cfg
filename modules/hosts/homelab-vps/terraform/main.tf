@@ -47,6 +47,14 @@ resource "hcloud_firewall" "homelab_vps" {
     port        = "51820"
     source_ips  = ["0.0.0.0/0", "::/0"]
   }
+
+  rule {
+    description = "tailscale"
+    direction   = "in"
+    protocol    = "udp"
+    port        = "41641"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
 }
 
 resource "hcloud_server" "homelab_vps" {

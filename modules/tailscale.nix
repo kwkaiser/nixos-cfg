@@ -15,7 +15,10 @@ in
 
   config.nixos.modules.tailscale = { config, ... }: {
     home-manager.users.${config.mine.username}.imports = [ hmModule ];
-    services.tailscale.enable = true;
+    services.tailscale = {
+      enable = true;
+      openFirewall = true;
+    };
   };
 
   config.darwin.modules.tailscale = { config, ... }: {
