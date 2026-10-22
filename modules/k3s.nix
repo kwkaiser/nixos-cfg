@@ -17,6 +17,7 @@
         # correctly marks traffic as netpol-allowed, which a bolted-on
         # REDIRECT/DNAT trick doesn't.
         "--kube-apiserver-arg=service-node-port-range=80-32767"
+        "--kube-proxy-arg=nodeport-addresses=primary"
         # Nothing in the app repo defines an Ingress or LoadBalancer Service
         # (everything is exposed via NodePort), so the bundled ingress
         # controller and service load balancer are unused overhead.
