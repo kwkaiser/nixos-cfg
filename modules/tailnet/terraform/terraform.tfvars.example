@@ -1,0 +1,5 @@
+devices = {
+  homelab-vps = {
+    tags = ["tag:homelab"]
+  }
+}
