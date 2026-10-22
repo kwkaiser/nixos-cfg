@@ -1,5 +1,6 @@
 devices = {
   homelab-vps = {
-    tags = ["tag:homelab"]
+    tags        = ["tag:homelab"]
+    dns_domains = ["kwkaiser.io"]
   }
 }

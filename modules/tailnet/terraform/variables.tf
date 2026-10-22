@@ -8,13 +8,15 @@ variable "tailscale_oauth_client_secret" {
 }
 
 variable "devices" {
-  description = "Tailnet devices managed here, keyed by short hostname."
+  description = "Tailnet devices managed here, keyed by short hostname. dns_domains are split-DNS domains this device resolves for the tailnet."
   type = map(object({
-    tags = list(string)
+    tags        = list(string)
+    dns_domains = optional(list(string), [])
   }))
   default = {
     homelab-vps = {
-      tags = ["tag:homelab"]
+      tags        = ["tag:homelab"]
+      dns_domains = ["kwkaiser.io"]
     }
   }
 }

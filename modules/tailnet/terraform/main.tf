@@ -49,3 +49,12 @@ resource "tailscale_device_key" "managed" {
   device_id           = data.tailscale_device.managed[each.key].node_id
   key_expiry_disabled = true
 }
+
+resource "tailscale_dns_split_nameservers" "managed" {
+  for_each = merge([
+    for name, d in var.devices : { for domain in d.dns_domains : domain => name }
+  ]...)
+
+  domain      = each.key
+  nameservers = data.tailscale_device.managed[each.value].addresses
+}
