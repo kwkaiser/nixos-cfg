@@ -170,6 +170,7 @@ mkHmFeature "herdr" (
         ui = {
           toast.delivery = "off";
           sound.enabled = false;
+          pane_scrollbars = false;
         };
         theme = {
           name = "terminal";
