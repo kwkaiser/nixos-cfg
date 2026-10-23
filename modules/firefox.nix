@@ -16,6 +16,10 @@ mkHmFeature "firefox" (
       # the official .dmg build on Darwin instead of building from source.
       package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin pkgs.firefox-bin;
       policies = {
+        DNSOverHTTPS = {
+          Enabled = true;
+          ExcludedDomains = [ "kwkaiser.io" ];
+        };
         "3rdparty".Extensions."uBlock0@raymondhill.net" = {
           toAdd = {
             filterLists = [
