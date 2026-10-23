@@ -18,8 +18,7 @@ mkHmFeature "kitty" (
           map shift+enter send_text all \x1b\r
           map ctrl+i send_text all \x1bi
 
-          mouse_map ctrl+left press grabbed discard_event
-          mouse_map ctrl+left release grabbed,ungrabbed mouse_handle_click link
+          mouse_map ctrl+left release ungrabbed mouse_handle_click link
         '';
       };
 

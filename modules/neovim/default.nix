@@ -11,6 +11,7 @@
         config.programs.nvf.finalPackage
         config.programs.tmux.package
         pkgs.git
+        pkgs.socat
       ];
       excludeShellChecks = ["SC2016"];
       text = builtins.readFile ./nvim-open.sh;
@@ -44,7 +45,11 @@
         if git rev-parse --show-toplevel &>/dev/null; then
           local repo_root=$(git rev-parse --show-toplevel)
           local session=""
-          [[ -n "$TMUX" ]] && session=$(tmux display -p -t "$TMUX_PANE" '#S' 2>/dev/null)
+          if [[ -n "$TMUX" ]]; then
+            session=$(tmux display -p -t "$TMUX_PANE" '#S' 2>/dev/null)
+          elif [[ -n "$HERDR_WORKSPACE_ID" ]]; then
+            session="herdr:$HERDR_WORKSPACE_ID"
+          fi
           local repo_id=$(printf %s "$session:$repo_root" | cksum | cut -d' ' -f1)
           local socket_path="/tmp/nvim-$(basename "$repo_root")-''${repo_id}.sock"
 

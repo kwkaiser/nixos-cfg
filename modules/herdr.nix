@@ -149,6 +149,43 @@ mkHmFeature "herdr" (
       command = ["${lib.getExe workspaceHistory}", "previous"]
     '';
 
+    fileLink = pkgs.writeShellApplication {
+      name = "herdr-file-link";
+      text = ''
+        url="$HERDR_PLUGIN_CLICKED_URL"
+        fragment=""
+        if [[ "$url" == *"#"* ]]; then
+          fragment="''${url#*#}"
+          url="''${url%%#*}"
+        fi
+        path="''${url%%\?*}"
+        path="''${path#file://}"
+        path="/''${path#*/}"
+        path=$(printf '%b' "''${path//%/\\x}")
+        exec ${config.home.profileDirectory}/bin/nvim-open "$path" "$fragment"
+      '';
+    };
+
+    fileLinkPlugin = pkgs.writeTextDir "herdr-plugin.toml" ''
+      id = "kwkaiser.file-link"
+      name = "File links"
+      version = "0.1.0"
+      min_herdr_version = "0.9.5"
+      platforms = ["linux", "macos"]
+
+      [[actions]]
+      id = "open"
+      title = "Open file in workspace nvim"
+      contexts = ["workspace"]
+      command = ["${lib.getExe fileLink}"]
+
+      [[link_handlers]]
+      id = "file"
+      title = "Open file in workspace nvim"
+      pattern = "^file://"
+      action = "open"
+    '';
+
     tabKeys = map (n: {
       key = "prefix+${toString (lib.mod n 10)}";
       type = "shell";
@@ -161,6 +198,7 @@ mkHmFeature "herdr" (
 
     home.activation.herdrWorkspaceHistory = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
       run ${herdr} plugin link ${workspaceHistoryPlugin} >/dev/null || true
+      run ${herdr} plugin link ${fileLinkPlugin} >/dev/null || true
     '';
 
     programs.herdr = {
