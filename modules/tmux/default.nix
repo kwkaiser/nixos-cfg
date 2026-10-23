@@ -3,8 +3,9 @@ let
   inherit (import ../../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
 mkHmFeature "tmux" (
-  { pkgs, ... }:
+  { pkgs, config, ... }:
   let
+    hex = config.lib.stylix.colors.withHashtag;
     yaml = pkgs.formats.yaml { };
 
     # Ad-hoc equivalent of a bare tmuxinator project (no extra windows): rendered
@@ -99,10 +100,13 @@ mkHmFeature "tmux" (
         # Jump back to the previously attached session
         bind-key p switch-client -l
 
-        bind-key g display-popup -E -B -w 80% -h 70% -d "#{pane_current_path}" "tmt pick || { echo 'press enter'; read _; }"
-        bind-key o display-popup -E -B -w 80% -h 70% -d "#{pane_current_path}" "tmt switch || { echo 'press enter'; read _; }"
-        bind-key G display-popup -E -B -w 80% -h 70% -d "#{pane_current_path}" "tmt create || { echo 'press enter'; read _; }"
-        bind-key X display-popup -E -B -w 60% -h 40% -d "#{pane_current_path}" "tmt close || { echo 'press enter'; read _; }"
+        set -g popup-border-lines rounded
+        set -g popup-border-style "fg=${hex.base0D}"
+
+        bind-key g display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt pick || { echo 'press enter'; read _; }"
+        bind-key o display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt switch || { echo 'press enter'; read _; }"
+        bind-key G display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt create || { echo 'press enter'; read _; }"
+        bind-key X display-popup -E -e TMT_POPUP=1 -w 60% -h 40% -d "#{pane_current_path}" "tmt close || { echo 'press enter'; read _; }"
 
         # Select window 1-10, auto-create if doesn't exist
         bind-key 1 run-shell 'tmux select-window -t :1 2>/dev/null || tmux new-window -t :1'

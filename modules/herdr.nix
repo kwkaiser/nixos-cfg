@@ -3,7 +3,7 @@ let
   inherit (import ../dendritic-lib.nix { inherit lib; }) mkHmFeature;
 in
 mkHmFeature "herdr" (
-  { config, pkgs, ... }:
+  { config, pkgs, lib, ... }:
   let
     herdr = lib.getExe config.programs.herdr.package;
 
@@ -35,20 +35,39 @@ mkHmFeature "herdr" (
       '';
     };
 
-    tabGoto = pkgs.writeShellApplication {
-      name = "herdr-tab-goto";
-      text = ''
-        number="$1"
-        workspace="''${HERDR_ACTIVE_WORKSPACE_ID:?}"
-        tabs=$(${herdr} tab list --workspace "$workspace")
-        re="\"label\":\"$number(:[^\"]*)?\",[^}]*\"tab_id\":\"([^\"]+)\""
-        if [[ "$tabs" =~ $re ]]; then
-          exec ${herdr} tab focus "''${BASH_REMATCH[2]}" >/dev/null
+    zsh = if pkgs.stdenv.hostPlatform.isDarwin then "/bin/zsh" else lib.getExe pkgs.zsh;
+
+    tabGoto = pkgs.writeText "herdr-tab-goto.zsh" ''
+      zmodload zsh/net/socket
+      number=$1
+      workspace=''${HERDR_ACTIVE_WORKSPACE_ID:?}
+      if [[ -n ''${HERDR_SOCKET_PATH:-} ]]; then
+        socket=$HERDR_SOCKET_PATH
+      elif [[ -n ''${HERDR_SESSION:-} ]]; then
+        socket=$HOME/.config/herdr/sessions/$HERDR_SESSION/herdr.sock
+      else
+        socket=$HOME/.config/herdr/herdr.sock
+      fi
+
+      request() {
+        zsocket $socket || exit 1
+        local fd=$REPLY
+        print -r -u $fd -- $1
+        IFS= read -r -u $fd reply
+        exec {fd}>&-
+      }
+
+      request '{"id":"goto","method":"tab.list","params":{"workspace_id":"'$workspace'"}}'
+      tabs=''${reply//\},\{/$'\n'}
+      for tab in "''${(@f)tabs}"; do
+        if [[ $tab =~ "\"label\":\"$number(:[^\"]*)?\"" && $tab =~ '"tab_id":"([^"]+)"' ]]; then
+          request '{"id":"goto","method":"tab.focus","params":{"tab_id":"'$match[1]'"}}'
+          exit
         fi
-        ${herdr} tab create --workspace "$workspace" --label "$number" --focus
-        ${lib.getExe sortTabs} "$workspace"
-      '';
-    };
+      done
+      request '{"id":"goto","method":"tab.create","params":{"workspace_id":"'$workspace'","label":"'$number'","focus":true}}'
+      exec ${lib.getExe sortTabs} $workspace
+    '';
 
     rename = pkgs.writeShellApplication {
       name = "herdr-rename";
@@ -86,15 +105,63 @@ mkHmFeature "herdr" (
       '';
     };
 
+    workspaceHistory = pkgs.writeShellApplication {
+      name = "herdr-workspace-history";
+      runtimeInputs = [ pkgs.jq ];
+      text = ''
+        state="$HERDR_PLUGIN_STATE_DIR/$(printf '%s' "$HERDR_SOCKET_PATH" | tr -c 'A-Za-z0-9' _)"
+        current=""
+        previous=""
+        if [ -f "$state" ]; then
+          { read -r current || true; read -r previous || true; } <"$state"
+        fi
+        case "$1" in
+          record)
+            focused=$(jq -r '.. | objects | .workspace_id? // empty' <<<"$HERDR_PLUGIN_EVENT_JSON" | head -n1)
+            if [ -n "$focused" ] && [ "$focused" != "$current" ]; then
+              printf '%s\n%s\n' "$focused" "$current" >"$state"
+            fi
+            ;;
+          previous)
+            if [ -n "$previous" ]; then
+              "$HERDR_BIN_PATH" workspace focus "$previous" >/dev/null
+            fi
+            ;;
+        esac
+      '';
+    };
+
+    workspaceHistoryPlugin = pkgs.writeTextDir "herdr-plugin.toml" ''
+      id = "kwkaiser.workspace-history"
+      name = "Workspace history"
+      version = "0.1.0"
+      min_herdr_version = "0.9.0"
+      platforms = ["linux", "macos"]
+
+      [[events]]
+      on = "workspace.focused"
+      command = ["${lib.getExe workspaceHistory}", "record"]
+
+      [[actions]]
+      id = "previous"
+      title = "Previous workspace"
+      contexts = ["workspace"]
+      command = ["${lib.getExe workspaceHistory}", "previous"]
+    '';
+
     tabKeys = map (n: {
       key = "prefix+${toString (lib.mod n 10)}";
       type = "shell";
-      command = "${lib.getExe tabGoto} ${toString n}";
+      command = "${zsh} -f ${tabGoto} ${toString n}";
       description = "go to tab ${toString n}";
     }) (lib.range 1 10);
   in
   {
     home.packages = [ sortTabs ];
+
+    home.activation.herdrWorkspaceHistory = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      run ${herdr} plugin link ${workspaceHistoryPlugin} >/dev/null || true
+    '';
 
     programs.herdr = {
       enable = true;
@@ -123,6 +190,7 @@ mkHmFeature "herdr" (
           split_vertical = "prefix+enter";
           detach = "prefix+d";
           switch_tab = [ ];
+          previous_tab = [ ];
           new_worktree = [ ];
           close_tab = [ ];
           resize_mode = "prefix+m";
@@ -137,6 +205,12 @@ mkHmFeature "herdr" (
           navigate_pane_up = "shift+k";
           navigate_pane_down = "shift+j";
           command = tabKeys ++ [
+            {
+              key = "prefix+p";
+              type = "plugin_action";
+              command = "kwkaiser.workspace-history.previous";
+              description = "previous workspace";
+            }
             {
               key = "prefix+r";
               type = "popup";

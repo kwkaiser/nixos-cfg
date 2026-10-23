@@ -792,15 +792,19 @@ paint() {
 }
 
 fzf_pick() {
-  local label="$1" preview="$2"
+  local label="$1" preview="$2" frame
   shift 2
+  if [ -n "${TMT_POPUP:-}" ]; then
+    frame=(--border=none --input-border=line --input-label=" $label " --no-separator)
+  else
+    frame=(--border=rounded --border-label=" $label " --padding='0,1')
+  fi
   fzf --ansi --layout=reverse --info=inline-right --highlight-line \
-    --border=rounded --border-label=" $label " --padding=0,1 \
     --prompt='❯ ' --pointer='▌' --gutter=' ' --marker='▍' --separator='─' --scrollbar='│' \
     --color="$fzf_colors" \
     --delimiter='\t' --with-nth=2.. \
     --preview="$preview" --preview-window='right,55%,border-left,<60(down,50%,border-top)' \
-    "$@"
+    "${frame[@]}" "$@"
 }
 
 cmd_preview() {
