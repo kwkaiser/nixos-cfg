@@ -2,6 +2,15 @@ root="${TMT_ROOT:-$HOME/tasks}"
 branch_prefix="${TMT_BRANCH_PREFIX:-u/kwkaiser/}"
 read -r -a clone_names <<< "${TMT_CLONE:-node_modules .env .env.local .env.mcp}"
 
+if [ -n "${TMT_MUX:-}" ]; then
+  mux="$TMT_MUX"
+elif [ "${HERDR_ENV:-}" = 1 ]; then
+  mux=herdr
+else
+  mux=tmux
+fi
+herdr_bin="${HERDR_BIN_PATH:-herdr}"
+
 die() {
   echo "tmt: $*" >&2
   exit 1
@@ -10,6 +19,7 @@ die() {
 usage() {
   cat <<EOF
 usage:
+  tmt create
   tmt new [-B branch] <base> <topic> [repo...]
   tmt add [-t topic] <repo...>
   tmt open [topic]
@@ -56,7 +66,7 @@ all_tasks() {
 
 current_task() {
   local d=""
-  if [ -n "${TMUX:-}" ]; then
+  if [ "$mux" = tmux ] && [ -n "${TMUX:-}" ]; then
     d="$(tmux display -p '#{@tmt_task}' 2>/dev/null || true)"
   fi
   if [ -n "$d" ] && [ -f "$d/.tmt" ]; then
@@ -157,9 +167,78 @@ write_claude_md() {
   } > "$dir/CLAUDE.md"
 }
 
+herdr_workspace_id() {
+  "$herdr_bin" workspace list |
+    jq -r --arg l "$1" '[.result.workspaces[] | select(.label == $l)][0].workspace_id // empty'
+}
+
+mux_has_session() {
+  case "$mux" in
+    tmux) tmux has-session -t "=$1" 2>/dev/null ;;
+    herdr) [ -n "$(herdr_workspace_id "$1")" ] ;;
+  esac
+}
+
 window_id() {
-  tmux list-windows -t "=$1" -F '#{window_id} #{window_name}' 2>/dev/null |
-    awk -v n="$2" '$2 == n { print $1; exit }'
+  local ws
+  case "$mux" in
+    tmux)
+      tmux list-windows -t "=$1" -F '#{window_id} #{window_name}' 2>/dev/null |
+        awk -v n="$2" '$2 == n { print $1; exit }'
+      ;;
+    herdr)
+      ws="$(herdr_workspace_id "$1")"
+      [ -n "$ws" ] || return 0
+      "$herdr_bin" tab list --workspace "$ws" |
+        jq -r --arg n "$2" '[.result.tabs[] | select(.label == $n or ((.label | test("^[0-9]+:")) and ((.label | sub("^[0-9]+:"; "")) == $n)))][0].tab_id // empty'
+      ;;
+  esac
+}
+
+mux_new_window() {
+  local session="$1" name="$2" cwd="$3" ws next
+  case "$mux" in
+    tmux)
+      tmux new-window -d -P -F '#{window_id}' -t "=$session:" -n "$name" -c "$cwd"
+      ;;
+    herdr)
+      ws="$(herdr_workspace_id "$session")"
+      next="$("$herdr_bin" tab list --workspace "$ws" |
+        jq -r '[.result.tabs[].label | capture("^(?<n>[0-9]+)") | .n | tonumber] | (max // 0) + 1')"
+      "$herdr_bin" tab create --workspace "$ws" --cwd "$cwd" --label "$next:$name" --no-focus |
+        jq -r .result.tab.tab_id
+      if command -v herdr-sort-tabs >/dev/null; then
+        herdr-sort-tabs "$ws"
+      fi
+      ;;
+  esac
+}
+
+mux_kill_window() {
+  case "$mux" in
+    tmux) tmux kill-window -t "$1" ;;
+    herdr) "$herdr_bin" tab close "$1" >/dev/null ;;
+  esac
+}
+
+mux_select_window() {
+  case "$mux" in
+    tmux) tmux select-window -t "$1" ;;
+    herdr) "$herdr_bin" tab focus "$1" >/dev/null ;;
+  esac
+}
+
+mux_kill_session() {
+  local ws
+  case "$mux" in
+    tmux) tmux kill-session -t "=$1" 2>/dev/null || true ;;
+    herdr)
+      ws="$(herdr_workspace_id "$1")"
+      if [ -n "$ws" ]; then
+        "$herdr_bin" workspace close "$ws" >/dev/null || true
+      fi
+      ;;
+  esac
 }
 
 check_repos() {
@@ -248,14 +327,33 @@ add_repo() {
 
   clone_untracked "$src" "$target"
 
-  if tmux has-session -t "=$session" 2>/dev/null && [ -z "$(window_id "$session" "$repo")" ]; then
-    tmux new-window -d -t "=$session:" -n "$repo" -c "$target"
+  if mux_has_session "$session" && [ -z "$(window_id "$session" "$repo")" ]; then
+    mux_new_window "$session" "$repo" "$target" >/dev/null
   fi
   echo "tmt: $repo -> $target ($branch from $start)"
 }
 
+ensure_herdr_workspace() {
+  local dir="$1" session out pane r
+  session="$(meta "$dir" session)"
+  if ! mux_has_session "$session"; then
+    out="$("$herdr_bin" workspace create --cwd "$dir" --label "$session" --no-focus)"
+    pane="$(jq -r .result.root_pane.pane_id <<< "$out")"
+    "$herdr_bin" tab rename "$(jq -r .result.tab.tab_id <<< "$out")" "1:claude" >/dev/null
+    "$herdr_bin" pane run "$pane" "clear && ccp" >/dev/null
+    while IFS= read -r r; do
+      mux_new_window "$session" "$r" "$dir/$r" >/dev/null
+    done < <(worktrees "$dir")
+  fi
+  echo "$session"
+}
+
 ensure_session() {
   local dir="$1" session pane r
+  if [ "$mux" = herdr ]; then
+    ensure_herdr_workspace "$dir"
+    return 0
+  fi
   session="$(meta "$dir" session)"
   if ! tmux has-session -t "=$session" 2>/dev/null; then
     pane="$(tmux new-session -d -P -F '#{pane_id}' -s "$session" -n claude -c "$dir")"
@@ -271,7 +369,9 @@ ensure_session() {
 }
 
 attach() {
-  if [ -n "${TMUX:-}" ]; then
+  if [ "$mux" = herdr ]; then
+    "$herdr_bin" workspace focus "$(herdr_workspace_id "$1")" >/dev/null
+  elif [ -n "${TMUX:-}" ]; then
     tmux switch-client -t "=$1"
   else
     tmux attach-session -t "=$1"
@@ -435,7 +535,7 @@ cmd_ls() {
         task="$(meta "$dir" topic)"
         base="$(basename "$(meta "$dir" base)")"
         session=up
-        tmux has-session -t "=$(meta "$dir" session)" 2>/dev/null || session=down
+        mux_has_session "$(meta "$dir" session)" || session=down
         prev="$dir"
       fi
       if [ -z "$r" ]; then
@@ -469,7 +569,8 @@ remove_task() {
     fi
   done < <(worktrees "$dir")
   if [ "$blocked" -eq 1 ] && [ "$force" -eq 0 ]; then
-    die "refusing to remove $topic; pass -f to force"
+    echo "tmt: refusing to remove $topic; pass -f to force" >&2
+    exit 2
   fi
 
   if [ "$assume_yes" -eq 0 ]; then
@@ -493,7 +594,7 @@ remove_task() {
   [ -z "$(worktrees "$dir")" ] || die "worktrees remain in $dir, not deleting it"
   rm -rf "$dir"
   rmdir "$(dirname "$dir")" 2>/dev/null || true
-  tmux kill-session -t "=$session" 2>/dev/null || true
+  mux_kill_session "$session"
 }
 
 cmd_done() {
@@ -545,7 +646,7 @@ retire_worktree() {
   ln -s "$base/$r" "$dir/$r"
   id="$(window_id "$session" "$r")" || id=""
   if [ -n "$id" ]; then
-    tmux kill-window -t "$id"
+    mux_kill_window "$id"
   fi
   write_claude_md "$dir"
   echo "tmt: removed $(meta "$dir" topic)/$r worktree and branch $b"
@@ -735,9 +836,58 @@ cmd_pick() {
 
   id="$(window_id "$session" "$repo")"
   if [ -z "$id" ]; then
-    id="$(tmux new-window -d -P -F '#{window_id}' -t "=$session:" -n "$repo" -c "$dir/$repo")"
+    id="$(mux_new_window "$session" "$repo" "$dir/$repo")"
   fi
-  tmux select-window -t "$id"
+  mux_select_window "$id"
+}
+
+candidate_bases() {
+  local dir top d r
+  {
+    if dir="$(current_task)"; then
+      meta "$dir" base
+    fi
+    if top="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+      dirname "$top"
+    fi
+    while IFS= read -r dir; do
+      meta "$dir" base
+    done < <(all_tasks)
+    zoxide query -l 2>/dev/null || true
+  } | awk '!seen[$0]++' | while IFS= read -r d; do
+    for r in "$d"/*/.git; do
+      if [ -e "$r" ]; then
+        echo "$d"
+        break
+      fi
+    done
+  done
+}
+
+cmd_create() {
+  local base topic choice repos=()
+  base="$(
+    candidate_bases | while IFS= read -r d; do
+      printf '%s\t%s %s  %s\n' "$d" "$(paint "$sgr_root" "")" "$(basename "$d")" "$(paint "$sgr_dim" "$d")"
+    done | fzf_pick "Base" "$0 _complete base-repos {1}" \
+      --header=":: $(paint "$sgr_accent" "<enter>") pick base"
+  )" || return 0
+  base="${base%%$'\t'*}"
+
+  topic="$(gum input --no-show-help --prompt "topic: " --placeholder "[A-Za-z0-9_-]+")" || return 0
+  [ -n "$topic" ] || return 0
+
+  while IFS= read -r choice; do
+    repos+=("${choice%%$'\t'*}")
+  done < <(
+    cmd_complete base-repos "$base" | while IFS= read -r r; do
+      printf '%s\t%s %s\n' "$r" "$(paint "$sgr_worktree" "")" "$r"
+    done | fzf_pick "$topic" "$0 _preview repo $(printf '%q' "$base") {1}" --multi \
+      --header=":: $(paint "$sgr_accent" "<tab>") select  $(paint "$sgr_accent" "<enter>") create worktrees"
+  )
+  [ "${#repos[@]}" -gt 0 ] || return 0
+
+  cmd_new "$base" "$topic" "${repos[@]}"
 }
 
 fresh_repo() {
@@ -846,6 +996,7 @@ if [ "$#" -gt 0 ]; then
   shift
 fi
 case "$cmd" in
+  create) cmd_create ;;
   new) cmd_new "$@" ;;
   add) cmd_add "$@" ;;
   open) cmd_open "$@" ;;

@@ -17,6 +17,7 @@ _tmt() {
   typeset -A opt_args
   local -a subcmds
   subcmds=(
+    'create:interactively pick a base, topic and repos for a new task'
     'new:create a task with worktrees for the given repos'
     'add:turn repos in a task into worktrees'
     'open:open the tmux session for a task'

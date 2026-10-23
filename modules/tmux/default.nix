@@ -98,6 +98,8 @@ mkHmFeature "tmux" (
         pkgs.gh
         pkgs.zoxide
         pkgs.gawk
+        pkgs.jq
+        pkgs.gum
       ]
       ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin clonedir;
       text = ''
