@@ -40,7 +40,6 @@ This approach should be possible on most linux distros, provided they have nix i
 
 - `nixos-rebuild switch --flake .#host` to rebuild locally
 - `nixos-rebuild switch --flake .#host --target-host user@host` to rebuild remotely
-- `nixos-rebuild switch --flake github:kwkaiser/nixos-cfg#host` to rebuild from git
 - `nix run nix-darwin -- switch --flake .#host` to rebuild on darwin
 
 ## To update
