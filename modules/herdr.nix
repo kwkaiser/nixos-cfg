@@ -37,18 +37,16 @@ mkHmFeature "herdr" (
 
     tabGoto = pkgs.writeShellApplication {
       name = "herdr-tab-goto";
-      runtimeInputs = [ pkgs.jq ];
       text = ''
         number="$1"
         workspace="''${HERDR_ACTIVE_WORKSPACE_ID:?}"
-        tab=$(${herdr} tab list --workspace "$workspace" \
-          | jq -r --arg n "$number" '[.result.tabs[] | select(.label == $n or (.label | startswith($n + ":")))][0].tab_id // empty')
-        if [ -n "$tab" ]; then
-          ${herdr} tab focus "$tab"
-        else
-          ${herdr} tab create --workspace "$workspace" --label "$number" --focus
-          ${lib.getExe sortTabs} "$workspace"
+        tabs=$(${herdr} tab list --workspace "$workspace")
+        re="\"label\":\"$number(:[^\"]*)?\",[^}]*\"tab_id\":\"([^\"]+)\""
+        if [[ "$tabs" =~ $re ]]; then
+          exec ${herdr} tab focus "''${BASH_REMATCH[2]}" >/dev/null
         fi
+        ${herdr} tab create --workspace "$workspace" --label "$number" --focus
+        ${lib.getExe sortTabs} "$workspace"
       '';
     };
 
@@ -85,30 +83,6 @@ mkHmFeature "herdr" (
             ${herdr} workspace rename "$workspace_id" "$name"
             ;;
         esac
-      '';
-    };
-
-    closeWorkspace = pkgs.writeShellApplication {
-      name = "herdr-close-workspace";
-      runtimeInputs = [
-        pkgs.jq
-        pkgs.gum
-      ];
-      text = ''
-        workspace=$(${herdr} workspace list | jq -c '.result.workspaces[] | select(.focused)')
-        id=$(jq -r .workspace_id <<<"$workspace")
-        label=$(jq -r .label <<<"$workspace")
-        if command -v tmt >/dev/null && tmt _complete tasks | grep -qxF "$label"; then
-          status=0
-          tmt "done" "$label" || status=$?
-          if [ "$status" -eq 2 ]; then
-            gum confirm "force remove task $label?" && tmt "done" -f -y "$label"
-          elif [ "$status" -ne 0 ]; then
-            exit "$status"
-          fi
-        else
-          gum confirm "close workspace $label?" && ${herdr} workspace close "$id" >/dev/null
-        fi
       '';
     };
 
@@ -180,6 +154,14 @@ mkHmFeature "herdr" (
               height = "70%";
             }
             {
+              key = "prefix+o";
+              type = "popup";
+              command = "tmt switch || { echo 'press enter'; read _; }";
+              description = "tmt switch";
+              width = "80%";
+              height = "70%";
+            }
+            {
               key = "prefix+shift+g";
               type = "popup";
               command = "tmt create || { echo 'press enter'; read _; }";
@@ -190,8 +172,8 @@ mkHmFeature "herdr" (
             {
               key = "prefix+shift+x";
               type = "popup";
-              command = "${lib.getExe closeWorkspace} || { echo 'press enter'; read _; }";
-              description = "close workspace (tmt done for tasks)";
+              command = "tmt close || { echo 'press enter'; read _; }";
+              description = "tmt close";
               width = "60%";
               height = "40%";
             }

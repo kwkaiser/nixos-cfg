@@ -26,8 +26,10 @@ usage:
   tmt ls [-p]
   tmt fresh [base]
   tmt done [-f] [-y] [topic]
+  tmt close
   tmt gc
   tmt pick
+  tmt switch
 
 base is a directory or zoxide query; tasks live under $root/<base name>/<topic>
 EOF
@@ -64,13 +66,21 @@ all_tasks() {
   done
 }
 
+session_task() {
+  local d
+  [ -n "$1" ] || return 1
+  while IFS= read -r d; do
+    if [ "$(meta "$d" session)" = "$1" ]; then
+      echo "$d"
+      return 0
+    fi
+  done < <(all_tasks)
+  return 1
+}
+
 current_task() {
-  local d=""
-  if [ "$mux" = tmux ] && [ -n "${TMUX:-}" ]; then
-    d="$(tmux display -p '#{@tmt_task}' 2>/dev/null || true)"
-  fi
-  if [ -n "$d" ] && [ -f "$d/.tmt" ]; then
-    echo "$d"
+  local d
+  if session_task "$(mux_current_session)"; then
     return 0
   fi
   d="$PWD"
@@ -172,6 +182,21 @@ herdr_workspace_id() {
     jq -r --arg l "$1" '[.result.workspaces[] | select(.label == $l)][0].workspace_id // empty'
 }
 
+mux_current_session() {
+  case "$mux" in
+    tmux)
+      if [ -n "${TMUX:-}" ]; then
+        tmux display -p '#S' 2>/dev/null || true
+      fi
+      ;;
+    herdr)
+      if [ "${HERDR_ENV:-}" = 1 ]; then
+        "$herdr_bin" workspace list | jq -r '[.result.workspaces[] | select(.focused)][0].label // empty'
+      fi
+      ;;
+  esac
+}
+
 mux_has_session() {
   case "$mux" in
     tmux) tmux has-session -t "=$1" 2>/dev/null ;;
@@ -231,7 +256,12 @@ mux_select_window() {
 mux_kill_session() {
   local ws
   case "$mux" in
-    tmux) tmux kill-session -t "=$1" 2>/dev/null || true ;;
+    tmux)
+      if [ "$(mux_current_session)" = "$1" ]; then
+        tmux switch-client -l 2>/dev/null || tmux switch-client -n 2>/dev/null || true
+      fi
+      tmux kill-session -t "=$1" 2>/dev/null || true
+      ;;
     herdr)
       ws="$(herdr_workspace_id "$1")"
       if [ -n "$ws" ]; then
@@ -597,6 +627,27 @@ remove_task() {
   mux_kill_session "$session"
 }
 
+cmd_close() {
+  local session dir topic status=0
+  session="$(mux_current_session)"
+  [ -n "$session" ] || die "not inside a $mux session"
+  if ! dir="$(session_task "$session")"; then
+    if gum confirm "close $session?"; then
+      mux_kill_session "$session"
+    fi
+    return 0
+  fi
+  topic="$(meta "$dir" topic)"
+  "$0" "done" "$topic" || status=$?
+  if [ "$status" -eq 2 ]; then
+    if gum confirm "force remove task $topic?"; then
+      "$0" "done" -f -y "$topic"
+    fi
+  elif [ "$status" -ne 0 ]; then
+    exit "$status"
+  fi
+}
+
 cmd_done() {
   local force=0 assume_yes=0 opt dir
   while getopts "fy" opt; do
@@ -776,15 +827,23 @@ cmd_preview() {
 }
 
 pick_task() {
-  local choice d session w=0 t
+  local choice d session w=0 bw=0 t b state
   while IFS= read -r d; do
     t="$(meta "$d" topic)"
+    b="$(basename "$(meta "$d" base)")"
     [ "${#t}" -le "$w" ] || w="${#t}"
+    [ "${#b}" -le "$bw" ] || bw="${#b}"
   done < <(all_tasks)
+  [ "$w" -gt 0 ] || die "no tasks under $root; run tmt create"
   choice="$(
     while IFS= read -r d; do
-      printf "%s\t%s %-${w}s  %s\n" "$d" "$(paint "$sgr_root" "")" "$(meta "$d" topic)" \
-        "$(paint "$sgr_dim" "$(basename "$(meta "$d" base)")")"
+      if mux_has_session "$(meta "$d" session)"; then
+        state="$(paint "$sgr_worktree" "running")"
+      else
+        state="$(paint "$sgr_main" "closed")"
+      fi
+      printf "%s\t%s %-${w}s  %s  %s\n" "$d" "$(paint "$sgr_root" "")" "$(meta "$d" topic)" \
+        "$(paint "$sgr_dim" "$(printf "%-${bw}s" "$(basename "$(meta "$d" base)")")")" "$state"
     done < <(all_tasks) |
       fzf_pick "Tasks" "$0 _preview task {1} ''" \
         --header=":: $(paint "$sgr_accent" "<enter>") open task"
@@ -820,11 +879,15 @@ cmd_pick() {
         fi
       done
     } | fzf_pick "$(meta "$dir" topic)" "$0 _preview \"\$([ {1} = claude ] && echo root || echo repo)\" $(printf '%q' "$dir") {1}" \
-      --expect=ctrl-a \
-      --header=":: $(paint "$sgr_accent" "<enter>") jump  $(paint "$sgr_accent" "<ctrl-a>") make worktree"
+      --expect=ctrl-a,ctrl-t \
+      --header=":: $(paint "$sgr_accent" "<enter>") jump  $(paint "$sgr_accent" "<ctrl-a>") make worktree  $(paint "$sgr_accent" "<ctrl-t>") tasks"
   )" || return 0
 
   key="$(sed -n 1p <<< "$out")"
+  if [ "$key" = ctrl-t ]; then
+    pick_task
+    return 0
+  fi
   repo="$(sed -n 2p <<< "$out")"
   repo="${repo%%$'\t'*}"
   [ -n "$repo" ] || return 0
@@ -1003,8 +1066,10 @@ case "$cmd" in
   ls) cmd_ls "$@" ;;
   fresh) cmd_fresh "$@" ;;
   done) cmd_done "$@" ;;
+  close) cmd_close ;;
   gc) cmd_gc ;;
   pick) cmd_pick ;;
+  switch) pick_task ;;
   _preview) cmd_preview "$@" ;;
   _complete) cmd_complete "$@" ;;
   -h | --help | help) usage ;;

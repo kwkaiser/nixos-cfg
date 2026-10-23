@@ -24,8 +24,10 @@ _tmt() {
     'ls:list tasks and worktree status'
     'fresh:fetch and fast-forward the default branch of every repo in a base'
     'done:remove a task and its worktrees'
+    'close:close the current session, running tmt done if it belongs to a task'
     'gc:remove tasks whose PRs are merged or closed'
     'pick:pick a repo in the current task, or a task'
+    'switch:pick any task and open its session'
   )
 
   if (( CURRENT == 2 )); then

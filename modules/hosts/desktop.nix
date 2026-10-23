@@ -51,6 +51,7 @@
           homelab-hosts-file
           misc-cli-util
           tmux
+          tmt
           work
           claude
           anki

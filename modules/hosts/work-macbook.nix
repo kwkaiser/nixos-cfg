@@ -10,6 +10,7 @@
         identity
         base
         git
+        herdr
         nix-settings
         stylix
         python
@@ -28,6 +29,7 @@
         claude
         misc-cli-util
         tmux
+        tmt
         gh-dash
         rust
         tailscale

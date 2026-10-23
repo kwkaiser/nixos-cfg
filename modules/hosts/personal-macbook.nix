@@ -36,6 +36,7 @@
         claude
         misc-cli-util
         tmux
+        tmt
         mc
         homelab-hosts-file
         gh-dash
