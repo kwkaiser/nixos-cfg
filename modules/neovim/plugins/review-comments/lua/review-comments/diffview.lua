@@ -65,4 +65,29 @@ function M.get_cursor_context(opts)
   }
 end
 
+function M.get_review_refs()
+  local ok, lib = pcall(require, "diffview.lib")
+  local view = ok and lib.get_current_view()
+  if not view or not view.left or not view.right then return nil end
+
+  local base, head
+  if view.rev_arg and view.rev_arg ~= "" then
+    base, head = view.rev_arg:match("^(.-)%.%.%.?(.*)$")
+    base = base or view.rev_arg
+  end
+  base = (base ~= "" and base) or view.left:abbrev() or "HEAD"
+
+  if not head or head == "" then
+    local RevType = require("diffview.vcs.rev").RevType
+    if view.right.type == RevType.LOCAL then
+      local toplevel = view.adapter.ctx.toplevel
+      head = vim.fn.systemlist({ "git", "-C", toplevel, "rev-parse", "--abbrev-ref", "HEAD" })[1]
+    else
+      head = view.right:abbrev()
+    end
+  end
+
+  return { branch = head, base = base }
+end
+
 return M

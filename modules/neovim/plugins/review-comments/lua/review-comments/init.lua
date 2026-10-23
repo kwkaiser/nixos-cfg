@@ -84,7 +84,7 @@ local function format_comment(c)
   return lines
 end
 
-local function format_comments(comments)
+local function format_comments(comments, refs)
   local by_file, order = {}, {}
   for _, c in ipairs(comments) do
     if not by_file[c.file] then
@@ -95,6 +95,9 @@ local function format_comments(comments)
   end
 
   local lines = { "<review>" }
+  if refs then
+    lines[1] = string.format('<review branch="%s" base="%s">', attr(refs.branch), attr(refs.base))
+  end
   for _, file in ipairs(order) do
     local group = by_file[file]
     table.sort(group, function(a, b)
@@ -126,7 +129,7 @@ function M.flush()
   end
 
   local comments = state.get_all()
-  vim.fn.setreg("+", format_comments(comments))
+  vim.fn.setreg("+", format_comments(comments, diffview_ctx.get_review_refs()))
   local count = #comments
   state.clear()
   panel.hide()
