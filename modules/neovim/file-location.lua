@@ -1,8 +1,8 @@
-function copy_file_location()
+function copy_file_location(absolute)
   local bufname = vim.api.nvim_buf_get_name(0)
   local root = git_root_for_buf()
   local path
-  if root and bufname:find(root, 1, true) then
+  if not absolute and root and bufname:find(root, 1, true) then
     path = bufname:sub(#root + 2)
   else
     path = bufname

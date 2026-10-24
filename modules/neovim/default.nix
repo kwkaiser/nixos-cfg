@@ -669,6 +669,15 @@
               desc = "Copy file:line to clipboard";
             }
             {
+              key = "<leader>gal";
+              mode = [
+                "n"
+                "v"
+              ];
+              action = "<cmd>lua copy_file_location(true)<CR>";
+              desc = "Copy absolute file:line to clipboard";
+            }
+            {
               key = "<leader>go";
               mode = "n";
               action = "<cmd>lua open_commit_pr()<CR>";
