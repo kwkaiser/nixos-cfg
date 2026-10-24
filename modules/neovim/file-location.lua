@@ -1,8 +1,11 @@
-function copy_file_location(absolute)
+function copy_file_location(include_repo)
   local bufname = vim.api.nvim_buf_get_name(0)
   local root = git_root_for_buf()
+  if include_repo and root then
+    root = vim.fn.fnamemodify(root, ':h')
+  end
   local path
-  if not absolute and root and bufname:find(root, 1, true) then
+  if root and bufname:find(root, 1, true) then
     path = bufname:sub(#root + 2)
   else
     path = bufname

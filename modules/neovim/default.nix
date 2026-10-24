@@ -675,7 +675,7 @@
                 "v"
               ];
               action = "<cmd>lua copy_file_location(true)<CR>";
-              desc = "Copy absolute file:line to clipboard";
+              desc = "Copy repo-prefixed file:line to clipboard";
             }
             {
               key = "<leader>go";
