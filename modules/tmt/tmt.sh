@@ -177,6 +177,20 @@ write_claude_md() {
   } > "$dir/CLAUDE.md"
 }
 
+write_mcp_json() {
+  local dir="$1" f configs=()
+  for f in "$dir"/*/.mcp.json; do
+    if [ -f "$f" ]; then
+      configs+=("$f")
+    fi
+  done
+  if [ "${#configs[@]}" -eq 0 ]; then
+    rm -f "$dir/.mcp.json"
+    return 0
+  fi
+  jq -s 'map(.mcpServers // {}) | add | {mcpServers: .}' "${configs[@]}" > "$dir/.mcp.json"
+}
+
 herdr_workspace_id() {
   "$herdr_bin" workspace list |
     jq -r --arg l "$1" '[.result.workspaces[] | select(.label == $l)][0].workspace_id // empty'
@@ -470,6 +484,7 @@ cmd_new() {
     add_repo "$dir" "$r"
   done
   write_claude_md "$dir"
+  write_mcp_json "$dir"
   local session
   session="$(ensure_session "$dir")"
   rollback_dir=""
@@ -494,6 +509,7 @@ cmd_add() {
     add_repo "$dir" "$r"
   done
   write_claude_md "$dir"
+  write_mcp_json "$dir"
 }
 
 cmd_open() {
@@ -700,6 +716,7 @@ retire_worktree() {
     mux_kill_window "$id"
   fi
   write_claude_md "$dir"
+  write_mcp_json "$dir"
   echo "tmt: removed $(meta "$dir" topic)/$r worktree and branch $b"
 }
 
@@ -899,6 +916,7 @@ cmd_pick() {
   if [ "$key" = ctrl-a ] && [ "$repo" != claude ]; then
     add_repo "$dir" "$repo"
     write_claude_md "$dir"
+    write_mcp_json "$dir"
   fi
 
   id="$(window_id "$session" "$repo")"
@@ -1026,6 +1044,7 @@ cmd_fresh() {
       while IFS= read -r r; do
         echo "tmt: linked $r into $(meta "$dir" topic)"
       done < <(link_repos "$dir")
+      write_mcp_json "$dir"
     fi
   done < <(all_tasks)
 }
