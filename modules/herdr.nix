@@ -261,7 +261,7 @@ mkHmFeature "herdr" (
             {
               key = "prefix+g";
               type = "popup";
-              command = "tmt pick || { echo 'press enter'; read _; }";
+              command = "TMT_POPUP=1 tmt pick || { echo 'press enter'; read _; }";
               description = "tmt pick";
               width = "80%";
               height = "70%";
@@ -269,7 +269,7 @@ mkHmFeature "herdr" (
             {
               key = "prefix+o";
               type = "popup";
-              command = "tmt switch || { echo 'press enter'; read _; }";
+              command = "TMT_POPUP=1 tmt switch || { echo 'press enter'; read _; }";
               description = "tmt switch";
               width = "80%";
               height = "70%";
@@ -277,7 +277,7 @@ mkHmFeature "herdr" (
             {
               key = "prefix+shift+g";
               type = "popup";
-              command = "tmt create || { echo 'press enter'; read _; }";
+              command = "TMT_POPUP=1 tmt create || { echo 'press enter'; read _; }";
               description = "tmt create";
               width = "80%";
               height = "70%";
@@ -285,7 +285,7 @@ mkHmFeature "herdr" (
             {
               key = "prefix+shift+x";
               type = "popup";
-              command = "tmt close || { echo 'press enter'; read _; }";
+              command = "TMT_POPUP=1 tmt close || { echo 'press enter'; read _; }";
               description = "tmt close";
               width = "60%";
               height = "40%";
