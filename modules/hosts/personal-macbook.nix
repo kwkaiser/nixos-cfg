@@ -73,6 +73,8 @@
       homebrew.onActivation.cleanup = "zap";
 
       system.defaults.dock.persistent-apps = ["${config.mine.homeDir}/Applications/Home Manager Apps/Firefox.app"];
+
+      home-manager.users.${config.mine.username}.mine.tmt.claudeCommand = "ccpm";
     }
   );
 }

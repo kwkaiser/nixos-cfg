@@ -413,7 +413,7 @@ ensure_herdr_workspace() {
     out="$("$herdr_bin" workspace create --cwd "$dir" --label "$session" --no-focus)"
     pane="$(jq -r .result.root_pane.pane_id <<< "$out")"
     "$herdr_bin" tab rename "$(jq -r .result.tab.tab_id <<< "$out")" "1:claude" >/dev/null
-    "$herdr_bin" pane run "$pane" "clear && ccp" >/dev/null
+    "$herdr_bin" pane run "$pane" "clear && $claude_cmd" >/dev/null
     while IFS= read -r r; do
       mux_new_window "$session" "$r" "$dir/$r" >/dev/null
     done < <(worktrees "$dir")
@@ -431,7 +431,7 @@ ensure_session() {
   if ! tmux has-session -t "=$session" 2>/dev/null; then
     pane="$(tmux new-session -d -P -F '#{pane_id}' -s "$session" -n claude -c "$dir")"
     tmux set-option -t "$pane" @tmt_task "$dir"
-    tmux send-keys -t "$pane" "clear && ccp" Enter
+    tmux send-keys -t "$pane" "clear && $claude_cmd" Enter
     while IFS= read -r r; do
       tmux new-window -d -t "=$session:" -n "$r" -c "$dir/$r"
     done < <(worktrees "$dir")

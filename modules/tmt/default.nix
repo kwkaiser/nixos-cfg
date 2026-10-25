@@ -70,12 +70,19 @@ mkHmFeature "tmt" (
         sgr_root=${lib.escapeShellArg (sgr "base0D")}
         sgr_accent=${lib.escapeShellArg (sgr "base0A")}
         sgr_dim=${lib.escapeShellArg (sgr "base04")}
+        claude_cmd=${lib.escapeShellArg config.mine.tmt.claudeCommand}
       ''
       + builtins.readFile ./tmt.sh;
     };
   in
   {
-    home.packages = [
+    options.mine.tmt.claudeCommand = lib.mkOption {
+      type = lib.types.str;
+      default = "ccp";
+      description = "Command run in a new tmt task's claude pane.";
+    };
+
+    config.home.packages = [
       tmt
       (pkgs.writeTextDir "share/zsh/site-functions/_tmt" (builtins.readFile ./_tmt.zsh))
     ];
