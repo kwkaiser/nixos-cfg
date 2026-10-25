@@ -494,6 +494,7 @@ cmd_new() {
   local dir
   dir="$root/$(basename "$base")/$topic"
   [ ! -e "$dir" ] || die "$dir already exists"
+  cmd_fresh "$base" || echo "tmt: fresh failed for $base, continuing" >&2
   mkdir -p "$dir"
   rollback_dir="$dir"
   trap rollback_new EXIT
