@@ -56,6 +56,7 @@ mkHmFeature "tmt" (
         pkgs.git
         pkgs.fzf
         pkgs.gh
+        pkgs.tea
         pkgs.zoxide
         pkgs.gawk
         pkgs.jq

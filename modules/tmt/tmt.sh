@@ -129,6 +129,35 @@ start_ref() {
   echo HEAD
 }
 
+is_github() {
+  case "$(git -C "$1" remote get-url origin 2>/dev/null)" in
+    *github.com[:/]*) return 0 ;;
+  esac
+  return 1
+}
+
+gitea_pulls() {
+  local dir="$1" state="$2" first="$3" filter="$4" page out res
+  for page in 1 2 3 4; do
+    out="$(cd "$dir" && tea api "repos/{owner}/{repo}/pulls?state=$state&limit=50&page=$page" 2>/dev/null)" || return 0
+    jq -e 'type == "array" and length > 0' <<< "$out" >/dev/null 2>&1 || return 0
+    res="$(jq -r "$filter" <<< "$out")"
+    [ -z "$res" ] || echo "$res"
+    [ "$first" -eq 0 ] || [ -z "$res" ] || return 0
+  done
+}
+
+pr_state() {
+  local dir="$1" b="$2" state
+  if is_github "$dir"; then
+    (cd "$dir" && gh pr view "$b" --json state -q .state 2>/dev/null) || echo NONE
+    return 0
+  fi
+  state="$(TMT_PR_BRANCH="$b" gitea_pulls "$dir" all 1 \
+    'first(.[] | select(.head.label == env.TMT_PR_BRANCH)) | if .merged then "MERGED" elif .state == "closed" then "CLOSED" else "OPEN" end')"
+  echo "${state:-NONE}"
+}
+
 clone_path() {
   mkdir -p "$(dirname "$2")"
   if [ "$(uname)" = Darwin ]; then
@@ -530,7 +559,7 @@ repo_status() {
     unpushed="$own"
   fi
   if [ "$with_pr" -eq 1 ]; then
-    pr="$(cd "$wt" && gh pr view "$b" --json state -q .state 2>/dev/null || echo NONE)"
+    pr="$(pr_state "$wt" "$b")"
   fi
   echo "$dirty $unpushed $own $pr $b"
 }
@@ -681,8 +710,12 @@ cmd_done() {
 merged_branches() {
   local src="$1" busy b oid
   busy="$(git -C "$src" worktree list --porcelain | sed -n 's|^branch refs/heads/||p')"
-  (cd "$src" && gh pr list --state merged --author @me --limit 200 \
-    --json headRefName,headRefOid -q '.[] | "\(.headRefName) \(.headRefOid)"' 2>/dev/null) |
+  if is_github "$src"; then
+    (cd "$src" && gh pr list --state merged --author @me --limit 200 \
+      --json headRefName,headRefOid -q '.[] | "\(.headRefName) \(.headRefOid)"' 2>/dev/null)
+  else
+    gitea_pulls "$src" closed 0 '.[] | select(.merged) | "\(.head.label) \(.head.sha)"'
+  fi |
     while read -r b oid; do
       if ! grep -qxF "$b" <<< "$busy" &&
         [ "$(git -C "$src" rev-parse --verify --quiet "refs/heads/$b")" = "$oid" ]; then
