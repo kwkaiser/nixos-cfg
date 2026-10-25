@@ -694,16 +694,24 @@ cmd_close() {
 }
 
 cmd_done() {
-  local force=0 assume_yes=0 opt dir
-  while getopts "fy" opt; do
-    case "$opt" in
-      f) force=1 ;;
-      y) assume_yes=1 ;;
-      *) usage >&2; exit 1 ;;
-    esac
+  local force=0 assume_yes=0 opt dir topic=""
+  while [ "$#" -gt 0 ]; do
+    OPTIND=1
+    while getopts "fy" opt; do
+      case "$opt" in
+        f) force=1 ;;
+        y) assume_yes=1 ;;
+        *) usage >&2; exit 1 ;;
+      esac
+    done
+    shift $((OPTIND - 1))
+    if [ "$#" -gt 0 ]; then
+      [ -z "$topic" ] || die "usage: tmt done [-f] [-y] [topic]"
+      topic="$1"
+      shift
+    fi
   done
-  shift $((OPTIND - 1))
-  dir="$(resolve_task "${1:-}")"
+  dir="$(resolve_task "$topic")"
   remove_task "$dir" "$force" "$assume_yes"
 }
 
