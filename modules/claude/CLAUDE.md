@@ -34,6 +34,14 @@ If I ask for comments or explanations in an area:
     - `u/kwkaiser/foo-setup-2`
 - Prefer to have consistent prefix across stacked branches
 
+## Commit messages & PR titles
+
+For commit messages and PR titles, prefer to format with:
+
+- `feat`, `fix`, `perf` deploy; `refactor`, `chore`, `docs`, `test`, `ci`, `build`, `style` don't
+- Use `fix`/`feat` for anything that needs to ship, even if refactor-shaped. Never use `!`/`BREAKING CHANGE` unless asked
+- Branch commits are parsed too (merge commits), so keep their types consistent with the PR title
+
 ## Pull request descriptions
 
 When writing pull request descriptions, use the following format to indicate all generated content:
