@@ -31,7 +31,7 @@ usage:
   tmt pick
   tmt switch
 
-base is a directory or zoxide query; tasks live under $root/<base name>/<topic>
+base is a directory or zoxide query; tasks live under $root/<base name>/<base name>-<topic>
 EOF
 }
 
@@ -282,6 +282,22 @@ write_mcp_json() {
   jq -s 'map(.mcpServers // {}) | add | {mcpServers: .}' "${configs[@]}" > "$dir/.mcp.json"
 }
 
+trust_claude() {
+  local cfg="${CLAUDE_CONFIG_DIR:-$HOME}/.claude.json" tmp
+  [ -f "$cfg" ] || echo '{}' > "$cfg"
+  if jq -e --arg d "$1" '.projects[$d].hasTrustDialogAccepted == true' "$cfg" >/dev/null 2>&1; then
+    return 0
+  fi
+  tmp="$(mktemp "$cfg.XXXXXX")"
+  jq --arg d "$1" '.projects[$d].hasTrustDialogAccepted = true' "$cfg" > "$tmp" && mv "$tmp" "$cfg"
+}
+
+trust_direnv() {
+  if [ -f "$1/.envrc" ] && command -v direnv >/dev/null; then
+    direnv allow "$1"
+  fi
+}
+
 herdr_workspace_id() {
   "$herdr_bin" workspace list |
     jq -r --arg l "$1" '[.result.workspaces[] | select(.label == $l)][0].workspace_id // empty'
@@ -458,6 +474,7 @@ add_repo() {
   fi
 
   clone_untracked "$src" "$target"
+  trust_direnv "$target"
 
   if mux_has_session "$session" && [ -z "$(window_id "$session" "$repo")" ]; then
     mux_new_window "$session" "$repo" "$target" >/dev/null
@@ -469,6 +486,7 @@ ensure_herdr_workspace() {
   local dir="$1" session out pane r
   session="$(meta "$dir" session)"
   if ! mux_has_session "$session"; then
+    trust_claude "$dir"
     out="$("$herdr_bin" workspace create --cwd "$dir" --label "$session" --no-focus)"
     pane="$(jq -r .result.root_pane.pane_id <<< "$out")"
     "$herdr_bin" tab rename "$(jq -r .result.tab.tab_id <<< "$out")" "1:claude" >/dev/null
@@ -488,6 +506,7 @@ ensure_session() {
   fi
   session="$(meta "$dir" session)"
   if ! tmux has-session -t "=$session" 2>/dev/null; then
+    trust_claude "$dir"
     pane="$(tmux new-session -d -P -F '#{pane_id}' -s "$session" -n claude -c "$dir")"
     tmux set-option -t "$pane" @tmt_task "$dir"
     tmux send-keys -t "$pane" "clear && $claude_cmd" Enter
@@ -550,8 +569,9 @@ cmd_new() {
   shift 2
   check_repos "$base" "$@"
 
-  local dir
-  dir="$root/$(basename "$base")/$topic"
+  local name dir
+  name="$(basename "$base")-$topic"
+  dir="$root/$(basename "$base")/$name"
   [ ! -e "$dir" ] || die "$dir already exists"
   cmd_fresh "$base" || echo "tmt: fresh failed for $base, continuing" >&2
   mkdir -p "$dir"
@@ -560,10 +580,10 @@ cmd_new() {
   trap 'exit 130' INT TERM HUP
 
   {
-    echo "topic=$topic"
+    echo "topic=$name"
     echo "base=$base"
     echo "branch=${branch:-$branch_prefix$topic-1}"
-    echo "session=$topic"
+    echo "session=$name"
   } > "$dir/.tmt"
 
   link_repos "$dir" >/dev/null
