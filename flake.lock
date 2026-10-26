@@ -1036,17 +1036,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1793038193,
-        "narHash": "sha256-uZYN9r+aheCP8qgNUYle3KIkcirpc6QFfCPkxyfA9AI=",
+        "lastModified": 1793038718,
+        "narHash": "sha256-fCXQ3XJ9QAXieOgJBsOUoldK8CrQXmCT5bUiBNan8JU=",
         "ref": "refs/heads/main",
-        "rev": "23af4c2538bee9e35b2204b687a6e056549a7bf6",
-        "revCount": 19,
+        "rev": "027e8e3581253e1cc591584f3e24fd3e5d549285",
+        "revCount": 20,
         "type": "git",
-        "url": "file:///Users/kkaiser/Documents/tmt"
+        "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
       "original": {
         "type": "git",
-        "url": "file:///Users/kkaiser/Documents/tmt"
+        "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       }
     },
     "xdph": {

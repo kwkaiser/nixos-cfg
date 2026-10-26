@@ -70,7 +70,7 @@
     import-tree.url = "github:vic/import-tree";
 
     tmt-go = {
-      url = "git+file:///Users/kkaiser/Documents/tmt";
+      url = "git+https://git.kwkaiser.io/kwkaiser/tmt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

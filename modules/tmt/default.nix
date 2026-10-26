@@ -49,7 +49,7 @@ mkHmFeature "tmt" (
       }
     '';
 
-    tmt = pkgs.writeShellApplication {
+    tmt-sh = pkgs.writeShellApplication {
       name = "tmt";
       runtimeInputs = [
         config.programs.tmux.package
@@ -75,9 +75,8 @@ mkHmFeature "tmt" (
       + builtins.readFile ./tmt.sh;
     };
 
-    tmt-go = inputs.tmt-go.packages.${pkgs.stdenv.hostPlatform.system}.tmt.override {
+    tmt = inputs.tmt-go.packages.${pkgs.stdenv.hostPlatform.system}.tmt.override {
       tmux = config.programs.tmux.package;
-      mainProgram = "tmt-go";
       wrapperEnv = {
         TMT_FZF_COLORS = fzfColors;
         TMT_COLOR_WORKTREE = sgr "base0B";
@@ -98,7 +97,6 @@ mkHmFeature "tmt" (
 
     config.home.packages = [
       tmt
-      tmt-go
       (pkgs.writeTextDir "share/zsh/site-functions/_tmt" (builtins.readFile ./_tmt.zsh))
     ];
   }
