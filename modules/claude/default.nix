@@ -173,6 +173,8 @@ in
         description = "Extra global MCP servers, added to the `ccp` instance only.";
       };
 
+      config.home.sessionVariables.CLAUDE_CODE_CERT_STORE = "bundled";
+
       config.home.packages = with pkgs; [
         claude-code
         claude-monitor
@@ -189,6 +191,7 @@ in
               set +a
             fi
           done
+          export CLAUDE_CODE_CERT_STORE="''${CLAUDE_CODE_CERT_STORE:-bundled}"
           ${claude-code}/bin/claude --dangerously-skip-permissions
         '')
 
@@ -201,6 +204,7 @@ in
           fi
           done
           export CLAUDE_CONFIG_DIR="$HOME/.claude-personal"
+          export CLAUDE_CODE_CERT_STORE="''${CLAUDE_CODE_CERT_STORE:-bundled}"
           exec ${claude-code}/bin/claude --dangerously-skip-permissions "$@"
         '')
       ];

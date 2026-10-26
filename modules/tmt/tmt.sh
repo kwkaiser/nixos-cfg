@@ -137,25 +137,87 @@ is_github() {
 }
 
 gitea_pulls() {
-  local dir="$1" state="$2" first="$3" filter="$4" page out res
+  local dir="$1" state="$2" filter="$3" page out res
   for page in 1 2 3 4; do
     out="$(cd "$dir" && tea api "repos/{owner}/{repo}/pulls?state=$state&limit=50&page=$page" 2>/dev/null)" || return 0
     jq -e 'type == "array" and length > 0' <<< "$out" >/dev/null 2>&1 || return 0
     res="$(jq -r "$filter" <<< "$out")"
     [ -z "$res" ] || echo "$res"
-    [ "$first" -eq 0 ] || [ -z "$res" ] || return 0
   done
 }
 
-pr_state() {
-  local dir="$1" b="$2" state
-  if is_github "$dir"; then
-    (cd "$dir" && gh pr view "$b" --json state -q .state 2>/dev/null) || echo NONE
-    return 0
+pr_cache=""
+
+pr_file() {
+  echo "$pr_cache/$(printf '%s' "$1" | tr -c 'A-Za-z0-9' _)"
+}
+
+github_prs() {
+  local src="$1" i=0 b state q="" decl="" vars=() branches
+  shift
+  branches=("$@")
+  for b in "$@"; do
+    q+="b$i:pullRequests(headRefName:\$h$i,first:1,orderBy:{field:CREATED_AT,direction:DESC}){nodes{state}} "
+    decl+=",\$h$i:String!"
+    vars+=(-f "h$i=$b")
+    i=$((i + 1))
+  done
+  (cd "$src" && gh api graphql -F owner='{owner}' -F repo='{repo}' "${vars[@]}" \
+    -f query="query(\$owner:String!,\$repo:String!$decl){repository(owner:\$owner,name:\$repo){$q}}" \
+    -q '.data.repository | to_entries[] | "\(.key | ltrimstr("b"))\t\(.value.nodes[0].state // "NONE")"' 2>/dev/null) |
+    while IFS=$'\t' read -r i state; do
+      printf '%s\t%s\n' "${branches[$i]}" "$state"
+    done
+}
+
+fetch_prs() {
+  local src="$1" f
+  shift
+  f="$(pr_file "$src")"
+  if ! is_github "$src"; then
+    gitea_pulls "$src" all \
+      '.[] | "\(.head.label)\t\(if .merged then "MERGED" elif .state == "closed" then "CLOSED" else "OPEN" end)\t\(.head.sha)"' > "$f.tmp"
+  elif [ "$#" -gt 0 ]; then
+    github_prs "$src" "$@" > "$f.tmp" || true
+  else
+    : > "$f.tmp"
   fi
-  state="$(TMT_PR_BRANCH="$b" gitea_pulls "$dir" all 1 \
-    'first(.[] | select(.head.label == env.TMT_PR_BRANCH)) | if .merged then "MERGED" elif .state == "closed" then "CLOSED" else "OPEN" end')"
+  mv "$f.tmp" "$f"
+}
+
+prefetch_prs() {
+  local src pids=() branches=()
+  [ "$#" -gt 0 ] || return 0
+  if [ -z "$pr_cache" ]; then
+    pr_cache="$(mktemp -d)"
+    trap 'rm -rf "$pr_cache"' EXIT
+  fi
+  while IFS= read -r src; do
+    if [ -n "$src" ] && [ ! -f "$(pr_file "$src")" ]; then
+      mapfile -t branches < <(printf '%s\n' "$@" | awk -F '\t' -v s="$src" '$1 == s && $2 != "" { print $2 }' | sort -u)
+      fetch_prs "$src" "${branches[@]}" &
+      pids+=("$!")
+    fi
+  done < <(printf '%s\n' "$@" | cut -f1 | sort -u)
+  [ "${#pids[@]}" -eq 0 ] || wait "${pids[@]}"
+}
+
+pr_state() {
+  local src="$1" b="$2" state
+  if [ -z "$pr_cache" ] || [ ! -f "$(pr_file "$src")" ]; then
+    prefetch_prs "$src"$'\t'"$b"
+  fi
+  state="$(awk -F '\t' -v b="$b" '$1 == b { print $2; exit }' "$(pr_file "$src")")"
   echo "${state:-NONE}"
+}
+
+task_branches() {
+  local dir r
+  while IFS= read -r dir; do
+    while IFS= read -r r; do
+      printf '%s\t%s\n' "$(meta "$dir" base)/$r" "$(git -C "$dir/$r" branch --show-current)"
+    done < <(worktrees "$dir")
+  done < <(all_tasks) | sort -u
 }
 
 clone_path() {
@@ -328,18 +390,15 @@ check_repos() {
 trash_root="$root/.trash"
 
 discard_worktree() {
-  local src="$1" wt="$2" force="$3" bin p i=0
+  local src="$1" wt="$2" force="$3" bin
+  if [ "$force" -eq 0 ] && [ -n "$(git -C "$wt" status --porcelain)" ]; then
+    echo "tmt: $wt has uncommitted changes" >&2
+    return 1
+  fi
   bin="$trash_root/$(date +%s)-$$-$RANDOM"
   mkdir -p "$bin"
-  while IFS= read -r p; do
-    i=$((i + 1))
-    mv "$p" "$bin/$i"
-  done < <(find "$wt" -name .git -prune -o -type d -name node_modules -prune -print)
-  if [ "$force" -eq 1 ]; then
-    git -C "$src" worktree remove --force "$wt"
-  else
-    git -C "$src" worktree remove "$wt"
-  fi
+  mv "$wt" "$bin/"
+  git -C "$src" worktree prune
 }
 
 empty_trash() {
@@ -560,7 +619,7 @@ repo_status() {
     unpushed="$own"
   fi
   if [ "$with_pr" -eq 1 ]; then
-    pr="$(pr_state "$wt" "$b")"
+    pr="$(pr_state "$src" "$b")"
   fi
   echo "$dirty $unpushed $own $pr $b"
 }
@@ -580,7 +639,11 @@ cmd_ls() {
     esac
   done
 
-  local tmp dir r i dirs=() repos=()
+  local tmp dir r i dirs=() repos=() pairs=()
+  if [ "$with_pr" -eq 1 ]; then
+    mapfile -t pairs < <(task_branches)
+    prefetch_prs "${pairs[@]}"
+  fi
   tmp="$(mktemp -d)"
   while IFS= read -r dir; do
     if [ -z "$(worktrees "$dir")" ]; then
@@ -629,24 +692,51 @@ cmd_ls() {
 }
 
 remove_task() {
-  local dir="$1" force="$2" assume_yes="$3"
-  local base session topic r dirty unpushed own pr b blocked=0
-  local -A status_of=()
+  local dir="$1" force="$2" assume_yes="$3" prompt_force="${4:-0}"
+  local base session topic r dirty unpushed own pr b blocked=0 tmp pids=() srcs=()
+  local -A status_of=() need_pr=()
   base="$(meta "$dir" base)"
   session="$(meta "$dir" session)"
   topic="$(meta "$dir" topic)"
 
+  tmp="$(mktemp -d)"
   while IFS= read -r r; do
-    status_of[$r]="$(repo_status "$dir/$r" "$base/$r")"
+    repo_status "$dir/$r" "$base/$r" 0 > "$tmp/$r" &
+    pids+=("$!")
+  done < <(worktrees "$dir")
+  [ "${#pids[@]}" -eq 0 ] || wait "${pids[@]}"
+
+  while IFS= read -r r; do
+    read -r dirty unpushed own pr b < "$tmp/$r"
+    status_of[$r]="$dirty $unpushed $own $pr $b"
+    if { [ "$own" -gt 0 ] || [ "$unpushed" -gt 0 ]; } &&
+      { [ "$dirty" -eq 0 ] || [ "$force" -eq 1 ] || [ "$prompt_force" -eq 1 ]; }; then
+      need_pr[$r]=1
+      srcs+=("$base/$r"$'\t'"$b")
+    fi
+  done < <(worktrees "$dir")
+  rm -rf "$tmp"
+  prefetch_prs "${srcs[@]}"
+
+  while IFS= read -r r; do
     read -r dirty unpushed own pr b <<< "${status_of[$r]}"
+    if [ -n "${need_pr[$r]:-}" ]; then
+      pr="$(pr_state "$base/$r" "$b")"
+      status_of[$r]="$dirty $unpushed $own $pr $b"
+    fi
     if ! is_safe "$dirty" "$unpushed" "$pr"; then
       echo "tmt: $r has dirty:$dirty unpushed:$unpushed pr:$pr" >&2
       blocked=1
     fi
   done < <(worktrees "$dir")
   if [ "$blocked" -eq 1 ] && [ "$force" -eq 0 ]; then
-    echo "tmt: refusing to remove $topic; pass -f to force" >&2
-    exit 2
+    if [ "$prompt_force" -eq 0 ]; then
+      echo "tmt: refusing to remove $topic; pass -f to force" >&2
+      exit 2
+    fi
+    gum confirm "force remove task $topic?" || exit 0
+    force=1
+    assume_yes=1
   fi
 
   if [ "$assume_yes" -eq 0 ]; then
@@ -674,7 +764,7 @@ remove_task() {
 }
 
 cmd_close() {
-  local session dir topic status=0
+  local session dir
   session="$(mux_current_session)"
   [ -n "$session" ] || die "not inside a $mux session"
   if ! dir="$(session_task "$session")"; then
@@ -683,15 +773,7 @@ cmd_close() {
     fi
     return 0
   fi
-  topic="$(meta "$dir" topic)"
-  "$0" "done" "$topic" || status=$?
-  if [ "$status" -eq 2 ]; then
-    if gum confirm "force remove task $topic?"; then
-      "$0" "done" -f -y "$topic"
-    fi
-  elif [ "$status" -ne 0 ]; then
-    exit "$status"
-  fi
+  remove_task "$dir" 0 0 1
 }
 
 cmd_done() {
@@ -723,7 +805,7 @@ merged_branches() {
     (cd "$src" && gh pr list --state merged --author @me --limit 200 \
       --json headRefName,headRefOid -q '.[] | "\(.headRefName) \(.headRefOid)"' 2>/dev/null)
   else
-    gitea_pulls "$src" closed 0 '.[] | select(.merged) | "\(.head.label) \(.head.sha)"'
+    awk -F '\t' '$2 == "MERGED" { print $1, $3 }' "$(pr_file "$src")"
   fi |
     while read -r b oid; do
       if ! grep -qxF "$b" <<< "$busy" &&
@@ -763,21 +845,20 @@ retire_worktree() {
 }
 
 cmd_gc() {
-  local dir r src srcs=()
-  while IFS= read -r dir; do
-    while IFS= read -r r; do
-      srcs+=("$(meta "$dir" base)/$r")
-    done < <(worktrees "$dir")
-  done < <(all_tasks)
+  local dir r src pairs=() srcs=()
+  mapfile -t pairs < <(task_branches)
+  prefetch_prs "${pairs[@]}"
+  mapfile -t srcs < <(printf '%s\n' "${pairs[@]}" | cut -f1 | sort -u)
 
-  local tmp i=0 stale_lines stale=()
+  local tmp i=0 stale_lines stale=() pids=()
   tmp="$(mktemp -d)"
-  while IFS= read -r src; do
+  for src in "${srcs[@]}"; do
     [ -n "$src" ] || continue
     i=$((i + 1))
     merged_branches "$src" > "$tmp/$i" &
-  done < <(printf '%s\n' "${srcs[@]}" | sort -u)
-  wait
+    pids+=("$!")
+  done
+  [ "${#pids[@]}" -eq 0 ] || wait "${pids[@]}"
   stale_lines="$(cat "$tmp"/* 2>/dev/null || true)"
   rm -rf "$tmp"
   [ -z "$stale_lines" ] || mapfile -t stale <<< "$stale_lines"
