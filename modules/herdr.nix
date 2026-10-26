@@ -209,6 +209,12 @@ mkHmFeature "herdr" (
           toast.delivery = "off";
           sound.enabled = false;
           pane_scrollbars = false;
+          sidebar.spaces.rows = [
+            [
+              "state_icon"
+              "workspace"
+            ]
+          ];
         };
         theme = {
           name = "terminal";
@@ -263,14 +269,6 @@ mkHmFeature "herdr" (
               type = "popup";
               command = "TMT_POPUP=1 tmt pick || { echo 'press enter'; read _; }";
               description = "tmt pick";
-              width = "80%";
-              height = "70%";
-            }
-            {
-              key = "prefix+o";
-              type = "popup";
-              command = "TMT_POPUP=1 tmt switch || { echo 'press enter'; read _; }";
-              description = "tmt switch";
               width = "80%";
               height = "70%";
             }

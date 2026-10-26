@@ -104,7 +104,6 @@ mkHmFeature "tmux" (
         set -g popup-border-style "fg=${hex.base0D}"
 
         bind-key g display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt pick || { echo 'press enter'; read _; }"
-        bind-key o display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt switch || { echo 'press enter'; read _; }"
         bind-key G display-popup -E -e TMT_POPUP=1 -w 80% -h 70% -d "#{pane_current_path}" "tmt create || { echo 'press enter'; read _; }"
         bind-key X display-popup -E -e TMT_POPUP=1 -w 60% -h 40% -d "#{pane_current_path}" "tmt close || { echo 'press enter'; read _; }"
 
