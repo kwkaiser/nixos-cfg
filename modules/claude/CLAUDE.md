@@ -1,9 +1,12 @@
-# Links
+# File references
 
-Never use shortlinks
+Every reference to a file or code location in prose must be a clickable markdown link whose visible text is short and whose target is an absolute `file://` URL with a `#L<line>` fragment:
 
-When referencing files or code locations, always write them as markdown links with an absolute `file://` URL and a `#L<line>` fragment, keeping the repo-relative path as the link text. For example: `[modules/tmux.nix:12](file:///abs/path/to/repo/modules/tmux.nix#L12)`. Omit the fragment when there is no specific line.
+- `[modules/tmux.nix:12](file:///abs/path/to/repo/modules/tmux.nix#L12)`
+- Link text is the repo-relative path (plus `:<line>` when relevant), or just the basename when the path is already clear from context
+- Omit the fragment when there is no specific line
 
+This overrides the default `file_path:line_number` convention. Never show an absolute path as visible text, never wrap file references in backticks, and never write a bare path instead of a link.
 # Code
 
 ## Code comments
