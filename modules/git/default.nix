@@ -63,6 +63,8 @@ let
           branch.autoSetupMerge = "always";
           pull.rebase = true;
           init.defaultBranch = "main";
+          core.untrackedCache = true;
+          core.fsmonitor = pkgs.stdenv.hostPlatform.isDarwin;
         }
         // (
           if osConfig.mine.git.signCommits then
