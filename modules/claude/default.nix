@@ -177,6 +177,7 @@ in
 
       config.home.packages = with pkgs; [
         claude-code
+        ccusage
         claude-monitor
         claude-mermaid
         claude-sync
