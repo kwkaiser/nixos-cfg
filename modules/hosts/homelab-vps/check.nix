@@ -19,7 +19,7 @@
 
       machine = {
         virtualisation = {
-          memorySize = 2048;
+          memorySize = 1536;
           cores = 2;
           diskSize = 8192;
           vlans = [ ];
@@ -31,7 +31,7 @@
       };
 
       client.virtualisation = {
-        memorySize = 512;
+        memorySize = 384;
         cores = 1;
       };
     };
