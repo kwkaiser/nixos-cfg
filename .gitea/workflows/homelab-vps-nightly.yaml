@@ -1,0 +1,56 @@
+name: homelab-vps-nightly
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+env:
+  BUILDER_STORE: ssh-ng://nixbuilder@kwkaiser.io
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up SSH access
+        env:
+          NIX_REMOTE_BUILDER_KEY: ${{ secrets.NIX_REMOTE_BUILDER_KEY }}
+          HOMELAB_VPS_DEPLOY_KEY: ${{ secrets.HOMELAB_VPS_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          : "${HOMELAB_VPS_DEPLOY_KEY:?HOMELAB_VPS_DEPLOY_KEY is not set}"
+          printf '%s\n' "$NIX_REMOTE_BUILDER_KEY" > /tmp/nix-remote-builder-key
+          printf '%s\n' "$HOMELAB_VPS_DEPLOY_KEY" > /tmp/ci-deploy-key
+          chmod 600 /tmp/nix-remote-builder-key /tmp/ci-deploy-key
+          ssh-keyscan -H kwkaiser.io | sudo tee -a /etc/ssh/ssh_known_hosts >/dev/null
+          printf 'Host kwkaiser.io\n  User nixbuilder\n  IdentityFile /tmp/nix-remote-builder-key\n' | \
+            sudo tee /etc/ssh/ssh_config.d/nix-remote-builder.conf >/dev/null
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-substituters = ssh-ng://nixbuilder@kwkaiser.io?trusted=true
+            max-jobs = 0
+
+      - name: Build homelab-vps
+        id: build
+        run: |
+          set -euo pipefail
+          toplevel=$(nix build -L --no-link --print-out-paths --eval-store auto --store "$BUILDER_STORE" \
+            .#checks.x86_64-linux.homelab-vps-toplevel)
+          echo "toplevel=$toplevel" >> "$GITHUB_OUTPUT"
+
+      - name: Test homelab-vps VM
+        run: |
+          nix build -L --no-link --eval-store auto --store "$BUILDER_STORE" \
+            .#checks.x86_64-linux.homelab-vps
+
+      - name: Deploy homelab-vps
+        env:
+          TOPLEVEL: ${{ steps.build.outputs.toplevel }}
+        run: |
+          ssh -i /tmp/ci-deploy-key -o IdentitiesOnly=yes ci-deploy@kwkaiser.io "$TOPLEVEL"

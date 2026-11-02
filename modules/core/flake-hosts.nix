@@ -1,4 +1,9 @@
-{ inputs, lib, ... }:
+{
+  inputs,
+  lib,
+  vmTestModule,
+  ...
+}:
 let
   hyprlandOverlay = final: prev: {
     hyprland = inputs.hyprland.packages.${prev.stdenv.hostPlatform.system}.hyprland;
@@ -8,6 +13,15 @@ let
   allowUnfree = {
     nixpkgs.config.allowUnfree = true;
   };
+
+  mkNixosModules = hostModule: [
+    inputs.disko.nixosModules.disko
+    inputs.home-manager.nixosModules.default
+    allowUnfree
+    vmTestModule
+    { nixpkgs.overlays = [ hyprlandOverlay ]; }
+    hostModule
+  ];
 in
 {
   # Unlike `nixosConfigurations`, flake-parts has no built-in option for
@@ -20,17 +34,13 @@ in
     default = { };
   };
 
+  config._module.args.mkNixosModules = mkNixosModules;
+
   config._module.args.mkNixosSystem =
     hostModule:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [
-        inputs.disko.nixosModules.disko
-        inputs.home-manager.nixosModules.default
-        allowUnfree
-        { nixpkgs.overlays = [ hyprlandOverlay ]; }
-        hostModule
-      ];
+      modules = mkNixosModules hostModule;
     };
 
   config._module.args.mkDarwinSystem =

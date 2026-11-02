@@ -5,8 +5,9 @@
   ...
 }:
 {
-  flake.nixosConfigurations.homelab-vps = mkNixosSystem (
-    { lib, ... }: {
+  flake.nixosModules.homelab-vps =
+    { lib, ... }:
+    {
       imports =
         with config.nixos.modules;
         [
@@ -23,17 +24,18 @@
           nfs
           borgmatic
           builder
+          ci-deploy
           wireguard
           tailscale
           tailnet-dns
           neovim
         ]
         ++ [
-          ./_homelab-vps/disks.nix
-          ./_homelab-vps/hardware.nix
-          ./_homelab-vps/net.nix
-          ./_homelab-vps/boot.nix
-          ./_homelab-vps/vm.nix
+          ../_homelab-vps/disks.nix
+          ../_homelab-vps/hardware.nix
+          ../_homelab-vps/net.nix
+          ../_homelab-vps/boot.nix
+          ../_homelab-vps/vm.nix
         ];
 
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
@@ -49,6 +51,7 @@
       '';
 
       zramSwap.enable = true;
-    }
-  );
+    };
+
+  flake.nixosConfigurations.homelab-vps = mkNixosSystem config.flake.nixosModules.homelab-vps;
 }
