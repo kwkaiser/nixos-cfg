@@ -63,6 +63,7 @@
       config = lib.mkIf (config.mine.vmTest.tests.k3s or false) {
         services.k3s = {
           nodeIP = config.networking.primaryIPAddress;
+          manifests.vmtest-web.source = webManifest;
           images = [
             config.services.k3s.package.airgap-images
             webImage
@@ -77,7 +78,6 @@
                   f"k3s kubectl -n kube-system rollout status deployment/{deployment} --timeout=10s",
                   timeout=3600,
               )
-          machine.succeed("k3s kubectl apply -f ${webManifest}")
           machine.wait_until_succeeds("k3s kubectl rollout status deployment/web --timeout=10s", timeout=1800)
           client.wait_until_succeeds("curl -sf http://${config.networking.hostName}/ | grep -q k3s-nodeport-ok", timeout=600)
         '';
