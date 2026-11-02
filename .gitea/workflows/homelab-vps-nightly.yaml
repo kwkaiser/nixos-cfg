@@ -34,7 +34,6 @@ jobs:
         with:
           extra-conf: |
             extra-substituters = ssh-ng://nixbuilder@kwkaiser.io?trusted=true
-            max-jobs = 0
 
       - name: Build homelab-vps
         id: build
