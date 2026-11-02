@@ -48,7 +48,7 @@ let
       inherit name;
       hostPkgs = pkgs;
       node.specialArgs = { inherit inputs; };
-      globalTimeout = 3 * 60 * 60;
+      globalTimeout = 150 * 60;
 
       nodes.machine = {
         imports = mkNixosModules hostModule ++ [ machine ];

@@ -5,12 +5,17 @@ on:
     - cron: '0 7 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: homelab-vps-nightly
+  cancel-in-progress: false
+
 env:
   BUILDER_STORE: ssh-ng://nixbuilder@kwkaiser.io
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 170
     steps:
       - uses: actions/checkout@v4
         with:
