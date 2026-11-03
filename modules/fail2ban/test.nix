@@ -11,6 +11,8 @@
           config.mine.vmTest.sshKeys.snakeOilPublicKey
         ];
 
+        services.openssh.settings.PerSourcePenalties = "no";
+
         mine.vmTest.scripts.fail2ban = ''
           host = "${config.networking.hostName}"
           ssh = "ssh -i /root/id -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10"
