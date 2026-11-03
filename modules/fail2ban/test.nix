@@ -15,7 +15,7 @@
 
         mine.vmTest.scripts.fail2ban = ''
           host = "${config.networking.hostName}"
-          ssh = "ssh -i /root/id -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10"
+          ssh = "ssh -4 -i /root/id -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10"
           machine.wait_for_unit("sshd.service")
           machine.wait_for_unit("fail2ban.service")
           machine.wait_until_succeeds("fail2ban-client status sshd", timeout=120)
