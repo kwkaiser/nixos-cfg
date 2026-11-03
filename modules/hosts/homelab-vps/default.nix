@@ -30,6 +30,8 @@
           tailscale
           tailnet-dns
           neovim
+          module-hardening
+          fail2ban
         ]
         ++ [
           ../_homelab-vps/disks.nix
@@ -50,6 +52,8 @@
         /bulk-pool 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash) 10.43.0.0/16(rw,sync,no_subtree_check,no_root_squash) 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)
         /cache-pool 10.42.0.0/16(rw,sync,no_subtree_check,no_root_squash) 10.43.0.0/16(rw,sync,no_subtree_check,no_root_squash) 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)
       '';
+
+      mine.nfs.openFirewall = false;
 
       zramSwap.enable = true;
     };

@@ -15,6 +15,8 @@
         ci-deploy = true;
         wireguard = true;
         tailnet-dns = true;
+        module-hardening = true;
+        fail2ban = true;
       };
 
       machine = {

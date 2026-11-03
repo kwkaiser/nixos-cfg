@@ -12,6 +12,12 @@
       description = "NFS exports configuration";
     };
 
+    options.mine.nfs.openFirewall = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Open the NFS port on every interface. Disable on hosts whose only NFS clients are local (e.g. kubelet mounting via 127.0.0.1).";
+    };
+
     config = {
       # Create NFS directories after filesystems are mounted
       systemd.tmpfiles.rules = [
@@ -24,7 +30,7 @@
         exports = config.mine.nfs.exports;
       };
 
-      networking.firewall = {
+      networking.firewall = lib.mkIf config.mine.nfs.openFirewall {
         allowedTCPPorts = [ 2049 ];
         allowedUDPPorts = [ 2049 ];
       };

@@ -125,11 +125,27 @@ in {
 
   config.homeManager.modules.ssh = hmModule;
 
-  config.nixos.modules.ssh = {config, ...}: {
+  config.nixos.modules.ssh = {
+    config,
+    lib,
+    ...
+  }: {
     imports = [serverOption];
     home-manager.users.${config.mine.username}.imports = [hmModule];
     services.openssh.enable = config.mine.ssh.server.enable;
-    services.openssh.settings.PasswordAuthentication = false;
+    services.openssh.settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = lib.attrNames (
+        lib.filterAttrs (
+          _: user: user.openssh.authorizedKeys.keys != [] || user.openssh.authorizedKeys.keyFiles != []
+        )
+        config.users.users
+      );
+      MaxAuthTries = 3;
+      LoginGraceTime = 30;
+    };
     programs.ssh.startAgent = true;
   };
 
