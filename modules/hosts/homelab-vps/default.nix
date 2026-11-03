@@ -25,6 +25,7 @@
           borgmatic
           builder
           ci-deploy
+          kernel-reboot
           wireguard
           tailscale
           tailnet-dns
