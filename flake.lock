@@ -129,11 +129,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1793592178,
-        "narHash": "sha256-DtI8GRZe9cU9ZYdDPwHGWFN+aMsloMi8PodEjy5r1rA=",
+        "lastModified": 1793678573,
+        "narHash": "sha256-4Fk565Lb8NjMF+UMUCJ6hMCzOfqfLB7VzeOTXyZUnmY=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "a4dff67df49f47f4f1e59afb6a335dea1c1daf7a",
+        "rev": "fc24eaa9c142e608b2158955eca049d9228fd463",
         "type": "gitlab"
       },
       "original": {
@@ -729,11 +729,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1793591215,
-        "narHash": "sha256-nrvAVrRZQAmjuxTvpaiQPHkfcHdP6aYd5Gjjcck0pLc=",
+        "lastModified": 1793681473,
+        "narHash": "sha256-VAy07Ju4gYI5JM+igmCCeeH9EIi6FAmyCzEzl4gBj9E=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "ae8a1507c036c1d7ab7fc385a70743c7432c87d9",
+        "rev": "8d255f147601f498adbf06bee739f02dcaf2f0e5",
         "type": "github"
       },
       "original": {
@@ -1036,11 +1036,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793629264,
-        "narHash": "sha256-kqBYlghuRD+g09zvrk8ydD/L0ajd+Ibs0euYcfJipdA=",
+        "lastModified": 1793715501,
+        "narHash": "sha256-my+71dnmfz7N9JQ2sE2aPWVWbf8Vlk5MW3FLR7LAsyc=",
         "ref": "refs/heads/main",
-        "rev": "d032eb53470c802611ed3fd27bf7922ff3a4519e",
-        "revCount": 35,
+        "rev": "f3ebc5601653d4ee7a41a864fea34788e857caf8",
+        "revCount": 36,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
