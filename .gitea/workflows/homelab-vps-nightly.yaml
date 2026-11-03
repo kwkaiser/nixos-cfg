@@ -41,13 +41,16 @@ jobs:
           extra-conf: |
             extra-substituters = ssh-ng://nixbuilder@kwkaiser.io?trusted=true
 
-      - name: Build homelab-vps
+      - name: Build homelab-vps and test dependencies
         id: build
+        timeout-minutes: 30
         run: |
           set -euo pipefail
           toplevel=$(nix build -L --no-link --print-out-paths --eval-store auto --store "$BUILDER_STORE" \
             .#checks.x86_64-linux.homelab-vps-toplevel)
           echo "toplevel=$toplevel" >> "$GITHUB_OUTPUT"
+          nix build -L --no-link --eval-store auto --store "$BUILDER_STORE" \
+            .#checks.x86_64-linux.homelab-vps.driver
 
       - name: Test homelab-vps VM
         run: |
