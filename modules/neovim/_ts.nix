@@ -44,6 +44,15 @@
       treesitter.enable = true;
     };
 
+    languages.tsx = {
+      enable = true;
+      lsp.enable = true;
+      lsp.servers = ["typescript-language-server"];
+      extraDiagnostics.enable = false;
+      format.enable = true;
+      treesitter.enable = true;
+    };
+
     luaConfigRC.eslint-fix-all = ''
       function eslint_fix_all_sync()
         local bufnr = vim.api.nvim_get_current_buf()
