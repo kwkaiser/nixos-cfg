@@ -53,6 +53,7 @@
         spotlight
         handy
         herdr
+        harbor
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
