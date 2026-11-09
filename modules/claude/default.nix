@@ -177,7 +177,9 @@ in
 
       config.home.packages = with pkgs; [
         claude-code
-        ccusage
+        (ccusage.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or []) ++ [zstd];
+        }))
         claude-monitor
         claude-mermaid
         claude-sync
