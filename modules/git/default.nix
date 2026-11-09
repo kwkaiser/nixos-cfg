@@ -22,6 +22,7 @@ let
       config,
       pkgs,
       osConfig,
+      inputs,
       ...
     }:
     {
@@ -30,7 +31,7 @@ let
         [
           git-trim
           git-delete-merged-branches
-          pre-commit
+          inputs.nixpkgs-darwin-cached.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pre-commit
           tea
         ]
         ++ [

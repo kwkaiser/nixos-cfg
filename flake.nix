@@ -12,6 +12,8 @@
     # linking large natively-built binaries (kitty, livekit-libwebrtc/codex).
     nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixos-25.11";
 
+    nixpkgs-darwin-cached.url = "github:nixos/nixpkgs/f9a75f41be3a74eab55d3a7679d34ad6cc0da977";
+
     # Firefox has no cached aarch64-darwin build in nixpkgs right now (Hydra's
     # darwin firefox job has been failing since 2026-06-22), so use official
     # .dmg builds repackaged as a nix derivation instead of building from source.

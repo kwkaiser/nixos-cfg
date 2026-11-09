@@ -6,6 +6,7 @@ in
       pkgs,
       lib,
       config,
+      inputs,
       ...
     }: let
       tmux-mcp = pkgs.buildNpmPackage {
@@ -177,9 +178,7 @@ in
 
       config.home.packages = with pkgs; [
         claude-code
-        (ccusage.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or []) ++ [zstd];
-        }))
+        inputs.nixpkgs-darwin-cached.legacyPackages.${pkgs.stdenv.hostPlatform.system}.ccusage
         claude-monitor
         claude-mermaid
         claude-sync
