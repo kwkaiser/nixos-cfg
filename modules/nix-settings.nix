@@ -20,7 +20,7 @@
       '')
 
       (writeShellScriptBin "upgrade" ''
-        cd ~/Documents/nixos-cfg
+        cd ~/Documents/nixos-cfg 2>/dev/null || cd ~/Documents/personal/nixos-cfg || exit 1
         ${
           if isDarwin
           then "sudo nix run nix-darwin -- switch --flake .#${flakeHost}"
