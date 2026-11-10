@@ -10,11 +10,19 @@ mkHmFeature "firefox" (
     ...
   }:
   {
+    launchd.agents.firefox-legacy-profiles = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      enable = true;
+      config = {
+        ProgramArguments = [ "/bin/launchctl" "setenv" "MOZ_LEGACY_PROFILES" "1" ];
+        RunAtLoad = true;
+      };
+    };
+
     programs.firefox = {
       enable = true;
       # Firefox has no cached aarch64-darwin build in nixpkgs right now, so use
       # the official .dmg build on Darwin instead of building from source.
-      package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin pkgs.firefox-bin;
+      package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (inputs.nixpkgs-firefox-darwin.overlay pkgs pkgs).firefox-bin;
       policies = {
         DNSOverHTTPS = {
           Enabled = true;

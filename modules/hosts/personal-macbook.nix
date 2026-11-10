@@ -15,6 +15,7 @@
         anki
         aero
         macos-minimal
+        macos-no-autostart
         macos-snappy
         macos-perf
         node
@@ -53,6 +54,7 @@
         spotlight
         handy
         herdr
+        herdr-app
         harbor
       ];
 

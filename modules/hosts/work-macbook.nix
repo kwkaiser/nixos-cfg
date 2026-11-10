@@ -16,6 +16,7 @@
         python
 
         aero
+        macos-no-autostart
         neovim
         kitty
         firefox
