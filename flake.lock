@@ -1053,11 +1053,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794343521,
-        "narHash": "sha256-3lrYi0JPtTK4y+ASk35eTnfxm0qDG+iA5oSIP4NK/xE=",
+        "lastModified": 1794345916,
+        "narHash": "sha256-q2+Mt5YTNGg2OlEA7c7gGhGYt71u6I+Gt4rEuqSLkpo=",
         "ref": "refs/heads/main",
-        "rev": "fbf6b7bcd2bd976ec9b1766063e0e5caa5e7dfff",
-        "revCount": 42,
+        "rev": "77f227a3ed582bf1c3275800c96903bddf9f563d",
+        "revCount": 43,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
