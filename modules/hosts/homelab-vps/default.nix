@@ -26,6 +26,7 @@
           builder
           ci-deploy
           kernel-reboot
+          node-exporter
           wireguard
           tailscale
           tailnet-dns
