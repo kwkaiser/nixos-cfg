@@ -12,7 +12,7 @@
       '')
 
       (writeShellScriptBin "update" ''
-        cd ~/Documents/nixos-cfg && git pl && nix flake update && git commit --all --message "update flake" && git ps
+        { cd ~/Documents/nixos-cfg 2>/dev/null || cd ~/Documents/personal/nixos-cfg; } && git pl && nix flake update && git commit --all --message "update flake" && git ps
       '')
 
       (writeShellScriptBin "cleanup" ''
