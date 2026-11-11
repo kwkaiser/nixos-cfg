@@ -77,7 +77,10 @@
 
       system.defaults.dock.persistent-apps = ["${config.mine.homeDir}/Applications/Home Manager Apps/Firefox.app"];
 
-      home-manager.users.${config.mine.username}.mine.tmt.claudeCommand = "ccpm";
+      home-manager.users.${config.mine.username}.mine.tmt.agents = {
+        claude = "ccpm";
+        codex = "codex --dangerously-bypass-approvals-and-sandbox";
+      };
     }
   );
 }

@@ -8,6 +8,7 @@ mkHmFeature "tmt" (
     colors = config.lib.stylix.colors;
     hex = colors.withHashtag;
     sgr = base: "38;2;${colors."${base}-rgb-r"};${colors."${base}-rgb-g"};${colors."${base}-rgb-b"}";
+    agentType = lib.types.enum ["claude" "codex"];
 
     fzfColors = lib.concatStringsSep "," [
       "fg:${hex.base05}"
@@ -70,7 +71,7 @@ mkHmFeature "tmt" (
         sgr_root=${lib.escapeShellArg (sgr "base0D")}
         sgr_accent=${lib.escapeShellArg (sgr "base0A")}
         sgr_dim=${lib.escapeShellArg (sgr "base04")}
-        claude_cmd=${lib.escapeShellArg config.mine.tmt.claudeCommand}
+        claude_cmd=${lib.escapeShellArg config.mine.tmt.agents.claude}
       ''
       + builtins.readFile ./tmt.sh;
     };
@@ -84,20 +85,44 @@ mkHmFeature "tmt" (
         TMT_COLOR_ROOT = sgr "base0D";
         TMT_COLOR_ACCENT = sgr "base0A";
         TMT_COLOR_DIM = sgr "base04";
-        TMT_CLAUDE_COMMAND = config.mine.tmt.claudeCommand;
       };
     };
   in
   {
-    options.mine.tmt.claudeCommand = lib.mkOption {
-      type = lib.types.str;
-      default = "ccp";
-      description = "Command run in a new tmt task's claude pane.";
+    options.mine.tmt = {
+      agent = lib.mkOption {
+        type = agentType;
+        default = "claude";
+        description = "Coding agent run in a new tmt task's root window.";
+      };
+      agents = {
+        claude = lib.mkOption {
+          type = lib.types.str;
+          default = "ccp";
+          description = "Command tmt runs for the claude agent.";
+        };
+        codex = lib.mkOption {
+          type = lib.types.str;
+          default = "codex";
+          description = "Command tmt runs for the codex agent.";
+        };
+      };
+      dirs = lib.mkOption {
+        type = lib.types.attrsOf agentType;
+        default = {};
+        description = "Agent to use for tasks whose base is under the given directory (absolute or ~/-prefixed).";
+      };
     };
 
     config.home.packages = [
       tmt
       (pkgs.writeTextDir "share/zsh/site-functions/_tmt" (builtins.readFile ./_tmt.zsh))
     ];
+
+    config.mine.tmt.dirs."~/Documents/agents-of-chaos" = lib.mkDefault "codex";
+
+    config.xdg.configFile."tmt/config.yaml".text = builtins.toJSON {
+      inherit (config.mine.tmt) agent agents dirs;
+    };
   }
 )
