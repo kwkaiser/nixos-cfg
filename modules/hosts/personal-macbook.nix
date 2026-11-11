@@ -56,6 +56,7 @@
         herdr
         herdr-app
         harbor
+        linear
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
