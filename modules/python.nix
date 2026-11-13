@@ -6,7 +6,6 @@ in
       home.packages = with pkgs; [
         python3
         uv
-        uvx
         (pipx.overridePythonAttrs (old: {
           doCheck = false;
         }))
