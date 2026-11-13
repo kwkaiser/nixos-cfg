@@ -57,6 +57,7 @@
         herdr-app
         harbor
         linear
+        timewarrior
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
