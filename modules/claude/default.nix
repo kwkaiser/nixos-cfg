@@ -213,6 +213,7 @@ in
 
       config.home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
       config.home.file.".claude-personal/CLAUDE.md".source = ./CLAUDE.md;
+      config.home.file.".codex/AGENTS.md".source = ./CLAUDE.md;
 
       config.home.activation.claudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
         $DRY_RUN_CMD mkdir -p $HOME/.claude $HOME/.claude-personal

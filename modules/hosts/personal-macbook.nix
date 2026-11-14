@@ -58,6 +58,7 @@
         harbor
         linear
         timewarrior
+        python
       ];
 
       nixpkgs.hostPlatform = lib.mkDefault "aarch64-darwin";
