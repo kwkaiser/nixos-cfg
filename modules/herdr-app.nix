@@ -2,7 +2,10 @@
 {
   options.darwin.modules.herdr-app = mkModuleOption { };
 
-  config.darwin.modules.herdr-app = {
-    homebrew.casks = [ "herdr-app" ];
-  };
+  config.darwin.modules.herdr-app =
+    { pkgs, ... }:
+    {
+      homebrew.casks = [ "herdr-app" ];
+      environment.systemPackages = [ pkgs.herdr-core ];
+    };
 }

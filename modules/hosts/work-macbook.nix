@@ -11,6 +11,7 @@
         base
         git
         herdr
+        herdr-app
         nix-settings
         stylix
         python
