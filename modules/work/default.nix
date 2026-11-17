@@ -228,6 +228,10 @@
 
     chromeDevtoolsMcpWithOverlay = pkgs.writeShellScriptBin "chrome-devtools-mcp-with-overlay" ''
       mkdir -p ${lib.escapeShellArg chromeMcpStateDir}
+      lock="$(readlink ${lib.escapeShellArg "${chromeMcpUserDataDir}/SingletonLock"} 2>/dev/null || true)"
+      if [ -z "$lock" ] || ! kill -0 "''${lock##*-}" 2>/dev/null; then
+        rm -rf ${lib.escapeShellArg "${chromeMcpUserDataDir}/Default/Sessions"}
+      fi
       ${pkgs.nodejs}/bin/node ${cursorOverlayDaemon} \
         ${lib.escapeShellArg "${chromeMcpUserDataDir}/DevToolsActivePort"} \
         < /dev/null >> ${lib.escapeShellArg "${chromeMcpStateDir}/cursor-overlay.log"} 2>&1 &
@@ -279,6 +283,25 @@
         url = "https://mcp.sentry.dev/mcp";
       };
 
+      incident-io = {
+        type = "http";
+        url = "https://mcp.incident.io/mcp";
+      };
+
+      posthog = {
+        type = "http";
+        url = "https://mcp.posthog.com/mcp";
+      };
+
+      slack = {
+        type = "http";
+        url = "https://mcp.slack.com/mcp";
+        oauth = {
+          clientId = "1601185624273.8899143856786";
+          callbackPort = 3118;
+        };
+      };
+
       chrome-devtools = {
         command = "${chromeDevtoolsMcpWithOverlay}/bin/chrome-devtools-mcp-with-overlay";
         args = [
@@ -287,6 +310,7 @@
           "--no-usage-statistics"
           "--no-performance-crux"
           "--chromeArg=--remote-debugging-port=0"
+          "--chromeArg=--restore-last-session"
         ];
       };
 
