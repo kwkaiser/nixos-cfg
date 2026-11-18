@@ -51,7 +51,7 @@ function M.focus_panel()
   end
 end
 
-local preamble = "This is a structured review block. Please address comments or answer questions."
+local preamble = "This is a structured LOCAL review block. Please address comments or answer questions."
 
 local function attr(value)
   return (tostring(value):gsub('"', "&quot;"))
