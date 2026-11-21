@@ -129,11 +129,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1795147445,
-        "narHash": "sha256-c6T//Rp76UUiZoc9dF26R6wPlArmmgR+jq2+BZYdGQA=",
+        "lastModified": 1795233760,
+        "narHash": "sha256-eEYtDG99UbXeBMbQDTTAuLsagBoNL5pLsVuRNqnncRE=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "6d8de345bb04ba765b32f2e81af3fcf2efd67671",
+        "rev": "e80d6b27d377d16f1c4517788c807a6b2b643f76",
         "type": "gitlab"
       },
       "original": {
@@ -292,11 +292,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794963576,
-        "narHash": "sha256-+CPrP74GDJ63f7bgEFC9Av4hbxc7K9WUNv1ZVRifRe8=",
+        "lastModified": 1795268568,
+        "narHash": "sha256-1RJm4DEu7YHJv94sjSY7sjqT+kHx/AUwmtUN4dtFBUo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2b13c9cb3aa20653e6f8ee0b7f8331a53ea9b0a9",
+        "rev": "6857c7f7c338ad181729c52071386b0d3afa24bc",
         "type": "github"
       },
       "original": {
@@ -745,11 +745,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1795065881,
-        "narHash": "sha256-nKZZWn/gfmkrViJzwhjaYdviIoTowoMGjmkbgzn4Do8=",
+        "lastModified": 1795151467,
+        "narHash": "sha256-OjCS+b52jrErJ1JXj8xPTyg9VF9raru+j+jU9LzivuY=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "e2022614640e8129b31cd3924ec93a033a86eb40",
+        "rev": "d2c016488e766769ba12173110fdf40ef92ac7e6",
         "type": "github"
       },
       "original": {
@@ -760,11 +760,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1794890597,
-        "narHash": "sha256-lME2lHoDHAaSHP3/okgiVoJ0icVEvsQH8LeU3We7tcc=",
+        "lastModified": 1795234589,
+        "narHash": "sha256-f/VVvxf5RsQgWVhUtefoca5ktVg0DA2bnkMOcmSnozo=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+        "rev": "2786a2a72088ecf32aea5b3ec52099e6a7cff78f",
         "type": "github"
       },
       "original": {
@@ -1053,11 +1053,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794805810,
-        "narHash": "sha256-cMhwEZOnIv2gy7BIsjCOQA7QrmUaul3Rc5A5WTf0+ww=",
+        "lastModified": 1795237844,
+        "narHash": "sha256-AlhVp29rIXk2ZpGUs7kdHfavkB3SO//mtlm61w++48Q=",
         "ref": "refs/heads/main",
-        "rev": "73f62c2f4b30589ca8166109092c767384bfce68",
-        "revCount": 49,
+        "rev": "3f8593726dde42e503919a5b2fbf61ddff12fd8a",
+        "revCount": 51,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
