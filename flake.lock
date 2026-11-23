@@ -745,11 +745,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1795321753,
-        "narHash": "sha256-2LriF3qKkVsv0N7eVlAym6FaIdffvog0boj57P3ciDk=",
+        "lastModified": 1795410210,
+        "narHash": "sha256-oCb2FfaupzS/TOH7Mz8Bk8yeLX6eLecMUkAJUN/P2G8=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "045abac90fa3ce088ded86d64d0b42bd2a5db050",
+        "rev": "e343af4d2f7a04cd695aa3687fa10f9599e6343c",
         "type": "github"
       },
       "original": {
@@ -1053,11 +1053,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795237844,
-        "narHash": "sha256-AlhVp29rIXk2ZpGUs7kdHfavkB3SO//mtlm61w++48Q=",
+        "lastModified": 1795410669,
+        "narHash": "sha256-4RiYaXb/qJKWPXyTd8WQYBDdOL6/yuU4tfFtGgumc3o=",
         "ref": "refs/heads/main",
-        "rev": "3f8593726dde42e503919a5b2fbf61ddff12fd8a",
-        "revCount": 51,
+        "rev": "cc0ff48cfcbe2f960936a30cfd1a03378f91f199",
+        "revCount": 53,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
