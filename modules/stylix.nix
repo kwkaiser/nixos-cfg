@@ -19,7 +19,6 @@ let
     stylix.targets.firefox.profileNames = [ "kwkaiser" ];
     stylix.targets.firefox.colorTheme.enable = true;
     stylix.targets.nvf.enable = false; # Managed by nvf theme instead
-    stylix.targets.wayprompt.enable = false;
     stylix.fonts.emoji = {
       package = pkgs.joypixels;
       name = "JoyPixels";
