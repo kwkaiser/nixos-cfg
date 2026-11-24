@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795558801,
-        "narHash": "sha256-8uHpxb3OCtiJbXG8sg95+cbXpOyHJ82lxASBPe8OHqg=",
+        "lastModified": 1795561384,
+        "narHash": "sha256-2uD3B2dnF4IBbNPaJKNHDLJLzKLcSV5DEsph2x07PHE=",
         "ref": "refs/heads/main",
-        "rev": "f8287c1cc03cd2c9b4f1c804c901b5cc54b0ff31",
-        "revCount": 3,
+        "rev": "a236c2153dec16eddc88a72ac2739f3c32793371",
+        "revCount": 4,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/anki"
       },
