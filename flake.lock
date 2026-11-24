@@ -129,11 +129,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1795320161,
-        "narHash": "sha256-1cVr0CyXUbvjSA6awXv3B9UNn38/s2jri1yqQH3LDCY=",
+        "lastModified": 1795492993,
+        "narHash": "sha256-ahWady3zaDLyXbXZMMzzyw6eKdXlCJ1DBrShCCHjMB8=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "c83f1fa2548ad34b88ad7ebc0dff52be8c909ebd",
+        "rev": "d30aafe71a6b68888bec56a1ec030494b69da61e",
         "type": "gitlab"
       },
       "original": {
@@ -745,11 +745,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1795410210,
-        "narHash": "sha256-oCb2FfaupzS/TOH7Mz8Bk8yeLX6eLecMUkAJUN/P2G8=",
+        "lastModified": 1795506723,
+        "narHash": "sha256-OsrLL13SGMMWG1durrFInq1F1hcXa9wOdseA7DlS3ww=",
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "e343af4d2f7a04cd695aa3687fa10f9599e6343c",
+        "rev": "aff5636e0f9bd3baebe032f80bf1f020ad59b4c4",
         "type": "github"
       },
       "original": {
@@ -922,11 +922,11 @@
         "tinted-zed": "tinted-zed"
       },
       "locked": {
-        "lastModified": 1795038909,
-        "narHash": "sha256-u9VYWK6f9T8ZuMliRvX4LUuvJ/k5+6M5y35cZgsyJ8A=",
+        "lastModified": 1795479262,
+        "narHash": "sha256-bzTDA4xxj8+KNo/qWDgDGOKqfWWlH5GCkVw+e70HWu0=",
         "owner": "danth",
         "repo": "stylix",
-        "rev": "44aafe27b8b3427201dd53c6a464c196b6a956dd",
+        "rev": "926063673683f3ed4810ae3edac4d69df7adf42a",
         "type": "github"
       },
       "original": {
@@ -1053,11 +1053,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795410669,
-        "narHash": "sha256-4RiYaXb/qJKWPXyTd8WQYBDdOL6/yuU4tfFtGgumc3o=",
+        "lastModified": 1795461007,
+        "narHash": "sha256-XYBlNosiiBAOdCrWo3ia6zZJX28SH0JI+tgYeRg8JNs=",
         "ref": "refs/heads/main",
-        "rev": "cc0ff48cfcbe2f960936a30cfd1a03378f91f199",
-        "revCount": 53,
+        "rev": "b5bef31c80dd463329ab097185ba564dd6b98ba0",
+        "revCount": 55,
         "type": "git",
         "url": "https://git.kwkaiser.io/kwkaiser/tmt"
       },
