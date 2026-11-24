@@ -71,6 +71,11 @@
 
     import-tree.url = "github:vic/import-tree";
 
+    anki = {
+      url = "git+https://git.kwkaiser.io/kwkaiser/anki";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     tmt-go = {
       url = "git+https://git.kwkaiser.io/kwkaiser/tmt";
       inputs.nixpkgs.follows = "nixpkgs";
