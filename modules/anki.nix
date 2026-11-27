@@ -22,10 +22,12 @@ in
         from anki._backend import RustBackend
         from anki.sync_pb2 import SyncLoginRequest
 
-        username, password = sys.stdin.read().split("\n", 1)
+        username, password = sys.stdin.read().rstrip("\n").split("\n", 1)
+        print("Logging in to AnkiWeb...", file=sys.stderr, flush=True)
         auth = RustBackend().sync_login(
-            SyncLoginRequest(username=username, password=password.rstrip("\n"))
+            SyncLoginRequest(username=username, password=password)
         )
+        print(username)
         print(auth.hkey)
       '';
 
@@ -70,17 +72,24 @@ in
           if [ ! -s "${keyFile}" ] || [ ! -s "${usernameFile}" ]; then
             mkdir -p "${syncDir}"
             chmod 700 "${syncDir}"
-            username="$(keepassxc-cli show -q -a UserName "${keysDb}" \
-              "personal/services/learning/anki")"
-            password="$(keepassxc-cli show -q -s -a Password "${keysDb}" \
-              "personal/services/learning/anki")"
-            key="$(printf '%s\n%s' "$username" "$password" \
+            echo "No cached AnkiWeb sync key; reading credentials from keepassxc" >&2
+            username=""
+            key=""
+            {
+              read -r username || true
+              read -r key || true
+            } < <(keepassxc-cli show -s -a UserName -a Password "${keysDb}" \
+              "personal/services/learning/anki" \
               | PYTHONNOUSERSITE=true \
                 PYTHONPATH="${pkgs.anki.lib}/${ankiPython.sitePackages}" \
-                ${ankiPython.interpreter} ${ankiwebLogin})"
-            unset password
+                ${ankiPython.interpreter} ${ankiwebLogin})
+            if [ -z "$key" ]; then
+              echo "AnkiWeb login failed" >&2
+              exit 1
+            fi
             (umask 077 && printf '%s' "$username" > "${usernameFile}" \
               && printf '%s' "$key" > "${keyFile}")
+            echo "Cached AnkiWeb sync key in ${syncDir}" >&2
           fi
 
           OPENROUTER_API_KEY="$(keepassxc-cli show -s -a Password \
