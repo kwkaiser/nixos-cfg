@@ -5,12 +5,19 @@
     config,
     ...
   }: let
+    nvim-socket = pkgs.writeShellApplication {
+      name = "nvim-socket";
+      runtimeInputs = [pkgs.git];
+      text = builtins.readFile ./nvim-socket.sh;
+    };
     nvim-open = pkgs.writeShellApplication {
       name = "nvim-open";
       runtimeInputs = [
         config.programs.nvf.finalPackage
         config.programs.tmux.package
+        nvim-socket
         pkgs.git
+        pkgs.jq
         pkgs.socat
       ];
       excludeShellChecks = ["SC2016"];
@@ -27,6 +34,7 @@
       fzf
       tree-sitter
       imagemagick
+      nvim-socket
       nvim-open
     ];
 
@@ -42,16 +50,15 @@
     # Shell wrapper: opens neovim with git-based socket name for external RPC
     programs.zsh.initContent = ''
       nvim() {
-        if git rev-parse --show-toplevel &>/dev/null; then
-          local repo_root=$(git rev-parse --show-toplevel)
-          local session=""
-          if [[ -n "$TMUX" ]]; then
-            session=$(tmux display -p -t "$TMUX_PANE" '#S' 2>/dev/null)
-          elif [[ -n "$HERDR_WORKSPACE_ID" ]]; then
-            session="herdr:$HERDR_WORKSPACE_ID"
-          fi
-          local repo_id=$(printf %s "$session:$repo_root" | cksum | cut -d' ' -f1)
-          local socket_path="/tmp/nvim-$(basename "$repo_root")-''${repo_id}.sock"
+        local session=""
+        if [[ -n "$TMUX" ]]; then
+          session=$(tmux display -p -t "$TMUX_PANE" '#S' 2>/dev/null)
+        elif [[ -n "$HERDR_WORKSPACE_ID" ]]; then
+          session="herdr:$HERDR_WORKSPACE_ID"
+        fi
+        local resolved=("''${(@f)$(${nvim-socket}/bin/nvim-socket "$PWD" "$session")}")
+        if (( ''${#resolved} == 2 )); then
+          local repo_root=$resolved[1] socket_path=$resolved[2]
 
           # Clean up stale socket if it exists but no process is listening
           if [[ -S "$socket_path" ]] && ! command nvim --server "$socket_path" --remote-expr "1" &>/dev/null; then
