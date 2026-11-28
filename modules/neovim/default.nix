@@ -12,14 +12,15 @@
     };
     nvim-open = pkgs.writeShellApplication {
       name = "nvim-open";
-      runtimeInputs = [
-        config.programs.nvf.finalPackage
-        config.programs.tmux.package
-        nvim-socket
-        pkgs.git
-        pkgs.jq
-        pkgs.socat
-      ];
+      runtimeInputs =
+        [
+          config.programs.nvf.finalPackage
+          config.programs.tmux.package
+          nvim-socket
+          pkgs.git
+          pkgs.socat
+        ]
+        ++ lib.optional (config.programs.tmt.enable or false) config.programs.tmt.finalPackage;
       excludeShellChecks = ["SC2016"];
       text = builtins.readFile ./nvim-open.sh;
     };
