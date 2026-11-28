@@ -24,6 +24,15 @@ If I ask for comments or explanations in an area:
 
 - Prefer to solidify basic functionality, services, dataflow, etc *before* running tests for net-new functionality
 
+## Parallel work with `tmt`
+
+When work splits into independent streams across one or more repos, suggest `tmt` to orchestrate them in parallel rather than juggling branches in one checkout:
+
+- `tmt new -d --prompt "<instructions>" <base> <topic> [repo...]` creates worktrees on `u/kwkaiser/<topic>-1` and starts a session whose agent begins on those instructions (`--prompt-file <path>` for longer briefs). Always pass `-d` so my terminal isn't switched to the new session
+- `tmt add -t <topic> <repo>` converts a read-only symlinked repo in a task into a worktree
+- `tmt ls --json -p` reports each task's session, agent status, per-repo dirty/unpushed state and PR status; use it to track progress
+- `tmt done -y <topic>` removes a task only if it is safe to; `tmt gc -y` cleans up tasks whose PRs are merged or closed
+
 # Git & Pull requests
 
 ## Pull requests
